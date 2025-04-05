@@ -16,6 +16,7 @@ import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
@@ -26,12 +27,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -39,13 +40,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.example.studentinformationmanagement.R
 import com.example.studentinformationmanagement.ui.theme.primary_content
+import com.example.studentinformationmanagement.ui.theme.secondary_content
 
 @Composable
 fun LoginScreen(
     // Gọi ViewModel của trang để sử dụng
-    loginViewModel: LoginViewModel = viewModel()
+    loginViewModel: LoginViewModel = viewModel(),
+    navController: NavHostController
 ) {
     // Gọi UiState của trang để sử dụng (Optional)
     // val loginUiState by loginViewModel.uiState.collectAsState()
@@ -98,14 +103,20 @@ fun LoginScreen(
             isPasswordShowing = loginViewModel.isPasswordShowing,
             onPasswordVisibilityChange = { loginViewModel.onPasswordVisibilityChange() }
         )
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(40.dp))
         Button(
-            onClick = { loginViewModel.onLoginButtonClicked() },
+            onClick = { loginViewModel.onLoginButtonClicked(navController) },
+            colors = ButtonDefaults.buttonColors(
+                containerColor = primary_content,
+                contentColor = Color.White
+            ),
             modifier = Modifier
                 .fillMaxWidth(0.75f)
+                .height(50.dp)
         ) {
             Text(
-                text = stringResource(R.string.login_button)
+                text = stringResource(R.string.login_button),
+                fontFamily = FontFamily(Font(R.font.kanit_regular))
             )
         }
     }
@@ -139,14 +150,18 @@ fun UsernameTextField(
         shape = RoundedCornerShape(20.dp),
         colors = OutlinedTextFieldDefaults.colors (
                 focusedTextColor = Color.Black,
-                focusedBorderColor = colorResource(R.color.primary_content),
-                unfocusedBorderColor = colorResource(R.color.secondary_content),
-                focusedLeadingIconColor = colorResource(R.color.primary_content),
-                unfocusedLeadingIconColor = colorResource(R.color.secondary_content),
-                focusedLabelColor = colorResource(R.color.primary_content),
+                focusedBorderColor = primary_content,
+                unfocusedBorderColor = secondary_content,
+                focusedLeadingIconColor = primary_content,
+                unfocusedLeadingIconColor = secondary_content,
+                focusedLabelColor = primary_content,
                 unfocusedLabelColor = Color.Gray,
             ),
         singleLine = true,
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Number,
+            imeAction = ImeAction.Next
+        ),
         modifier = modifier
             .fillMaxWidth(0.75f)
     )
@@ -188,18 +203,21 @@ fun PasswordTextField(
             }
         },
         visualTransformation = if (isPasswordShowing) VisualTransformation.None else PasswordVisualTransformation(),
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Password,
+            imeAction = ImeAction.Done
+        ),
         shape = RoundedCornerShape(20.dp),
         colors = OutlinedTextFieldDefaults.colors (
             focusedTextColor = Color.Black,
-            focusedBorderColor = colorResource(R.color.primary_content),
-            unfocusedBorderColor = colorResource(R.color.secondary_content),
-            focusedLeadingIconColor = colorResource(R.color.primary_content),
-            unfocusedLeadingIconColor = colorResource(R.color.secondary_content),
-            focusedLabelColor = colorResource(R.color.primary_content),
+            focusedBorderColor = primary_content,
+            unfocusedBorderColor = secondary_content,
+            focusedLeadingIconColor = primary_content,
+            unfocusedLeadingIconColor = secondary_content,
+            focusedLabelColor = primary_content,
             unfocusedLabelColor = Color.Gray,
-            unfocusedTrailingIconColor = colorResource(R.color.secondary_content),
-            focusedTrailingIconColor = colorResource(R.color.primary_content)
+            unfocusedTrailingIconColor = secondary_content,
+            focusedTrailingIconColor = primary_content
         ),
         singleLine = true,
         modifier = modifier
@@ -213,5 +231,8 @@ fun PasswordTextField(
 )
 @Composable
 fun LoginScreenPreview() {
-    LoginScreen()
+    val fakeNavController = rememberNavController()
+    LoginScreen(
+        navController = fakeNavController
+    )
 }

@@ -2,16 +2,20 @@ package com.example.studentinformationmanagement.ui.shared
 
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -20,14 +24,12 @@ import androidx.compose.material.icons.filled.Cake
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Phone
-import androidx.compose.material.icons.outlined.Logout
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -44,26 +46,25 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil3.compose.AsyncImage
 import com.example.studentinformationmanagement.R
+import com.example.studentinformationmanagement.data.shared.User
 import com.example.studentinformationmanagement.ui.theme.kanit_bold_font
 import com.example.studentinformationmanagement.ui.theme.kanit_regular_font
 import com.example.studentinformationmanagement.ui.theme.primary_content
 import com.example.studentinformationmanagement.ui.theme.primary_dark
-import com.example.studentinformationmanagement.ui.theme.secondary_content
 import com.example.studentinformationmanagement.ui.theme.secondary_dark
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-@Preview(showBackground = true, showSystemUi = true)
 fun DetailProfile(
-    bottomBar: @Composable ()->Unit={},
-    modifier: Modifier = Modifier) {
+    modifier: Modifier = Modifier,
+    bottomBar: @Composable ()->Unit={}
+) {
     Scaffold(modifier = modifier.systemBarsPadding(), topBar = {
         TopAppBar(navigationIcon = {
             Icon(
@@ -112,7 +113,7 @@ fun DetailProfile(
                     )
                 }
                 InformationLine(Icons.Filled.Person, "Name", "Username")
-                InformationLine(Icons.Filled.Cake, "Birhday", "18.3.2004")
+                InformationLine(Icons.Filled.Cake, "Birthday", "18.3.2004")
                 InformationLine(Icons.Filled.Email, "Email", "abc@gmail.com")
                 InformationLine(Icons.Filled.Phone, "Phone", "Username")
                 InformationLine(Icons.Filled.BrokenImage, "Status", "Username")
@@ -155,6 +156,67 @@ fun InformationLine(icon: ImageVector, label: String, value: String, enable: Boo
                 thickness = 1.dp,
                 modifier = Modifier.fillMaxWidth(0.9f)
             )
+        }}}
+@Composable
+fun UserList(
+    userList: List<User>
+) {
+    LazyColumn {
+        items(userList.size) { index ->
+            InformationBox(
+                imageUrl = userList[index].userImageUrl,
+                name = userList[index].userName,
+                roleOrStuId = userList[index].userRole,
+                stateOrClass = userList[index].userState
+            )
+        }
+    }
+}
+
+@Composable
+fun InformationBox(
+    imageUrl: String,
+    name: String,
+    roleOrStuId: String,
+    stateOrClass: String
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+            .background(color = Color.White)
+            .clip(RoundedCornerShape(8.dp))
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            // Avatar Image
+            AsyncImage(
+                model = if (imageUrl.isNotEmpty()) imageUrl else "https://cdn-icons-png.flaticon.com/512/5556/5556499.png",
+                contentDescription = "Avatar",
+                modifier = Modifier
+                    .size(64.dp)
+                    .clip(CircleShape),
+                placeholder = painterResource(id = R.drawable.avt_placeholder),
+                error = painterResource(id = R.drawable.avt_error)
+            )
+
+            Spacer(modifier = Modifier.width(16.dp))
+
+            Column {
+                Text(
+                    text = name,
+                    color = Color.Black
+                )
+                Text(
+                    text = roleOrStuId,
+                    color = Color.DarkGray
+                )
+                Text(
+                    text = stateOrClass,
+                    color = Color.Gray
+                )
+            }
         }
     }
 }
@@ -213,3 +275,56 @@ fun InformationLine(icon: ImageVector, label: String, options: List<String>, ena
         }
     }
 }
+@Preview
+@Composable
+fun ComponentPreview() {
+    UserList(exampleUserList)
+}
+
+val exampleUserList: List<User> = listOf(
+    User(
+        userImageUrl = "",
+        userName = "Nguyen Van A",
+        userAge = "21",
+        userEmail = "vana@example.com",
+        userPhoneNumber = "0987654321",
+        userRole = "Manager",
+        userState = "Hanoi",
+    ),
+    User(
+        userImageUrl = "",
+        userName = "Tran Thi B",
+        userAge = "22",
+        userEmail = "thib@example.com",
+        userPhoneNumber = "0912345678",
+        userRole = "Manager",
+        userState = "Ho Chi Minh"
+    ),
+    User(
+        userImageUrl = "",
+        userName = "Le Van C",
+        userAge = "20",
+        userEmail = "vanc@example.com",
+        userPhoneNumber = "0909123456",
+        userRole = "Employee",
+        userState = "Da Nang"
+    ),
+    User(
+        userImageUrl = "",
+        userName = "Pham Thi D",
+        userAge = "23",
+        userEmail = "thid@example.com",
+        userPhoneNumber = "0978123456",
+        userRole = "Employee",
+        userState = "Can Tho"
+    ),
+    User(
+        userImageUrl = "",
+        userName = "Hoang Van E",
+        userAge = "19",
+        userEmail = "vane@example.com",
+        userPhoneNumber = "0932123456",
+        userRole = "Employee",
+        userState = "Hai Phong"
+    )
+)
