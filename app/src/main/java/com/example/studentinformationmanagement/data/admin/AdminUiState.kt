@@ -1,6 +1,4 @@
-package com.example.studentinformationmanagement.data.shared
-
-import android.media.Image
+package com.example.studentinformationmanagement.data.admin
 
 data class User(
     val userImageUrl: String,
@@ -12,6 +10,6 @@ data class User(
     val userState: String,
 )
 
-data class UserUiState(
+data class AdminUiState(
     val userList: List<User> = emptyList()
 )

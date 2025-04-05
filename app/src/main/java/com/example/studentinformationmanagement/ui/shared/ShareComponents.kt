@@ -4,6 +4,8 @@ package com.example.studentinformationmanagement.ui.shared
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -21,6 +23,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.BrokenImage
 import androidx.compose.material.icons.filled.Cake
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Phone
@@ -30,6 +33,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -41,20 +45,26 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil3.compose.AsyncImage
+import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.compose.AsyncImage
 import com.example.studentinformationmanagement.R
-import com.example.studentinformationmanagement.data.shared.User
+import com.example.studentinformationmanagement.data.admin.User
+import com.example.studentinformationmanagement.data.shared.SampleData
+import com.example.studentinformationmanagement.ui.admin.AdminViewModel
 import com.example.studentinformationmanagement.ui.theme.kanit_bold_font
 import com.example.studentinformationmanagement.ui.theme.kanit_regular_font
+import com.example.studentinformationmanagement.ui.theme.primary_container
 import com.example.studentinformationmanagement.ui.theme.primary_content
 import com.example.studentinformationmanagement.ui.theme.primary_dark
 import com.example.studentinformationmanagement.ui.theme.secondary_dark
@@ -81,8 +91,8 @@ fun DetailProfile(
                 modifier = Modifier.size(40.dp)
             )
         })
-    }
-    ,bottomBar=bottomBar) { paddingValues ->
+    },
+        bottomBar=bottomBar) { paddingValues ->
         Box(
             modifier = modifier
                 .padding(paddingValues)
@@ -159,7 +169,8 @@ fun InformationLine(icon: ImageVector, label: String, value: String, enable: Boo
         }}}
 @Composable
 fun UserList(
-    userList: List<User>
+    userList: List<User>,
+    viewModel: AdminViewModel = viewModel()
 ) {
     LazyColumn {
         items(userList.size) { index ->
@@ -167,7 +178,10 @@ fun UserList(
                 imageUrl = userList[index].userImageUrl,
                 name = userList[index].userName,
                 roleOrStuId = userList[index].userRole,
-                stateOrClass = userList[index].userState
+                stateOrClass = userList[index].userState,
+                phoneNumber = userList[index].userPhoneNumber,
+                onSeeMoreClicked = { viewModel.onUserSeeMoreClicked(it) },
+                onEditButtonClicked = { viewModel.onUserEditClicked(it) }
             )
         }
     }
@@ -178,21 +192,28 @@ fun InformationBox(
     imageUrl: String,
     name: String,
     roleOrStuId: String,
-    stateOrClass: String
+    stateOrClass: String,
+    phoneNumber: String,
+    onEditButtonClicked: (String) -> Unit,
+    onSeeMoreClicked: (String) -> Unit
 ) {
     Box(
         modifier = Modifier
-            .fillMaxWidth()
+
             .padding(16.dp)
-            .background(color = Color.White)
-            .clip(RoundedCornerShape(8.dp))
+            .background(color = primary_container)
+            .clip(RoundedCornerShape(16.dp))
+            .shadow(2.dp, RoundedCornerShape(16.dp))
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .padding(10.dp)
+                .clip(RoundedCornerShape(16.dp))
         ) {
             // Avatar Image
             AsyncImage(
-                model = if (imageUrl.isNotEmpty()) imageUrl else "https://cdn-icons-png.flaticon.com/512/5556/5556499.png",
+                model = imageUrl,
                 contentDescription = "Avatar",
                 modifier = Modifier
                     .size(64.dp)
@@ -203,18 +224,61 @@ fun InformationBox(
 
             Spacer(modifier = Modifier.width(16.dp))
 
-            Column {
+            Column(
+                verticalArrangement = Arrangement.SpaceEvenly,
+                horizontalAlignment = Alignment.Start,
+                modifier = Modifier
+                    .weight(1f)
+            ) {
                 Text(
                     text = name,
-                    color = Color.Black
+                    fontSize = 20.sp,
+                    color = primary_content,
+                    fontFamily = kanit_bold_font
                 )
                 Text(
                     text = roleOrStuId,
-                    color = Color.DarkGray
+                    fontSize = 16.sp,
+                    color = Color.DarkGray,
+                    fontFamily = kanit_regular_font
                 )
+                if (stateOrClass == "Normal") {
+                    Text(
+                        text = stateOrClass,
+                        fontSize = 14.sp,
+                        fontFamily = kanit_regular_font,
+                        color = primary_content
+                    )
+                } else {
+                    Text(
+                        text = stateOrClass,
+                        fontSize = 14.sp,
+                        fontFamily = kanit_regular_font,
+                        color = secondary_dark
+                    )
+                }
+
+            }
+            Column(
+                verticalArrangement = Arrangement.SpaceEvenly,
+                horizontalAlignment = Alignment.End
+            ) {
+                IconButton(
+                    onClick = { onEditButtonClicked(phoneNumber) }
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Edit,
+                        contentDescription = null,
+                    )
+                }
                 Text(
-                    text = stateOrClass,
-                    color = Color.Gray
+                    text = stringResource(R.string.see_more),
+                    fontFamily = kanit_regular_font,
+                    color = primary_content,
+                    modifier = Modifier
+                        .clickable {
+                            onSeeMoreClicked(phoneNumber)
+                        }
                 )
             }
         }
@@ -278,53 +342,5 @@ fun InformationLine(icon: ImageVector, label: String, options: List<String>, ena
 @Preview
 @Composable
 fun ComponentPreview() {
-    UserList(exampleUserList)
+    UserList(SampleData.sampleUserList)
 }
-
-val exampleUserList: List<User> = listOf(
-    User(
-        userImageUrl = "",
-        userName = "Nguyen Van A",
-        userAge = "21",
-        userEmail = "vana@example.com",
-        userPhoneNumber = "0987654321",
-        userRole = "Manager",
-        userState = "Hanoi",
-    ),
-    User(
-        userImageUrl = "",
-        userName = "Tran Thi B",
-        userAge = "22",
-        userEmail = "thib@example.com",
-        userPhoneNumber = "0912345678",
-        userRole = "Manager",
-        userState = "Ho Chi Minh"
-    ),
-    User(
-        userImageUrl = "",
-        userName = "Le Van C",
-        userAge = "20",
-        userEmail = "vanc@example.com",
-        userPhoneNumber = "0909123456",
-        userRole = "Employee",
-        userState = "Da Nang"
-    ),
-    User(
-        userImageUrl = "",
-        userName = "Pham Thi D",
-        userAge = "23",
-        userEmail = "thid@example.com",
-        userPhoneNumber = "0978123456",
-        userRole = "Employee",
-        userState = "Can Tho"
-    ),
-    User(
-        userImageUrl = "",
-        userName = "Hoang Van E",
-        userAge = "19",
-        userEmail = "vane@example.com",
-        userPhoneNumber = "0932123456",
-        userRole = "Employee",
-        userState = "Hai Phong"
-    )
-)
