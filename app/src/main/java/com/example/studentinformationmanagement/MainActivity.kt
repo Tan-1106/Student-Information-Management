@@ -4,16 +4,9 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-<<<<<<< Updated upstream
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.example.studentinformationmanagement.ui.admin.AdminScreen
-import com.example.studentinformationmanagement.ui.admin.BottomNavBarAdmin
-=======
 import com.example.studentinformationmanagement.data.shared.User
 import com.example.studentinformationmanagement.ui.shared.UserList
 import com.example.studentinformationmanagement.ui.shared.exampleUserList
->>>>>>> Stashed changes
 import com.example.studentinformationmanagement.ui.theme.StudentInformationManagementTheme
 
 class MainActivity : ComponentActivity() {
@@ -22,7 +15,6 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             StudentInformationManagementTheme {
-                AppScreen()
                 UserList(exampleUserList)
             }
         }
@@ -30,8 +22,6 @@ class MainActivity : ComponentActivity() {
 }
 
 
-<<<<<<< Updated upstream
-=======
 val exampleUserList: List<User> = listOf(
     User(
         userImageUrl = "https://www.svgrepo.com/show/382106/male-avatar-boy-face-man-user-9.svg",
@@ -79,5 +69,4 @@ val exampleUserList: List<User> = listOf(
         userState = "Hai Phong"
     )
 )
->>>>>>> Stashed changes
 
