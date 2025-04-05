@@ -15,6 +15,8 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             StudentInformationManagementTheme {
+//                AppScreen()
+                AdminScreen()
                 UserList(exampleUserList)
             }
         }

@@ -16,4 +16,4 @@ val secondary_content = Color(0xFFE9A098)
 val primary_container = Color(0xFFDDCACE)
 val secondary_dark = Color(0xFF7C7B6F)
 val primary_dark = Color(0xFF3A362E)
-
+val third_content = Color(0xFFFFDFDC)
