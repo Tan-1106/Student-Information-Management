@@ -7,5 +7,5 @@
     <string name="username_label">Your Phone Number</string>
     <string name="password_label">Your Password</string>
     <string name="login_button">SIGN IN</string>
-
+    <string name="see_more">See more ></string>
 </resources>
