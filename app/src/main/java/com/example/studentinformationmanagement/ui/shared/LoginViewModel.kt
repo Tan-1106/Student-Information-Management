@@ -1,5 +1,8 @@
 package com.example.studentinformationmanagement.ui.shared
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.example.studentinformationmanagement.data.shared.LoginUiState
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,5 +16,20 @@ class LoginViewModel : ViewModel() {
     val uiState: StateFlow<LoginUiState> =_uiState.asStateFlow()
 
     // Các hàm xử lý dữ liệu và xử lý sự kiện Login viết tại đây
+    var userUsernameInput by mutableStateOf("")
+        private set
+    var userPasswordInput by mutableStateOf("")
+        private set
+    fun onUsernameChange(userInput: String) {
+        userUsernameInput = userInput
+    }
+    fun onPasswordChange(userInput: String) {
+        userPasswordInput = userInput
+    }
 
+    var isPasswordShowing by mutableStateOf(false)
+        private set
+    fun onPasswordVisibilityChange() {
+        isPasswordShowing = !isPasswordShowing
+    }
 }

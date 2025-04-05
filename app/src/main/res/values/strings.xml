@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">Student Information Management</string>
+
+    <!-- Login Screen -->
+    <string name="app_brand">EduTrack</string>
+    <string name="login_welcome">Welcome! Please Sign In</string>
+    <string name="username_label">Your Phone Number</string>
+    <string name="password_label">Your Password</string>
+    <string name="login_button">SIGN IN</string>
 </resources>

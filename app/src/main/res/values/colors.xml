@@ -9,8 +9,8 @@
     <color name="white">#FFFFFFFF</color>
 
     <!-- Các màu sắc được định nghĩa tại đây -->
-    <color name="secondary_content">#D45F5F</color>
-    <color name="primary_content">#E9A098</color>
+    <color name="primary_content">#D45F5F</color>
+    <color name="secondary_content">#E9A098</color>
     <color name="primary_container">#DDCACE</color>
     <color name="secondary_dark">#7C7B6F</color>
     <color name="primary_dark">#3A362E</color>
