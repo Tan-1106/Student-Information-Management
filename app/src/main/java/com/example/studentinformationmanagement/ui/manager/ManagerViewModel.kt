@@ -1,6 +1,8 @@
 package com.example.studentinformationmanagement.ui.manager
 
 import androidx.lifecycle.ViewModel
+import androidx.navigation.NavController
+import com.example.studentinformationmanagement.AppScreen
 import com.example.studentinformationmanagement.data.manager.ManagerUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -18,5 +20,9 @@ class ManagerViewModel : ViewModel() {
 
     fun onUserSeeMoreClicked(userPhoneNumber: String) {
 
+    }
+
+    fun onAddButtonClicked(navController: NavController) {
+        navController.navigate(AppScreen.AddStudent.name)
     }
 }

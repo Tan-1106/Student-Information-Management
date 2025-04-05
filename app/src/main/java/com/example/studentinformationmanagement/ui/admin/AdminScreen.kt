@@ -40,7 +40,10 @@ import com.example.studentinformationmanagement.ui.theme.primary_content
 import com.example.studentinformationmanagement.ui.theme.third_content
 
 @Composable
-fun AdminScreen(navController: NavHostController = rememberNavController()) {
+fun AdminScreen(
+    screenNavController: NavHostController,
+    navController: NavHostController = rememberNavController()
+) {
     val navItems = listOf(
         NavItem("Student", Icons.Default.Home, AppScreen.StudentManagement.name),
         NavItem("User", Icons.Default.AccountCircle, AppScreen.UserManagement.name),
@@ -106,7 +109,7 @@ fun AdminScreen(navController: NavHostController = rememberNavController()) {
             startDestination = AppScreen.StudentManagement.name,
             modifier = Modifier.padding(innerPadding)
         ) {
-            composable(AppScreen.StudentManagement.name) { StudentManagement() }
+            composable(AppScreen.StudentManagement.name) { StudentManagement(navController = screenNavController) }
             composable(AppScreen.UserManagement.name) { /* TODO: UserManagement screen */ }
             composable(AppScreen.UserDetailProfile.name) { UserDetailProfile() }
         }
@@ -119,5 +122,6 @@ fun AdminScreen(navController: NavHostController = rememberNavController()) {
 )
 @Composable
 fun AdminScreenPreview() {
-    AdminScreen()
+    val fakeScreenNavController = rememberNavController()
+    AdminScreen(fakeScreenNavController)
 }

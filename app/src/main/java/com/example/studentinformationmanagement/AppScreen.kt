@@ -1,10 +1,13 @@
 package com.example.studentinformationmanagement
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.studentinformationmanagement.ui.admin.AddUser
 import com.example.studentinformationmanagement.ui.admin.AdminScreen
 import com.example.studentinformationmanagement.ui.manager.StudentManagement
 import com.example.studentinformationmanagement.ui.shared.LoginScreen
@@ -25,13 +28,14 @@ enum class AppScreen() {
     AdminScreen
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AppScreen(
     navController: NavHostController = rememberNavController()
 ) {
     NavHost(
         navController = navController,
-        startDestination = AppScreen.Login.name
+        startDestination = AppScreen.AdminScreen.name
     ) {
         composable(route = AppScreen.Login.name) {
             LoginScreen(navController = navController)
@@ -40,7 +44,7 @@ fun AppScreen(
 
         }
         composable(route = AppScreen.AddUser.name) {
-
+            AddUser()
         }
         composable(route = AppScreen.EditUser.name) {
 
@@ -49,7 +53,7 @@ fun AppScreen(
 
         }
         composable(route = AppScreen.StudentManagement.name) {
-            StudentManagement()
+            StudentManagement(navController = navController)
         }
         composable(route = AppScreen.AddStudent.name) {
 
@@ -70,7 +74,7 @@ fun AppScreen(
 
         }
         composable (route = AppScreen.AdminScreen.name){
-            AdminScreen()
+            AdminScreen(screenNavController = navController)
         }
     }
 }

@@ -33,7 +33,10 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
 import com.example.studentinformationmanagement.data.shared.SampleData
+import com.example.studentinformationmanagement.ui.shared.StudentList
 import com.example.studentinformationmanagement.ui.shared.UserList
 import com.example.studentinformationmanagement.ui.theme.kanit_bold_font
 import com.example.studentinformationmanagement.ui.theme.primary_container
@@ -125,7 +128,11 @@ import com.example.studentinformationmanagement.ui.theme.third_content
 //    }
 //}
 @Composable
-fun StudentManagement(modifier: Modifier = Modifier) {
+fun StudentManagement(
+    modifier: Modifier = Modifier,
+    managerViewModel: ManagerViewModel = viewModel(),
+    navController: NavHostController
+) {
     var searchText by remember { mutableStateOf(TextFieldValue("")) }
     Box(
         modifier = modifier
@@ -192,7 +199,7 @@ fun StudentManagement(modifier: Modifier = Modifier) {
             )
 
             // User list
-            UserList(SampleData.sampleUserList)
+            StudentList(SampleData.exampleStudentList)
         }
 
         // Add Student Button
@@ -201,7 +208,7 @@ fun StudentManagement(modifier: Modifier = Modifier) {
                 .align(Alignment.BottomCenter) // Đặt nút ở dưới cùng giữa màn hình
         ) {
             Button(
-                onClick = { /* Hành động thêm sinh viên */ },
+                onClick = { managerViewModel.onAddButtonClicked(navController) },
                 shape = RoundedCornerShape(16.dp),
                 modifier = Modifier
                     .fillMaxWidth(0.6f), // Làm cho nút rộng vừa phải

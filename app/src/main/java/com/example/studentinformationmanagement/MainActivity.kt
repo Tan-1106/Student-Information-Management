@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.navigation.compose.rememberNavController
 import com.example.studentinformationmanagement.ui.admin.AdminScreen
 import com.example.studentinformationmanagement.ui.theme.StudentInformationManagementTheme
 import java.text.SimpleDateFormat
@@ -34,8 +35,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             StudentInformationManagementTheme {
-//                AppScreen()
-                AdminScreen()
+                AppScreen()
             }
         }
     }
