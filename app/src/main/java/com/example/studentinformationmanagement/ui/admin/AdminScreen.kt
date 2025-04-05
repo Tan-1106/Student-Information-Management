@@ -13,7 +13,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -34,12 +33,12 @@ import com.example.studentinformationmanagement.AppScreen
 import com.example.studentinformationmanagement.R
 import com.example.studentinformationmanagement.data.shared.NavItem
 import com.example.studentinformationmanagement.ui.manager.StudentManagement
+import com.example.studentinformationmanagement.ui.shared.UserDetailProfile
 import com.example.studentinformationmanagement.ui.theme.kanit_bold_font
 import com.example.studentinformationmanagement.ui.theme.primary_container
 import com.example.studentinformationmanagement.ui.theme.primary_content
 import com.example.studentinformationmanagement.ui.theme.third_content
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AdminScreen(navController: NavHostController = rememberNavController()) {
     val navItems = listOf(
@@ -109,7 +108,7 @@ fun AdminScreen(navController: NavHostController = rememberNavController()) {
         ) {
             composable(AppScreen.StudentManagement.name) { StudentManagement() }
             composable(AppScreen.UserManagement.name) { /* TODO: UserManagement screen */ }
-            composable(AppScreen.UserDetailProfile.name) { /* TODO: Profile screen */ }
+            composable(AppScreen.UserDetailProfile.name) { UserDetailProfile() }
         }
     }
 }

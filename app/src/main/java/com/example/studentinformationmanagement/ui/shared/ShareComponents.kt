@@ -3,7 +3,6 @@ package com.example.studentinformationmanagement.ui.shared
 
 import android.app.DatePickerDialog
 import android.os.Build
-import android.util.Log
 import android.widget.DatePicker
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
@@ -51,22 +50,17 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.Placeholder
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil3.compose.AsyncImage
-import coil3.compose.AsyncImagePainter
-import coil3.compose.rememberAsyncImagePainter
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.example.studentinformationmanagement.R
@@ -75,10 +69,10 @@ import com.example.studentinformationmanagement.data.shared.SampleData
 import com.example.studentinformationmanagement.ui.admin.AdminViewModel
 import com.example.studentinformationmanagement.ui.theme.kanit_bold_font
 import com.example.studentinformationmanagement.ui.theme.kanit_regular_font
-import com.example.studentinformationmanagement.ui.theme.primary_container
 import com.example.studentinformationmanagement.ui.theme.primary_content
 import com.example.studentinformationmanagement.ui.theme.primary_dark
 import com.example.studentinformationmanagement.ui.theme.secondary_dark
+import com.example.studentinformationmanagement.ui.theme.third_content
 import java.util.Calendar
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -252,11 +246,11 @@ fun InformationBox(
 ) {
     Box(
         modifier = Modifier
-
             .padding(16.dp)
-            .background(color = primary_container)
-            .clip(RoundedCornerShape(16.dp))
-            .shadow(2.dp, RoundedCornerShape(16.dp))
+            .background(color = third_content, shape = RoundedCornerShape(16.dp))
+            .clip(shape = RoundedCornerShape(16.dp))
+            .border(shape = RoundedCornerShape(16.dp), width = 1.dp, color = primary_content)
+
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -438,7 +432,9 @@ fun InformationSelect(icon: ImageVector, label: String, options: List<String>) {
     }
 }
 
-//@Preview
+@Preview(
+    showSystemUi = true,
+)
 @Composable
 fun ComponentPreview() {
     UserList(SampleData.sampleUserList)
