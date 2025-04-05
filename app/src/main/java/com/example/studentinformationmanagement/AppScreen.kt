@@ -1,18 +1,13 @@
 package com.example.studentinformationmanagement
 
-import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
-import androidx.compose.ui.Modifier
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.studentinformationmanagement.ui.admin.AdminScreen
+import com.example.studentinformationmanagement.ui.manager.StudentManagement
 import com.example.studentinformationmanagement.ui.shared.LoginScreen
-import com.example.studentinformationmanagement.ui.shared.LoginViewModel
 
 enum class AppScreen() {
     Login,
@@ -26,7 +21,8 @@ enum class AppScreen() {
     AddCertificate,
     EditCertificate,
     UserDetailProfile,
-    StudentDetailProfile
+    StudentDetailProfile,
+    AdminScreen
 }
 
 @Composable
@@ -53,7 +49,7 @@ fun AppScreen(
 
         }
         composable(route = AppScreen.StudentManagement.name) {
-
+            StudentManagement()
         }
         composable(route = AppScreen.AddStudent.name) {
 
@@ -72,6 +68,9 @@ fun AppScreen(
         }
         composable(route = AppScreen.StudentDetailProfile.name) {
 
+        }
+        composable (route = AppScreen.AdminScreen.name){
+            AdminScreen()
         }
     }
 }
