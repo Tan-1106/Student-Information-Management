@@ -65,12 +65,15 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.example.studentinformationmanagement.R
 import com.example.studentinformationmanagement.data.admin.User
+import com.example.studentinformationmanagement.data.manager.Student
 import com.example.studentinformationmanagement.data.shared.SampleData
 import com.example.studentinformationmanagement.ui.admin.AdminViewModel
+import com.example.studentinformationmanagement.ui.manager.ManagerViewModel
 import com.example.studentinformationmanagement.ui.theme.kanit_bold_font
 import com.example.studentinformationmanagement.ui.theme.kanit_regular_font
 import com.example.studentinformationmanagement.ui.theme.primary_content
 import com.example.studentinformationmanagement.ui.theme.primary_dark
+import com.example.studentinformationmanagement.ui.theme.secondary_content
 import com.example.studentinformationmanagement.ui.theme.secondary_dark
 import com.example.studentinformationmanagement.ui.theme.third_content
 import java.util.Calendar
@@ -235,6 +238,26 @@ fun UserList(
 }
 
 @Composable
+fun StudentList(
+    studentList: List<Student>,
+    viewModel: ManagerViewModel = viewModel()
+) {
+    LazyColumn {
+        items(studentList.size) { index ->
+            InformationBox(
+                imageUrl = studentList[index].studentImageUrl,
+                name = studentList[index].studentName,
+                roleOrStuId = studentList[index].studentId,
+                stateOrClass = studentList[index].studentClass,
+                phoneNumber = studentList[index].studentPhoneNumber,
+                onSeeMoreClicked = { viewModel.onUserSeeMoreClicked(it) },
+                onEditButtonClicked = { viewModel.onUserEditClicked(it) }
+            )
+        }
+    }
+}
+
+@Composable
 fun InformationBox(
     imageUrl: String,
     name: String,
@@ -242,7 +265,8 @@ fun InformationBox(
     stateOrClass: String,
     phoneNumber: String,
     onEditButtonClicked: (String) -> Unit,
-    onSeeMoreClicked: (String) -> Unit
+    onSeeMoreClicked: (String) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Box(
         modifier = Modifier
@@ -256,7 +280,6 @@ fun InformationBox(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .padding(10.dp)
-                .clip(RoundedCornerShape(16.dp))
         ) {
 //             Avatar Image
             AsyncImage(
@@ -296,12 +319,19 @@ fun InformationBox(
                         fontFamily = kanit_regular_font,
                         color = primary_content
                     )
-                } else {
+                } else if (stateOrClass == "Locked") {
                     Text(
                         text = stateOrClass,
                         fontSize = 14.sp,
                         fontFamily = kanit_regular_font,
                         color = secondary_dark
+                    )
+                } else {
+                    Text(
+                        text = stateOrClass,
+                        fontSize = 14.sp,
+                        fontFamily = kanit_regular_font,
+                        color = secondary_content
                     )
                 }
 
@@ -431,9 +461,9 @@ fun InformationSelect(icon: ImageVector, label: String, options: List<String>) {
         }
     }
 }
-
 @Preview(
     showSystemUi = true,
+    showBackground = true
 )
 @Composable
 fun ComponentPreview() {
