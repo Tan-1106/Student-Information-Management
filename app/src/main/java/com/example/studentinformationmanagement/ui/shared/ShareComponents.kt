@@ -1,9 +1,15 @@
 package com.example.studentinformationmanagement.ui.shared
 
 
+import android.app.DatePickerDialog
+import android.os.Build
+import android.util.Log
+import android.widget.DatePicker
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -30,6 +36,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -44,13 +52,17 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.Placeholder
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
+import coil3.compose.AsyncImagePainter
+import coil3.compose.rememberAsyncImagePainter
 import com.example.studentinformationmanagement.R
 import com.example.studentinformationmanagement.data.shared.User
 import com.example.studentinformationmanagement.ui.theme.kanit_bold_font
@@ -58,31 +70,40 @@ import com.example.studentinformationmanagement.ui.theme.kanit_regular_font
 import com.example.studentinformationmanagement.ui.theme.primary_content
 import com.example.studentinformationmanagement.ui.theme.primary_dark
 import com.example.studentinformationmanagement.ui.theme.secondary_dark
+import java.util.Calendar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetailProfile(
     modifier: Modifier = Modifier,
-    bottomBar: @Composable ()->Unit={}
+    bottomBar: @Composable () -> Unit = {}
 ) {
     Scaffold(modifier = modifier.systemBarsPadding(), topBar = {
         TopAppBar(navigationIcon = {
-            Icon(
-                Icons.AutoMirrored.Filled.ArrowBack,
-                contentDescription = null,
-                tint = primary_content,
-                modifier = Modifier.size(40.dp)
+            IconButton(
+                content = {
+                    Icon(
+                        Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = null,
+                        tint = primary_content,
+                        modifier = Modifier.size(40.dp)
+                    )
+                },
+                onClick = {}
             )
         }, title = {}, actions = {
-            Icon(
-                Icons.Outlined.Settings,
-                contentDescription = null,
-                tint = primary_content,
-                modifier = Modifier.size(40.dp)
-            )
+            IconButton(
+                onClick = {}
+            ) {
+                Icon(
+                    Icons.Outlined.Settings,
+                    contentDescription = null,
+                    tint = primary_content,
+                    modifier = Modifier.size(40.dp)
+                )
+            }
         })
-    }
-    ,bottomBar=bottomBar) { paddingValues ->
+    }, bottomBar = bottomBar) { paddingValues ->
         Box(
             modifier = modifier
                 .padding(paddingValues)
@@ -93,7 +114,7 @@ fun DetailProfile(
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Text(
                     "Nguyen Van A",
-                    color =primary_content,
+                    color = primary_content,
                     fontSize = 25.sp,
                     fontFamily = kanit_bold_font
                 )
@@ -123,7 +144,14 @@ fun DetailProfile(
 }
 
 @Composable
-fun InformationLine(icon: ImageVector, label: String, value: String, enable: Boolean = false) {
+fun InformationLine(
+    icon: ImageVector,
+    label: String,
+    value: String,
+    enable: Boolean = false,
+    onValueChange: (String) -> Unit = {},
+    placeholder: String = ""
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -131,19 +159,42 @@ fun InformationLine(icon: ImageVector, label: String, value: String, enable: Boo
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
-            icon, contentDescription = null, modifier = Modifier.weight(0.2f), tint = primary_content
+            icon,
+            contentDescription = null,
+            modifier = Modifier.weight(0.2f),
+            tint = primary_content
         )
         Column(modifier = Modifier.weight(0.8f)) {
-            Text(label, fontSize = 18.sp, fontWeight = FontWeight.Bold, color = primary_content,
-                fontFamily = kanit_bold_font)
+            Text(
+                label, fontSize = 18.sp, fontWeight = FontWeight.Bold, color = primary_content,
+                fontFamily = kanit_bold_font
+            )
             BasicTextField(
+                decorationBox = { innerTextField ->
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                    ) {
+                        if (value.isEmpty()) {
+                            Text(
+                                text = placeholder,  // Placeholder text
+                                style = TextStyle(
+                                    color = primary_dark,
+                                    fontSize = 14.sp,
+                                    fontFamily = kanit_regular_font
+                                )
+                            )
+                        }
+                        innerTextField()  // Hiển thị TextField thực sự
+                    }
+                },
                 value = value,
-                onValueChange = {},
+
+                onValueChange = onValueChange,
                 enabled = enable,
                 textStyle = TextStyle(
                     color = primary_dark,
-                    fontSize = 14.sp
-                    , fontFamily = kanit_regular_font
+                    fontSize = 14.sp, fontFamily = kanit_regular_font
                 ),
 
                 modifier = Modifier
@@ -156,7 +207,10 @@ fun InformationLine(icon: ImageVector, label: String, value: String, enable: Boo
                 thickness = 1.dp,
                 modifier = Modifier.fillMaxWidth(0.9f)
             )
-        }}}
+        }
+    }
+}
+
 @Composable
 fun UserList(
     userList: List<User>
@@ -190,7 +244,7 @@ fun InformationBox(
         Row(
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            // Avatar Image
+//             Avatar Image
             AsyncImage(
                 model = if (imageUrl.isNotEmpty()) imageUrl else "https://cdn-icons-png.flaticon.com/512/5556/5556499.png",
                 contentDescription = "Avatar",
@@ -221,9 +275,49 @@ fun InformationBox(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun InformationLine(icon: ImageVector, label: String, options: List<String>, enable: Boolean = false) {
+
+fun InformationDate(icon: ImageVector, label: String) {
+    val context = LocalContext.current
+
+    // State lưu ngày đã chọn
+    var selectedDate by remember { mutableStateOf("") }
+
+    // Lấy ngày hiện tại làm mặc định
+    val calendar = Calendar.getInstance()
+    val year = calendar.get(Calendar.YEAR)
+    val month = calendar.get(Calendar.MONTH)
+    val day = calendar.get(Calendar.DAY_OF_MONTH)
+
+    // Tạo dialog
+    val datePickerDialog = DatePickerDialog(
+        context,
+        { _: DatePicker, y: Int, m: Int, d: Int ->
+            selectedDate = String.format("%02d/%02d/%04d", d, m + 1, y)
+        },
+        year, month, day
+    )
+
+    // UI: TextField hiển thị ngày
+    OutlinedTextField(
+        value = selectedDate,
+        onValueChange = { },
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+            .clickable {
+                datePickerDialog.show()
+            },
+        label = { Text("Chọn ngày") },
+        enabled = false, // Không cho người dùng gõ trực tiếp
+        readOnly = true
+    )
+}
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun InformationSelect(icon: ImageVector, label: String, options: List<String>) {
     var expanded by remember { mutableStateOf(false) }
     var selectedOption by remember { mutableStateOf("Choose 1 option") }
 
@@ -234,11 +328,16 @@ fun InformationLine(icon: ImageVector, label: String, options: List<String>, ena
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
-            icon, contentDescription = null, modifier = Modifier.weight(0.2f), tint = primary_content
+            icon,
+            contentDescription = null,
+            modifier = Modifier.weight(0.2f),
+            tint = primary_content
         )
         Column(modifier = Modifier.weight(0.8f)) {
-            Text(label, fontSize = 18.sp, fontWeight = FontWeight.Bold, color = primary_content,
-                fontFamily = kanit_bold_font)
+            Text(
+                label, fontSize = 18.sp, fontWeight = FontWeight.Bold, color = primary_content,
+                fontFamily = kanit_bold_font
+            )
 
             ExposedDropdownMenuBox(
                 expanded = expanded,
@@ -275,7 +374,8 @@ fun InformationLine(icon: ImageVector, label: String, options: List<String>, ena
         }
     }
 }
-@Preview
+
+//@Preview
 @Composable
 fun ComponentPreview() {
     UserList(exampleUserList)
