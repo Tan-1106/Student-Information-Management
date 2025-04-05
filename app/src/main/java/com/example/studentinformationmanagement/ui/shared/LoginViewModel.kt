@@ -4,6 +4,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.navigation.NavController
 import com.example.studentinformationmanagement.data.shared.LoginUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -33,7 +34,11 @@ class LoginViewModel : ViewModel() {
         isPasswordShowing = !isPasswordShowing
     }
 
-    fun onLoginButtonClicked() {
+    fun onLoginButtonClicked(
+        navController: NavController
+    ) {
+        // Xử lý sự kiện đăng nhập và dùng navController để navigate đến các trang khác trong AppScreen.kt
+
 
     }
 }

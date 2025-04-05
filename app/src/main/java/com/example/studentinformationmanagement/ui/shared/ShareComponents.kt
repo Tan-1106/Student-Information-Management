@@ -1,5 +1,6 @@
 package com.example.studentinformationmanagement.ui.shared
 
+<<<<<<< Updated upstream
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
@@ -36,10 +37,27 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+=======
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+>>>>>>> Stashed changes
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+<<<<<<< Updated upstream
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -155,10 +173,80 @@ fun InformationLine(icon: ImageVector, label: String, value: String, enable: Boo
                 thickness = 1.dp,
                 modifier = Modifier.fillMaxWidth(0.9f)
             )
+=======
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImage
+import com.example.studentinformationmanagement.R
+import com.example.studentinformationmanagement.data.shared.User
+
+@Composable
+fun UserList(
+    userList: List<User>
+) {
+    LazyColumn {
+        items(userList.size) { index ->
+            InformationBox(
+                imageUrl = userList[index].userImageUrl,
+                name = userList[index].userName,
+                roleOrStuId = userList[index].userRole,
+                stateOrClass = userList[index].userState
+            )
         }
     }
 }
 
+@Composable
+fun InformationBox(
+    imageUrl: String,
+    name: String,
+    roleOrStuId: String,
+    stateOrClass: String
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+            .background(color = Color.White)
+            .clip(RoundedCornerShape(8.dp))
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            // Avatar Image
+            AsyncImage(
+                model = if (imageUrl.isNotEmpty()) imageUrl else "https://cdn-icons-png.flaticon.com/512/5556/5556499.png",
+                contentDescription = "Avatar",
+                modifier = Modifier
+                    .size(64.dp)
+                    .clip(CircleShape),
+                placeholder = painterResource(id = R.drawable.avt_placeholder),
+                error = painterResource(id = R.drawable.avt_error)
+            )
+
+            Spacer(modifier = Modifier.width(16.dp))
+
+            Column {
+                Text(
+                    text = name,
+                    color = Color.Black
+                )
+                Text(
+                    text = roleOrStuId,
+                    color = Color.DarkGray
+                )
+                Text(
+                    text = stateOrClass,
+                    color = Color.Gray
+                )
+            }
+>>>>>>> Stashed changes
+        }
+    }
+}
+
+<<<<<<< Updated upstream
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InformationLine(icon: ImageVector, label: String, options: List<String>, enable: Boolean = false) {
@@ -212,4 +300,59 @@ fun InformationLine(icon: ImageVector, label: String, options: List<String>, ena
             )
         }
     }
+}}
+=======
+@Preview
+@Composable
+fun ComponentPreview() {
+    UserList(exampleUserList)
 }
+
+val exampleUserList: List<User> = listOf(
+    User(
+        userImageUrl = "",
+        userName = "Nguyen Van A",
+        userAge = "21",
+        userEmail = "vana@example.com",
+        userPhoneNumber = "0987654321",
+        userRole = "Manager",
+        userState = "Hanoi",
+    ),
+    User(
+        userImageUrl = "",
+        userName = "Tran Thi B",
+        userAge = "22",
+        userEmail = "thib@example.com",
+        userPhoneNumber = "0912345678",
+        userRole = "Manager",
+        userState = "Ho Chi Minh"
+    ),
+    User(
+        userImageUrl = "",
+        userName = "Le Van C",
+        userAge = "20",
+        userEmail = "vanc@example.com",
+        userPhoneNumber = "0909123456",
+        userRole = "Employee",
+        userState = "Da Nang"
+    ),
+    User(
+        userImageUrl = "",
+        userName = "Pham Thi D",
+        userAge = "23",
+        userEmail = "thid@example.com",
+        userPhoneNumber = "0978123456",
+        userRole = "Employee",
+        userState = "Can Tho"
+    ),
+    User(
+        userImageUrl = "",
+        userName = "Hoang Van E",
+        userAge = "19",
+        userEmail = "vane@example.com",
+        userPhoneNumber = "0932123456",
+        userRole = "Employee",
+        userState = "Hai Phong"
+    )
+)
+>>>>>>> Stashed changes

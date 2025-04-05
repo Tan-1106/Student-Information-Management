@@ -34,7 +34,7 @@ fun AppScreen(
         startDestination = AppScreen.Login.name
     ) {
         composable(route = AppScreen.Login.name) {
-            LoginScreen()
+            LoginScreen(navController = navController)
         }
         composable(route = AppScreen.UserManagement.name) {
 
