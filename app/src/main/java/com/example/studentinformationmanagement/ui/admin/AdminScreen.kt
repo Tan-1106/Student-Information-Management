@@ -9,6 +9,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -55,4 +56,12 @@ fun AdminScreen(navController: NavHostController = rememberNavController()) {
             composable(AppScreen.UserDetailProfile.name) { /* TODO: Profile screen */ }
         }
     }
+}
+@Preview(
+    showBackground = true,
+    showSystemUi = true,
+)
+@Composable
+fun AdminScreenPreview() {
+    AdminScreen()
 }
