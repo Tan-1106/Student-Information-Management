@@ -110,7 +110,14 @@ fun UsernameTextField(
     OutlinedTextField(
         value = value,
         onValueChange = onValueChange,
-        label = { Text(text = stringResource(label)) },
+        label = {
+            Text(
+                text = stringResource(label),
+                fontFamily = FontFamily(
+                    Font(R.font.kanit_regular)
+                )
+            )
+        },
         leadingIcon = {
             Icon(
                 imageVector = leadingIcon,
@@ -146,7 +153,14 @@ fun PasswordTextField(
     OutlinedTextField(
         value = value,
         onValueChange = onValueChange,
-        label = { Text(text = stringResource(label)) },
+        label = {
+            Text(
+                text = stringResource(label),
+                fontFamily = FontFamily(
+                    Font(R.font.kanit_regular)
+                )
+            )
+        },
         leadingIcon = {
             Icon(
                 imageVector = leadingIcon,

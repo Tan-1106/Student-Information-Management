@@ -39,7 +39,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.studentinformationmanagement.R
 import com.example.studentinformationmanagement.ui.theme.Pink40
-import com.example.studentinformationmanagement.ui.theme.PurpleGrey40
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
