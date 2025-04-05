@@ -32,4 +32,8 @@ class LoginViewModel : ViewModel() {
     fun onPasswordVisibilityChange() {
         isPasswordShowing = !isPasswordShowing
     }
+
+    fun onLoginButtonClicked() {
+
+    }
 }

@@ -15,6 +15,7 @@ import androidx.compose.material.icons.filled.Password
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
@@ -39,6 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.studentinformationmanagement.R
+import com.example.studentinformationmanagement.ui.theme.primary_content
 
 @Composable
 fun LoginScreen(
@@ -63,7 +65,7 @@ fun LoginScreen(
             fontFamily = FontFamily(
                 Font(R.font.kanit_bold)
             ),
-            color = colorResource(R.color.primary_content)
+            color = primary_content
         )
         Spacer(modifier = Modifier.height(20.dp))
         Text(
@@ -73,7 +75,7 @@ fun LoginScreen(
             fontFamily = FontFamily(
                 Font(R.font.kanit_regular)
             ),
-            color = colorResource(R.color.primary_content)
+            color = primary_content
         )
         Spacer(modifier = Modifier.height(20.dp))
         Image(
@@ -96,6 +98,16 @@ fun LoginScreen(
             isPasswordShowing = loginViewModel.isPasswordShowing,
             onPasswordVisibilityChange = { loginViewModel.onPasswordVisibilityChange() }
         )
+        Spacer(modifier = Modifier.height(20.dp))
+        Button(
+            onClick = { loginViewModel.onLoginButtonClicked() },
+            modifier = Modifier
+                .fillMaxWidth(0.75f)
+        ) {
+            Text(
+                text = stringResource(R.string.login_button)
+            )
+        }
     }
 }
 
@@ -136,7 +148,7 @@ fun UsernameTextField(
             ),
         singleLine = true,
         modifier = modifier
-            .fillMaxWidth(0.7f)
+            .fillMaxWidth(0.75f)
     )
 }
 
@@ -191,7 +203,7 @@ fun PasswordTextField(
         ),
         singleLine = true,
         modifier = modifier
-            .fillMaxWidth(0.7f)
+            .fillMaxWidth(0.75f)
     )
 }
 
