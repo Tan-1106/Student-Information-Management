@@ -3,13 +3,7 @@ package com.example.studentinformationmanagement
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.navigation.compose.rememberNavController
-import com.example.studentinformationmanagement.ui.admin.AdminScreen
 import com.example.studentinformationmanagement.ui.theme.StudentInformationManagementTheme
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 
 //
 //import android.os.Bundle

@@ -1,10 +1,6 @@
 package com.example.studentinformationmanagement.ui.shared
 
 
-import android.app.DatePickerDialog
-import android.os.Build
-import android.widget.DatePicker
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -15,16 +11,20 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.BrokenImage
 import androidx.compose.material.icons.filled.Cake
 import androidx.compose.material.icons.filled.Edit
@@ -32,16 +32,21 @@ import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.rememberDatePickerState
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -53,7 +58,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -76,7 +80,10 @@ import com.example.studentinformationmanagement.ui.theme.primary_dark
 import com.example.studentinformationmanagement.ui.theme.secondary_content
 import com.example.studentinformationmanagement.ui.theme.secondary_dark
 import com.example.studentinformationmanagement.ui.theme.third_content
-import java.util.Calendar
+import java.time.Clock
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -84,37 +91,44 @@ fun DetailProfile(
     modifier: Modifier = Modifier,
     bottomBar: @Composable () -> Unit = {}
 ) {
-    Scaffold(modifier = modifier.systemBarsPadding(), topBar = {
-        TopAppBar(navigationIcon = {
-            IconButton(
-                content = {
+    Scaffold(
+        containerColor = Color.White,
+        modifier = modifier
+            .systemBarsPadding(),
+        topBar = {
+            TopAppBar(navigationIcon = {
+                IconButton(
+                    content = {
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = null,
+                            tint = primary_content,
+                            modifier = Modifier.size(40.dp)
+                        )
+                    },
+                    onClick = {}
+                )
+            }, title = {}, actions = {
+                IconButton(
+                    onClick = {}
+                ) {
                     Icon(
-                        Icons.AutoMirrored.Filled.ArrowBack,
+                        Icons.Outlined.Settings,
                         contentDescription = null,
                         tint = primary_content,
                         modifier = Modifier.size(40.dp)
                     )
-                },
-                onClick = {}
-            )
-        }, title = {}, actions = {
-            IconButton(
-                onClick = {}
-            ) {
-                Icon(
-                    Icons.Outlined.Settings,
-                    contentDescription = null,
-                    tint = primary_content,
-                    modifier = Modifier.size(40.dp)
-                )
-            }
-        })
-    }, bottomBar = bottomBar) { paddingValues ->
+                }
+            })
+        },
+        bottomBar = bottomBar
+    ) { paddingValues ->
         Box(
             modifier = modifier
                 .padding(paddingValues)
                 .fillMaxWidth()
-                .padding(horizontal = 10.dp),
+                .padding(horizontal = 10.dp)
+                .verticalScroll(rememberScrollState()),
             contentAlignment = Alignment.TopCenter
         ) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -362,47 +376,94 @@ fun InformationBox(
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-
-fun InformationDate(icon: ImageVector, label: String) {
-    val context = LocalContext.current
-
-    // State lưu ngày đã chọn
-    var selectedDate by remember { mutableStateOf("") }
-
-    // Lấy ngày hiện tại làm mặc định
-    val calendar = Calendar.getInstance()
-    val year = calendar.get(Calendar.YEAR)
-    val month = calendar.get(Calendar.MONTH)
-    val day = calendar.get(Calendar.DAY_OF_MONTH)
-
-    // Tạo dialog
-    val datePickerDialog = DatePickerDialog(
-        context,
-        { _: DatePicker, y: Int, m: Int, d: Int ->
-            selectedDate = String.format("%02d/%02d/%04d", d, m + 1, y)
-        },
-        year, month, day
-    )
-
-    // UI: TextField hiển thị ngày
-    OutlinedTextField(
-        value = selectedDate,
-        onValueChange = { },
-        modifier = Modifier
+fun InformationDate(
+    icon: ImageVector,
+    label: String,
+    placeholder: String,
+    modifier: Modifier = Modifier
+) {
+    val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+    val datePickerState = rememberDatePickerState(selectableDates = object : SelectableDates {
+        override fun isSelectableDate(utcTimeMillis: Long): Boolean {
+            return utcTimeMillis < Clock.systemUTC().millis()
+        }
+    })
+    var openSheet by remember { mutableStateOf(false) }
+    var birthday by remember { mutableStateOf("") }
+    Row(
+        modifier = modifier
             .fillMaxWidth()
-            .padding(16.dp)
-            .clickable {
-                datePickerDialog.show()
-            },
-        label = { Text("Chọn ngày") },
-        enabled = false, // Không cho người dùng gõ trực tiếp
-        readOnly = true
-    )
+            .padding(vertical = 10.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            icon,
+            contentDescription = null,
+            modifier = Modifier.weight(0.2f),
+            tint = primary_content
+        )
+        Column(modifier = Modifier.weight(0.8f)) {
+            Text(
+                label, fontSize = 18.sp, fontWeight = FontWeight.Bold, color = primary_content,
+                fontFamily = kanit_bold_font
+            )
+            Text(
+                text = if (birthday == "") placeholder else birthday,
+                color = primary_dark,
+                fontSize = 14.sp, fontFamily = kanit_regular_font,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 5.dp)
+                    .clickable(onClick = { openSheet = true }),
+
+                )
+            if (openSheet) {
+                ModalBottomSheet(
+                    onDismissRequest = { openSheet = false },
+                    sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+                ) {
+                    Column(modifier = Modifier.systemBarsPadding()) {
+
+                        DatePicker(state = datePickerState)
+                        Spacer(Modifier.height(10.dp))
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 24.dp),
+                            horizontalArrangement = Arrangement.End
+                        ) {
+                            TextButton(onClick = {
+                                openSheet = false
+                            }) {
+                                Text("Hủy")
+                            }
+                            TextButton(onClick = {
+                                birthday = datePickerState.selectedDateMillis?.let {
+                                    Instant.ofEpochMilli(it).atZone(ZoneId.systemDefault())
+                                        .toLocalDate()
+                                }?.format(formatter) ?: ""
+                                openSheet = false
+                            }) {
+                                Text("Chọn")
+                            }
+                        }
+                    }
+                }
+            }
+            HorizontalDivider(
+                color = Color.Gray,
+                thickness = 1.dp,
+                modifier = Modifier.fillMaxWidth(0.9f)
+            )
+        }
+    }
+
+
 }
-@OptIn(ExperimentalMaterial3Api::class)
+
 @Composable
 fun InformationSelect(icon: ImageVector, label: String, options: List<String>) {
     var expanded by remember { mutableStateOf(false) }
@@ -426,31 +487,27 @@ fun InformationSelect(icon: ImageVector, label: String, options: List<String>) {
                 fontFamily = kanit_bold_font
             )
 
-            ExposedDropdownMenuBox(
-                expanded = expanded,
-                onExpandedChange = { expanded = !expanded }
-            ) {
-                BasicTextField(
-                    value = selectedOption,
-                    onValueChange = {},
-                    modifier = Modifier
-                        .menuAnchor()
-                        .padding(bottom = 8.dp)
-                )
-
-                ExposedDropdownMenu(
-                    expanded = expanded,
-                    onDismissRequest = { expanded = false }
+            TextButton(onClick = { expanded = true }) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    options.forEach { option ->
-                        DropdownMenuItem(
-                            text = { Text(option) },
-                            onClick = {
-                                selectedOption = option
-                                expanded = false
-                            }
-                        )
-                    }
+                    Text(selectedOption, fontFamily = kanit_regular_font, color = primary_dark)
+                    Icon(Icons.Default.ArrowDropDown, contentDescription = null)
+                }
+            }
+            DropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { expanded = false }
+            ) {
+                options.forEach { option ->
+                    DropdownMenuItem(
+                        text = { Text(option) },
+                        onClick = {
+                            selectedOption = option
+                            expanded = false
+                        }
+                    )
                 }
             }
             HorizontalDivider(
