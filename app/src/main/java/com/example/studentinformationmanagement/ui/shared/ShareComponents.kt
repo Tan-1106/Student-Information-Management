@@ -283,7 +283,7 @@ fun InformationBox(
     modifier: Modifier = Modifier
 ) {
     Box(
-        modifier = Modifier
+        modifier = modifier
             .padding(16.dp)
             .background(color = third_content, shape = RoundedCornerShape(16.dp))
             .clip(shape = RoundedCornerShape(16.dp))

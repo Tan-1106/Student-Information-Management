@@ -1,7 +1,6 @@
 package com.example.studentinformationmanagement.ui.manager
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -37,96 +36,12 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.studentinformationmanagement.data.shared.SampleData
 import com.example.studentinformationmanagement.ui.shared.StudentList
-import com.example.studentinformationmanagement.ui.shared.UserList
 import com.example.studentinformationmanagement.ui.theme.kanit_bold_font
 import com.example.studentinformationmanagement.ui.theme.primary_container
 import com.example.studentinformationmanagement.ui.theme.primary_content
 import com.example.studentinformationmanagement.ui.theme.secondary_content
 import com.example.studentinformationmanagement.ui.theme.third_content
 
-//@Composable
-//fun StudentManagement(modifier: Modifier = Modifier) {
-//    var searchText by remember { mutableStateOf(TextFieldValue("")) }
-//    Column(
-//        modifier = modifier
-//            .fillMaxSize()
-//            .padding(16.dp)
-//            .background(Color.White)
-//    ) {
-//        // Search + Filter
-//        Row(
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .padding(bottom = 16.dp),
-//            verticalAlignment = Alignment.CenterVertically
-//        ) {
-//            OutlinedTextField(
-//                value = searchText,
-//                onValueChange = { searchText = it },
-//                modifier = Modifier
-//                    .weight(1f),
-//                placeholder = { Text("Tìm sinh viên...", fontSize = 16.sp, color = primary_content) },
-//                leadingIcon = {
-//                    Icon(Icons.Default.Search, contentDescription = "Search", tint = primary_content)
-//                },
-//                shape = RoundedCornerShape(16.dp),
-//                textStyle = TextStyle(fontSize = 16.sp, color = primary_content),
-//                colors = OutlinedTextFieldDefaults.colors(
-//                    unfocusedContainerColor = third_content,
-//                    focusedContainerColor = primary_container,
-//                    focusedBorderColor = secondary_content,
-//                ),
-//                singleLine = true
-//            )
-//            Spacer(modifier = Modifier.width(8.dp))
-//            IconButton(onClick = { /* Mở bộ lọc */ }) {
-//                Box(
-//                    modifier = Modifier
-//                        .background(
-//                            color = secondary_content, // Màu nền tròn
-//                            shape = RoundedCornerShape(50) // Đảm bảo nền có hình tròn
-//                        )
-//                        .padding(8.dp) // Padding để không bị ép icon vào cạnh
-//                ) {
-//                    Icon(
-//                        Icons.Default.FilterList,
-//                        contentDescription = "Filter",
-//                        tint = Color.White // Màu của icon
-//                    )
-//                }
-//            }
-//        }
-//        Text(
-//            text = "List Student",
-//            modifier = Modifier.padding(vertical = 8.dp, horizontal = 10.dp),
-//            fontSize = 24.sp,
-//            fontFamily = kanit_bold_font,
-//            color = primary_content
-//        )
-//        UserList(SampleData.sampleUserList)
-//        Row(
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .padding(top = 16.dp),
-//            horizontalArrangement = Arrangement.Center
-//        ) {
-//            Button(
-//                onClick = { /* Hành động thêm sinh viên */ },
-//                shape = RoundedCornerShape(16.dp),
-//                modifier = Modifier
-//                    .padding(vertical = 16.dp)
-//                    .fillMaxWidth(0.6f) // Làm cho nút rộng vừa phải
-//            ) {
-//                Text(
-//                    text = "Add Student",
-//                    fontSize = 18.sp,
-//                    fontFamily = kanit_bold_font,
-//                    color = Color.White
-//                )
-//            }
-//        }
-//    }
-//}
 @Composable
 fun StudentManagement(
     modifier: Modifier = Modifier,
@@ -140,11 +55,11 @@ fun StudentManagement(
             .padding(16.dp)
             .background(Color.White)
     ) {
-        // Nội dung chính, bao gồm Search + Filter và danh sách sinh viên
+        // Main Content - Search + Filter + Student list
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(bottom = 70.dp) // Để tránh che khuất nút add
+                .padding(bottom = 70.dp)
         ) {
             // Search + Filter
             Row(
@@ -158,7 +73,7 @@ fun StudentManagement(
                     onValueChange = { searchText = it },
                     modifier = Modifier
                         .weight(1f),
-                    placeholder = { Text("Tìm sinh viên...", fontSize = 16.sp, color = primary_content) },
+                    placeholder = { Text("Search...", fontSize = 16.sp, color = primary_content) },
                     leadingIcon = {
                         Icon(Icons.Default.Search, contentDescription = "Search", tint = primary_content)
                     },
@@ -176,15 +91,15 @@ fun StudentManagement(
                     Box(
                         modifier = Modifier
                             .background(
-                                color = secondary_content, // Màu nền tròn
-                                shape = RoundedCornerShape(50) // Đảm bảo nền có hình tròn
+                                color = secondary_content,
+                                shape = RoundedCornerShape(50)
                             )
-                            .padding(8.dp) // Padding để không bị ép icon vào cạnh
+                            .padding(8.dp)
                     ) {
                         Icon(
                             Icons.Default.FilterList,
                             contentDescription = "Filter",
-                            tint = Color.White // Màu của icon
+                            tint = Color.White
                         )
                     }
                 }
@@ -205,16 +120,16 @@ fun StudentManagement(
         // Add Student Button
         Row(
             modifier = Modifier
-                .align(Alignment.BottomCenter) // Đặt nút ở dưới cùng giữa màn hình
+                .align(Alignment.BottomCenter)
         ) {
             Button(
                 onClick = { managerViewModel.onAddButtonClicked(navController) },
                 shape = RoundedCornerShape(16.dp),
                 modifier = Modifier
-                    .fillMaxWidth(0.6f), // Làm cho nút rộng vừa phải
+                    .fillMaxWidth(0.6f),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = third_content, // Màu nền của nút
-                    contentColor = primary_content// Màu của văn bản trên nút
+                    containerColor = third_content,
+                    contentColor = primary_content
                 )
             ) {
                 Text(
