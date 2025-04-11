@@ -23,7 +23,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.BrokenImage
 import androidx.compose.material.icons.filled.Cake
@@ -31,7 +30,6 @@ import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Phone
-import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -44,7 +42,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -89,39 +86,14 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun DetailProfile(
     modifier: Modifier = Modifier,
-    bottomBar: @Composable () -> Unit = {}
+    topBar: @Composable () -> Unit = {}
 ) {
     Scaffold(
         containerColor = Color.White,
         modifier = modifier
             .systemBarsPadding(),
-        topBar = {
-            TopAppBar(navigationIcon = {
-                IconButton(
-                    content = {
-                        Icon(
-                            Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = null,
-                            tint = primary_content,
-                            modifier = Modifier.size(40.dp)
-                        )
-                    },
-                    onClick = {}
-                )
-            }, title = {}, actions = {
-                IconButton(
-                    onClick = {}
-                ) {
-                    Icon(
-                        Icons.Outlined.Settings,
-                        contentDescription = null,
-                        tint = primary_content,
-                        modifier = Modifier.size(40.dp)
-                    )
-                }
-            })
-        },
-        bottomBar = bottomBar
+        topBar = topBar,
+
     ) { paddingValues ->
         Box(
             modifier = modifier
