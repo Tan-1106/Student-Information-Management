@@ -25,42 +25,46 @@ import com.example.studentinformationmanagement.ui.theme.primary_content
 fun UserDetailProfile(
 
 ){
-    DetailProfile( topBar = {
-        TopAppBar(navigationIcon = {
-            IconButton(
-                content = {
+    DetailProfile(
+        topBar = {
+            TopAppBar(navigationIcon = {
+                IconButton(
+                    content = {
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = null,
+                            tint = primary_content,
+                            modifier = Modifier.size(40.dp)
+                        )
+                    },
+                    onClick = {
+                        // Xử lý sự kiện
+                    }
+                )
+            }, title = {}, actions = {
+                IconButton(
+                    onClick = {}
+                ) {
                     Icon(
-                        Icons.AutoMirrored.Filled.ArrowBack,
+                        Icons.Outlined.Settings,
                         contentDescription = null,
                         tint = primary_content,
                         modifier = Modifier.size(40.dp)
                     )
-                },
-                onClick = {
-                    // Xử lý sự kiện
                 }
-            )
-        }, title = {}, actions = {
-            IconButton(
-                onClick = {}
-            ) {
-                Icon(
-                    Icons.Outlined.Settings,
-                    contentDescription = null,
-                    tint = primary_content,
-                    modifier = Modifier.size(40.dp)
-                )
-            }
-            IconButton(
-                onClick = { }
-            ) {
-                Icon(
-                    Icons.AutoMirrored.Outlined.Logout,
-                    contentDescription = null,
-                    modifier = Modifier.size(50.dp),
-                    tint = primary_content
-                )
-            }
-        })
-    })
+                IconButton(
+                    onClick = { }
+                ) {
+                    Icon(
+                        Icons.AutoMirrored.Outlined.Logout,
+                        contentDescription = null,
+                        modifier = Modifier.size(50.dp),
+                        tint = primary_content
+                    )
+                }
+            })
+        },
+        modifier = TODO(),
+        user = TODO()
+    )
 }

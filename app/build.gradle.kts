@@ -2,8 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
-
-    id("com.google.gms.google-services")
+    alias(libs.plugins.gms)
 }
 
 android {
@@ -65,7 +64,6 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended")
     implementation("io.coil-kt:coil-compose:2.2.2")
 
-    implementation("com.google.firebase:firebase-bom:33.12.0")
-    implementation("com.google.firebase:firebase-firestore-ktx")
-    implementation("com.google.firebase:firebase-analytics")
+    implementation(platform( libs.firebase.bom))
+    implementation(libs.firebase.firestore)
 }
