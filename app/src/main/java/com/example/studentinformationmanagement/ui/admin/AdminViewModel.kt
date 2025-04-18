@@ -5,7 +5,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.studentinformationmanagement.data.admin.AdminRepository
 import com.example.studentinformationmanagement.data.admin.AdminUiState
+import com.example.studentinformationmanagement.data.admin.User
 import com.example.studentinformationmanagement.data.shared.LoginUiState
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -18,10 +20,10 @@ class AdminViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(AdminUiState())
     val uiState: StateFlow<AdminUiState> =_uiState.asStateFlow()
 
+    // Fetch Users From FireStore
     init {
         fetchAllUsers()
     }
-
     private fun fetchAllUsers() {
         viewModelScope.launch {
             val result = repository.getAllUsers()

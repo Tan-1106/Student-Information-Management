@@ -28,6 +28,7 @@ enum class AppScreen() {
     AdminScreen
 }
 
+
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AppScreen(
@@ -37,11 +38,9 @@ fun AppScreen(
         navController = navController,
         startDestination = AppScreen.AdminScreen.name
     ) {
+        // Screens not called directly from this NavHost: UserManagement, StudentManagement
         composable(route = AppScreen.Login.name) {
             LoginScreen(navController = navController)
-        }
-        composable(route = AppScreen.UserManagement.name) {
-
         }
         composable(route = AppScreen.AddUser.name) {
             AddUser()
@@ -51,9 +50,6 @@ fun AppScreen(
         }
         composable(route = AppScreen.LoginHistory.name) {
 
-        }
-        composable(route = AppScreen.StudentManagement.name) {
-            StudentManagement(navController = navController)
         }
         composable(route = AppScreen.AddStudent.name) {
 

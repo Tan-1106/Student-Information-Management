@@ -24,6 +24,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -42,6 +43,7 @@ import com.example.studentinformationmanagement.ui.theme.third_content
 // Composable: Admin Home screen
 @Composable
 fun AdminScreen(
+    adminViewModel: AdminViewModel = viewModel(),
     screenNavController: NavHostController,
     navController: NavHostController = rememberNavController()
 ) {
@@ -113,9 +115,15 @@ fun AdminScreen(
             startDestination = AppScreen.StudentManagement.name,
             modifier = Modifier.padding(innerPadding)
         ) {
-            composable(AppScreen.StudentManagement.name) { StudentManagement(navController = screenNavController) }
-            composable(AppScreen.UserManagement.name) { /* TODO: UserManagement screen */ }
-            composable(AppScreen.UserDetailProfile.name) { UserDetailProfile() }
+            composable(AppScreen.StudentManagement.name) {
+                StudentManagement(navController = screenNavController)
+            }
+            composable(AppScreen.UserManagement.name) {
+                UserManagement(navController = screenNavController)
+            }
+            composable(AppScreen.UserDetailProfile.name) {
+                UserDetailProfile()
+            }
         }
     }
 }
@@ -127,5 +135,5 @@ fun AdminScreen(
 @Composable
 fun AdminScreenPreview() {
     val fakeScreenNavController = rememberNavController()
-    AdminScreen(fakeScreenNavController)
+    AdminScreen(adminViewModel = viewModel(), fakeScreenNavController)
 }

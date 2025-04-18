@@ -22,6 +22,7 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -37,7 +38,6 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.example.studentinformationmanagement.data.shared.SampleData
 import com.example.studentinformationmanagement.ui.shared.StudentList
 import com.example.studentinformationmanagement.ui.theme.kanit_bold_font
 import com.example.studentinformationmanagement.ui.theme.primary_container
@@ -53,6 +53,7 @@ fun StudentManagement(
     navController: NavHostController
 ) {
     var searchText by remember { mutableStateOf(TextFieldValue("")) }
+
     Box(
         modifier = modifier
             .fillMaxSize()
@@ -125,7 +126,7 @@ fun StudentManagement(
             )
 
             // User list
-            StudentList(SampleData.exampleStudentList)
+            StudentList(managerViewModel.studentList.value)
         }
 
         // Add Student Button
@@ -160,8 +161,7 @@ fun StudentManagement(
 @Composable
 fun StudentManagementPreview() {
     val fakeScreenNavController = rememberNavController()
-    Scaffold(
-    ) { innerPadding ->
+    Scaffold { innerPadding ->
         StudentManagement(
             modifier = Modifier.padding(innerPadding),
             navController = fakeScreenNavController

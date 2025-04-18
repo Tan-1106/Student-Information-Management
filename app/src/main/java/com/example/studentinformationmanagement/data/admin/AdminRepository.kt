@@ -12,8 +12,23 @@ class AdminRepository {
     // Thêm người dùng mới
     suspend fun addUser(user: User): Result<String> {
         return try {
-            val docRef = usersCollection.add(user).await()
-            Result.success(docRef.id)
+            val userRef = db.collection("users").document(user.userPhoneNumber)
+            userRef.set(user).await()
+
+            Result.success("User added successfully")
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    // Thêm danh sách người dùng mới
+    suspend fun addUsers(users: List<User>): Result<String> {
+        return try {
+            users.forEach { user ->
+                val userRef = db.collection("users").document(user.userPhoneNumber)
+                userRef.set(user).await() // Thêm user vào Firestore
+            }
+            Result.success("Users added successfully")
         } catch (e: Exception) {
             Result.failure(e)
         }
