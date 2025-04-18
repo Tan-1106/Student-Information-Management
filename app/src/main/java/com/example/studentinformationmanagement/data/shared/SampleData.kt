@@ -56,7 +56,7 @@ object SampleData {
         Student(
             studentImageUrl = "",
             studentName = "Nguyen Van A",
-            studentAge = "20",
+            studentBirthday = "20",
             studentEmail = "vana@student.com",
             studentPhoneNumber = "0987654321",
             studentId = "SV001",
@@ -66,7 +66,7 @@ object SampleData {
         Student(
             studentImageUrl = "",
             studentName = "Tran Thi B",
-            studentAge = "21",
+            studentBirthday = "21",
             studentEmail = "thib@student.com",
             studentPhoneNumber = "0912345678",
             studentId = "SV002",
@@ -76,7 +76,7 @@ object SampleData {
         Student(
             studentImageUrl = "",
             studentName = "Le Van C",
-            studentAge = "22",
+            studentBirthday = "22",
             studentEmail = "vanc@student.com",
             studentPhoneNumber = "0909123456",
             studentId = "SV003",
@@ -86,7 +86,7 @@ object SampleData {
         Student(
             studentImageUrl = "",
             studentName = "Pham Thi D",
-            studentAge = "20",
+            studentBirthday = "20",
             studentEmail = "thid@student.com",
             studentPhoneNumber = "0978123456",
             studentId = "SV004",
@@ -96,7 +96,7 @@ object SampleData {
         Student(
             studentImageUrl = "",
             studentName = "Hoang Van E",
-            studentAge = "19",
+            studentBirthday = "19",
             studentEmail = "vane@student.com",
             studentPhoneNumber = "0932123456",
             studentId = "SV005",
