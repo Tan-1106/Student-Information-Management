@@ -82,11 +82,14 @@ import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
+
+// Composable: Thông tin chi tiết của người dùng
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetailProfile(
     modifier: Modifier = Modifier,
-    topBar: @Composable () -> Unit = {}
+    topBar: @Composable () -> Unit = {},
+    user: User
 ) {
     Scaffold(
         containerColor = Color.White,
@@ -104,13 +107,6 @@ fun DetailProfile(
             contentAlignment = Alignment.TopCenter
         ) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(
-                    "Nguyen Van A",
-                    color = primary_content,
-                    fontSize = 25.sp,
-                    fontFamily = kanit_bold_font
-                )
-
                 Box(Modifier.padding(vertical = 20.dp)) {
                     Image(
                         painter = painterResource(R.drawable.ic_launcher_foreground),
@@ -125,16 +121,18 @@ fun DetailProfile(
                         contentScale = ContentScale.Crop,
                     )
                 }
-                InformationLine(Icons.Filled.Person, "Name", "Username")
-                InformationLine(Icons.Filled.Cake, "Birthday", "18.3.2004")
-                InformationLine(Icons.Filled.Email, "Email", "abc@gmail.com")
-                InformationLine(Icons.Filled.Phone, "Phone", "Username")
-                InformationLine(Icons.Filled.BrokenImage, "Status", "Username")
+                InformationLine(Icons.Filled.Person, "Name", user.userName)
+                InformationLine(Icons.Filled.Cake, "Birthday", user.userBirthday)
+                InformationLine(Icons.Filled.Email, "Email", user.userEmail)
+                InformationLine(Icons.Filled.Phone, "Phone", user.userPhoneNumber)
+                InformationLine(Icons.Filled.BrokenImage, "Status", user.userStatus)
             }
         }
     }
 }
 
+// Composable: Dòng thông tin
+// Sử dụng bởi: DetailProfile
 @Composable
 fun InformationLine(
     icon: ImageVector,
@@ -203,6 +201,8 @@ fun InformationLine(
     }
 }
 
+
+// Composable: Danh sách người dùng
 @Composable
 fun UserList(
     userList: List<User>,
@@ -214,7 +214,7 @@ fun UserList(
                 imageUrl = userList[index].userImageUrl,
                 name = userList[index].userName,
                 roleOrStuId = userList[index].userRole,
-                stateOrClass = userList[index].userState,
+                stateOrClass = userList[index].userStatus,
                 phoneNumber = userList[index].userPhoneNumber,
                 onSeeMoreClicked = { viewModel.onUserSeeMoreClicked(it) },
                 onEditButtonClicked = { viewModel.onUserEditClicked(it) }
@@ -490,11 +490,24 @@ fun InformationSelect(icon: ImageVector, label: String, options: List<String>) {
         }
     }
 }
+
+// Preview
 @Preview(
-    showSystemUi = true,
-    showBackground = true
+    showBackground = true,
+    showSystemUi = true
 )
 @Composable
-fun ComponentPreview() {
+fun DetailProfilePreview() {
+    DetailProfile(
+        user = User("", "Nguyễn Văn A", "01/01/2004", "nguyenvana@gmail.com", "0123456789", "Manager", "Enable")
+    )
+}
+
+@Preview(
+    showBackground = true,
+    showSystemUi = true
+)
+@Composable
+fun UserListPreview() {
     UserList(SampleData.sampleUserList)
 }

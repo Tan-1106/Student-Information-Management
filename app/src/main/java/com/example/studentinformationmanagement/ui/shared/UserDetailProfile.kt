@@ -22,7 +22,9 @@ import com.example.studentinformationmanagement.ui.theme.primary_content
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 @Preview(showSystemUi = true)
-fun UserDetailProfile(){
+fun UserDetailProfile(
+
+){
     DetailProfile( topBar = {
         TopAppBar(navigationIcon = {
             IconButton(
@@ -34,7 +36,9 @@ fun UserDetailProfile(){
                         modifier = Modifier.size(40.dp)
                     )
                 },
-                onClick = {}
+                onClick = {
+                    // Xử lý sự kiện
+                }
             )
         }, title = {}, actions = {
             IconButton(

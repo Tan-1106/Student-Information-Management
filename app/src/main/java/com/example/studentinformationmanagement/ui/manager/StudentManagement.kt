@@ -19,6 +19,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -30,10 +31,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.example.studentinformationmanagement.data.shared.SampleData
 import com.example.studentinformationmanagement.ui.shared.StudentList
 import com.example.studentinformationmanagement.ui.theme.kanit_bold_font
@@ -42,6 +45,7 @@ import com.example.studentinformationmanagement.ui.theme.primary_content
 import com.example.studentinformationmanagement.ui.theme.secondary_content
 import com.example.studentinformationmanagement.ui.theme.third_content
 
+// Composable: Student Management
 @Composable
 fun StudentManagement(
     modifier: Modifier = Modifier,
@@ -68,9 +72,14 @@ fun StudentManagement(
                     .padding(bottom = 16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
+                // Search Bar
                 OutlinedTextField(
                     value = searchText,
-                    onValueChange = { searchText = it },
+                    onValueChange = {
+                        searchText = it
+                        /* TODO: Xử lý sự kiện tìm kiếm */
+
+                    },
                     modifier = Modifier
                         .weight(1f),
                     placeholder = { Text("Search...", fontSize = 16.sp, color = primary_content) },
@@ -87,7 +96,9 @@ fun StudentManagement(
                     singleLine = true
                 )
                 Spacer(modifier = Modifier.width(8.dp))
-                IconButton(onClick = { /* Mở bộ lọc */ }) {
+                IconButton(onClick = {
+                    /* TODO: Xây dựng và xử lý sự kiện bộ lọc */
+                }) {
                     Box(
                         modifier = Modifier
                             .background(
@@ -139,5 +150,21 @@ fun StudentManagement(
                 )
             }
         }
+    }
+}
+
+@Preview(
+    showBackground = true,
+    showSystemUi = true
+)
+@Composable
+fun StudentManagementPreview() {
+    val fakeScreenNavController = rememberNavController()
+    Scaffold(
+    ) { innerPadding ->
+        StudentManagement(
+            modifier = Modifier.padding(innerPadding),
+            navController = fakeScreenNavController
+        )
     }
 }

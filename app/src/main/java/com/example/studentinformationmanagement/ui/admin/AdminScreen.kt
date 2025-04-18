@@ -39,6 +39,7 @@ import com.example.studentinformationmanagement.ui.theme.primary_container
 import com.example.studentinformationmanagement.ui.theme.primary_content
 import com.example.studentinformationmanagement.ui.theme.third_content
 
+// Composable: Admin Home screen
 @Composable
 fun AdminScreen(
     screenNavController: NavHostController,
@@ -56,14 +57,15 @@ fun AdminScreen(
     Scaffold(
         modifier = Modifier.statusBarsPadding()
             .background(primary_container),
+
+        // Top Bar (Only show the if the current route is not "Profile")
         topBar = {
-            // Only show the top bar if the current route is not "Profile"
             if (currentRoute != AppScreen.UserDetailProfile.name) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(third_content) // Background color
-                        .padding(horizontal = 20.dp, vertical = 16.dp), // Padding for inner content
+                        .background(third_content)
+                        .padding(horizontal = 20.dp, vertical = 16.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -72,23 +74,25 @@ fun AdminScreen(
                         text = when (currentRoute) {
                             AppScreen.StudentManagement.name -> "Student Management"
                             AppScreen.UserManagement.name -> "User Management"
-                            else -> "Admin Dashboard" // Default title
+                            else -> "Admin Dashboard"
                         },
                         fontSize = 28.sp,
                         fontFamily = kanit_bold_font,
                         color = primary_content
                     )
-                    // Avatar Image
+                    // Logo Image
                     Image(
-                        painter = painterResource(id = R.drawable.login_image), // Replace with a valid image
+                        painter = painterResource(id = R.drawable.login_image),
                         contentDescription = "Avatar",
                         modifier = Modifier
                             .size(40.dp)
-                            .clip(CircleShape) // Avatar shape
+                            .clip(CircleShape)
                     )
                 }
             }
         },
+
+        // Bottom Bar
         bottomBar = {
             BottomNavBarAdmin(
                 items = navItems,

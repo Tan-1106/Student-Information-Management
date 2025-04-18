@@ -48,16 +48,9 @@ import com.example.studentinformationmanagement.ui.theme.secondary_content
 
 @Composable
 fun LoginScreen(
-    // Gọi ViewModel của trang để sử dụng
     loginViewModel: LoginViewModel = viewModel(),
     navController: NavHostController
 ) {
-    // Gọi UiState của trang để sử dụng (Optional)
-    // val loginUiState by loginViewModel.uiState.collectAsState()
-
-    /* Giao diện của LoginScreen được viết tại đây
-     * Và được xử lý bằng các hàm được gọi từ loginViewModel
-     **/
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -122,6 +115,7 @@ fun LoginScreen(
     }
 }
 
+// Phone number
 @Composable
 fun UsernameTextField(
     value: String,
@@ -167,6 +161,7 @@ fun UsernameTextField(
     )
 }
 
+// Password
 @Composable
 fun PasswordTextField(
     value: String,
