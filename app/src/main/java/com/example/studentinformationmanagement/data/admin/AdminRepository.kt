@@ -1,0 +1,1 @@
+package com.example.studentinformationmanagement.data.admin
