@@ -278,14 +278,14 @@ fun InformationBox(
                     color = Color.DarkGray,
                     fontFamily = kanit_regular_font
                 )
-                if (stateOrClass == "Normal") {
+                if (stateOrClass == "Active") {
                     Text(
                         text = stateOrClass,
                         fontSize = 14.sp,
                         fontFamily = kanit_regular_font,
                         color = primary_content
                     )
-                } else if (stateOrClass == "Locked") {
+                } else if (stateOrClass == "Inactive") {
                     Text(
                         text = stateOrClass,
                         fontSize = 14.sp,
