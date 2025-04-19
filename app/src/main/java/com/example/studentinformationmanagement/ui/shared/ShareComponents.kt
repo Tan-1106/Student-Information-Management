@@ -224,26 +224,6 @@ fun UserList(
 }
 
 @Composable
-fun StudentList(
-    studentList: List<Student>,
-    viewModel: ManagerViewModel = viewModel()
-) {
-    LazyColumn {
-        items(studentList.size) { index ->
-            InformationBox(
-                imageUrl = studentList[index].studentImageUrl,
-                name = studentList[index].studentName,
-                roleOrStuId = studentList[index].studentId,
-                stateOrClass = studentList[index].studentClass,
-                phoneNumber = studentList[index].studentPhoneNumber,
-                onSeeMoreClicked = { viewModel.onUserSeeMoreClicked(it) },
-                onEditButtonClicked = { viewModel.onUserEditClicked(it) }
-            )
-        }
-    }
-}
-
-@Composable
 fun InformationBox(
     imageUrl: String,
     name: String,

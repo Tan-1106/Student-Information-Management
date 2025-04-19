@@ -3,10 +3,8 @@ package com.example.studentinformationmanagement.ui.manager
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.example.studentinformationmanagement.AppScreen
-import com.example.studentinformationmanagement.data.manager.Certificate
 import com.example.studentinformationmanagement.data.manager.ManagerUiState
 import com.example.studentinformationmanagement.data.manager.Student
 import com.google.firebase.Firebase
@@ -14,9 +12,6 @@ import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
-import androidx.compose.runtime.State
 
 class ManagerViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(ManagerUiState())
@@ -24,7 +19,6 @@ class ManagerViewModel : ViewModel() {
 
     // Fetch Student List
     private val _studentList = mutableStateOf<List<Student>>(emptyList())
-    val studentList: State<List<Student>> = _studentList
     init {
         fetchStudentsFromFirestore()
     }
@@ -45,7 +39,9 @@ class ManagerViewModel : ViewModel() {
                     }
                 }
 
-                _studentList.value = students
+                _uiState.value = _uiState.value.copy(
+                    userList = students
+                )
             }
     }
 
