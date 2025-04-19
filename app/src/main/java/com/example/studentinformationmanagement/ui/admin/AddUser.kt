@@ -164,10 +164,9 @@ fun AddUser() {
             )
             InformationSelect(
                 icon = Icons.Filled.Settings,
-                label = "Status",
-                options = listOf("Active", "Inactive")
+                label = "Role",
+                options = listOf("Manager", "Employee")
             )
-
 
         }
     }
