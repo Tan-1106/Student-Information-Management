@@ -67,4 +67,8 @@ dependencies {
 
     implementation(platform( libs.firebase.bom))
     implementation(libs.firebase.firestore)
+    implementation("com.google.firebase:firebase-auth-ktx")
+    implementation("com.google.firebase:firebase-firestore-ktx")
+    apply(plugin = "com.google.gms.google-services")
+
 }

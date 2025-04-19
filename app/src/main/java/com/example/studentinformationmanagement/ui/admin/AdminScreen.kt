@@ -43,7 +43,6 @@ import com.example.studentinformationmanagement.ui.theme.third_content
 // Composable: Admin Home screen
 @Composable
 fun AdminScreen(
-    adminViewModel: AdminViewModel = viewModel(),
     screenNavController: NavHostController,
     navController: NavHostController = rememberNavController()
 ) {
@@ -135,5 +134,5 @@ fun AdminScreen(
 @Composable
 fun AdminScreenPreview() {
     val fakeScreenNavController = rememberNavController()
-    AdminScreen(adminViewModel = viewModel(), fakeScreenNavController)
+    AdminScreen(fakeScreenNavController)
 }
