@@ -98,7 +98,9 @@ fun LoginScreen(
         )
         Spacer(modifier = Modifier.height(40.dp))
         Button(
-            onClick = { loginViewModel.onLoginButtonClicked(navController) },
+            onClick = {
+                loginViewModel.onLoginButtonClicked(navController)
+            },
             colors = ButtonDefaults.buttonColors(
                 containerColor = primary_content,
                 contentColor = Color.White

@@ -4,17 +4,22 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
+import com.example.studentinformationmanagement.AppScreen
+import com.example.studentinformationmanagement.data.shared.LoginRepository
 import com.example.studentinformationmanagement.data.shared.LoginUiState
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
+import org.mindrot.jbcrypt.BCrypt
 
-class LoginViewModel : ViewModel() {
+class LoginViewModel(
+    private val loginRepository: LoginRepository = LoginRepository()
+) : ViewModel() {
     // _uiState được dùng để chỉnh sửa dữ liệu, chỉ có thể gọi trong class ViewModel.
-    private val _uiState = MutableStateFlow(LoginUiState())
-    // uiState được dùng để lấy dữ liệu cho việc hiển thị, có thể gọi ở các file bên ngoài.
-    val uiState: StateFlow<LoginUiState> =_uiState.asStateFlow()
+    private val _loginUiState = MutableStateFlow(LoginUiState())
 
     // Các hàm xử lý dữ liệu và xử lý sự kiện Login viết tại đây
     var userUsernameInput by mutableStateOf("")
@@ -37,8 +42,33 @@ class LoginViewModel : ViewModel() {
     fun onLoginButtonClicked(
         navController: NavController
     ) {
-        // Xử lý sự kiện đăng nhập và dùng navController để navigate đến các trang khác trong AppScreen.kt
+        viewModelScope.launch {
+            _loginUiState.value = _loginUiState.value.copy(isLoading = true)
 
+            val result = loginRepository.login(userUsernameInput, userPasswordInput)
 
+            if (result.isSuccess) {
+                val currentUser = result.getOrNull()
+                _loginUiState.value = _loginUiState.value.copy(
+                    isLoading = false,
+                    currentUser = currentUser,
+                    errorMessage = null
+                )
+
+                when (currentUser?.userRole) {
+                    "Admin" -> navController.navigate(AppScreen.AdminScreen.name)
+                    "Manager", "Employee" -> navController.navigate(AppScreen.StudentManagement.name)
+                    else -> _loginUiState.value =
+                        _loginUiState.value.copy(errorMessage = "Invalid role!")
+                }
+            } else {
+                _loginUiState.value = _loginUiState.value.copy(
+                    isLoading = false,
+                    errorMessage = result.exceptionOrNull()?.message ?: "Login failed."
+                )
+            }
+        }
     }
+
+
 }

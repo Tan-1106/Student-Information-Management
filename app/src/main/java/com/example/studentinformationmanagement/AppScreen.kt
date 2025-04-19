@@ -36,7 +36,7 @@ fun AppScreen(
 ) {
     NavHost(
         navController = navController,
-        startDestination = AppScreen.AdminScreen.name
+        startDestination = AppScreen.Login.name
     ) {
         // Screens not called directly from this NavHost: UserManagement, StudentManagement
         composable(route = AppScreen.Login.name) {

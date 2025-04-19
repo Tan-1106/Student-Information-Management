@@ -28,7 +28,6 @@ class AdminViewModel : ViewModel() {
     }
 
     private fun fetchAllUsers() {
-        // Dùng realtime Firestore listener giống ManagerViewModel
         Firebase.firestore.collection("users")
             .addSnapshotListener { snapshot, e ->
                 if (e != null || snapshot == null) {
