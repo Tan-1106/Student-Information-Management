@@ -1,25 +1,28 @@
 package com.example.studentinformationmanagement.ui.shared
 
+import android.content.Context
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.example.studentinformationmanagement.AppScreen
 import com.example.studentinformationmanagement.data.shared.LoginRepository
 import com.example.studentinformationmanagement.data.shared.LoginUiState
-import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
-import org.mindrot.jbcrypt.BCrypt
 
 class LoginViewModel(
     private val loginRepository: LoginRepository = LoginRepository()
 ) : ViewModel() {
-    // _uiState được dùng để chỉnh sửa dữ liệu, chỉ có thể gọi trong class ViewModel.
     private val _loginUiState = MutableStateFlow(LoginUiState())
+    val loginUiState: StateFlow<LoginUiState> = _loginUiState.asStateFlow()
 
     // Các hàm xử lý dữ liệu và xử lý sự kiện Login viết tại đây
     var userUsernameInput by mutableStateOf("")
@@ -40,35 +43,40 @@ class LoginViewModel(
     }
 
     fun onLoginButtonClicked(
-        navController: NavController
+        context: Context,
+        navController: NavHostController
     ) {
         viewModelScope.launch {
-            _loginUiState.value = _loginUiState.value.copy(isLoading = true)
+            _loginUiState.update { currentState ->
+                currentState.copy(
+                    isLoading = true,
+                )
+            }
 
             val result = loginRepository.login(userUsernameInput, userPasswordInput)
 
             if (result.isSuccess) {
                 val currentUser = result.getOrNull()
-                _loginUiState.value = _loginUiState.value.copy(
-                    isLoading = false,
-                    currentUser = currentUser,
-                    errorMessage = null
-                )
+                _loginUiState.update { currentState ->
+                    currentState.copy(
+                        isLoading = false,
+                        currentUser = currentUser,
+                        errorMessage = null
+                    )
+                }
 
                 when (currentUser?.userRole) {
                     "Admin" -> navController.navigate(AppScreen.AdminScreen.name)
-                    "Manager", "Employee" -> navController.navigate(AppScreen.StudentManagement.name)
-                    else -> _loginUiState.value =
-                        _loginUiState.value.copy(errorMessage = "Invalid role!")
+                    "Manager" -> navController.navigate(AppScreen.StudentManagement.name)
+                    "Employee" -> navController.navigate(AppScreen.StudentManagement.name)
                 }
             } else {
                 _loginUiState.value = _loginUiState.value.copy(
                     isLoading = false,
                     errorMessage = result.exceptionOrNull()?.message ?: "Login failed."
                 )
+                Toast.makeText(context, "Wrong phone number or password.", Toast.LENGTH_SHORT).show()
             }
         }
     }
-
-
 }

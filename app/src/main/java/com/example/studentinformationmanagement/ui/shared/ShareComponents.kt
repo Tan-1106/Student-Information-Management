@@ -1,7 +1,6 @@
 package com.example.studentinformationmanagement.ui.shared
 
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -54,7 +53,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -66,10 +64,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.example.studentinformationmanagement.R
 import com.example.studentinformationmanagement.data.admin.User
-import com.example.studentinformationmanagement.data.manager.Student
+import com.example.studentinformationmanagement.data.shared.CurrentUser
 import com.example.studentinformationmanagement.data.shared.SampleData
 import com.example.studentinformationmanagement.ui.admin.AdminViewModel
-import com.example.studentinformationmanagement.ui.manager.ManagerViewModel
 import com.example.studentinformationmanagement.ui.theme.kanit_bold_font
 import com.example.studentinformationmanagement.ui.theme.kanit_regular_font
 import com.example.studentinformationmanagement.ui.theme.primary_content
@@ -88,8 +85,8 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun DetailProfile(
     modifier: Modifier = Modifier,
-    topBar: @Composable () -> Unit = {},
-    user: User?
+    topBar: @Composable (() -> Unit) = {},
+    user: CurrentUser
 ) {
     Scaffold(
         containerColor = Color.White,
@@ -105,34 +102,25 @@ fun DetailProfile(
                 .verticalScroll(rememberScrollState()),
             contentAlignment = Alignment.TopCenter
         ) {
-            if (user == null) {
-                // Loading State
-                androidx.compose.material3.CircularProgressIndicator(
-                    color = primary_content,
-                    modifier = Modifier.padding(32.dp)
-                )
-            } else {
-                // Data Loaded — Hiển thị thông tin chi tiết
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Box(Modifier.padding(vertical = 20.dp)) {
-                        Image(
-                            painter = painterResource(R.drawable.ic_launcher_foreground),
-                            contentDescription = null,
-                            modifier = Modifier
-                                .clip(CircleShape)
-                                .border(2.dp, color = secondary_dark, shape = CircleShape)
-                                .size(150.dp),
-                            contentScale = ContentScale.Crop,
-                        )
-                    }
-                    InformationLine(Icons.Filled.Person, "Name", user.userName)
-                    InformationLine(Icons.Filled.Cake, "Birthday", user.userBirthday)
-                    InformationLine(Icons.Filled.Email, "Email", user.userEmail)
-                    InformationLine(Icons.Filled.Phone, "Phone", user.userPhoneNumber)
-                    InformationLine(Icons.Filled.Person, "Role", user.userRole)
-                    InformationLine(Icons.Filled.BrokenImage, "Status", user.userStatus)
-
+            // Data Loaded — Hiển thị thông tin chi tiết
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Box(Modifier.padding(vertical = 20.dp)) {
+                    AsyncImage(
+                        model = user.userImageUrl,
+                        contentDescription = "Avatar",
+                        modifier = Modifier
+                            .size(64.dp)
+                            .clip(CircleShape),
+                        placeholder = painterResource(id = R.drawable.avt_placeholder),
+                        error = painterResource(id = R.drawable.avt_error)
+                    )
                 }
+                InformationLine(Icons.Filled.Person, "Name", user.userName)
+                InformationLine(Icons.Filled.Cake, "Birthday", user.userBirthday)
+                InformationLine(Icons.Filled.Email, "Email", user.userEmail)
+                InformationLine(Icons.Filled.Phone, "Phone", user.userPhoneNumber)
+                InformationLine(Icons.Filled.Person, "Role", user.userRole)
+                InformationLine(Icons.Filled.BrokenImage, "Status", user.userStatus)
             }
         }
     }
@@ -486,7 +474,7 @@ fun InformationSelect(icon: ImageVector, label: String, options: List<String>) {
 @Composable
 fun DetailProfilePreview() {
     DetailProfile(
-        user = User("", "Nguyễn Văn A", "01/01/2004", "nguyenvana@gmail.com", "0123456789", "Manager", "Enable")
+        user = CurrentUser("", "Nguyễn Văn A", "01/01/2004", "nguyenvana@gmail.com", "0123456789", "Manager", "Enable")
     )
 }
 

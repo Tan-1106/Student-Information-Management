@@ -1,15 +1,14 @@
 
 package com.example.studentinformationmanagement.data.shared
 
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 import org.mindrot.jbcrypt.BCrypt
 
 class LoginRepository {
-    private val auth = FirebaseAuth.getInstance()
-
-    suspend fun login(phoneNumber: String, password: String): Result<CurrentUser> {
+    suspend fun login(
+        phoneNumber: String, password: String
+    ): Result<CurrentUser> {
         return try {
             val firestore = FirebaseFirestore.getInstance()
 
@@ -41,12 +40,15 @@ class LoginRepository {
             }
 
             val currentUser = CurrentUser(
-                uid = phoneNumber,
+                userImageUrl = userSnapshot.getString("userImageUrl") ?: "",
                 userName = userSnapshot.getString("userName") ?: "",
+                userBirthday = userSnapshot.getString("userBirthday") ?: "",
                 userEmail = userSnapshot.getString("userEmail") ?: "",
-                userPhoneNumber = phoneNumber,
-                userRole = userSnapshot.getString("userRole") ?: ""
+                userPhoneNumber = userSnapshot.getString("userPhoneNumber") ?: "",
+                userRole = userSnapshot.getString("userRole") ?: "",
+                userStatus = userSnapshot.getString("userStatus") ?: ""
             )
+
 
             Result.success(currentUser)
         } catch (e: Exception) {

@@ -1,8 +1,6 @@
 package com.example.studentinformationmanagement.ui.manager
 
 import android.util.Log
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import com.example.studentinformationmanagement.AppScreen
@@ -16,10 +14,9 @@ import kotlinx.coroutines.flow.asStateFlow
 
 class ManagerViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(ManagerUiState())
-    val uiState: StateFlow<ManagerUiState> =_uiState.asStateFlow()
+    val uiState: StateFlow<ManagerUiState> = _uiState.asStateFlow()
 
     // Fetch Student List
-    private val _studentList = mutableStateOf<List<Student>>(emptyList())
     init {
         fetchStudentsFromFirestore()
     }

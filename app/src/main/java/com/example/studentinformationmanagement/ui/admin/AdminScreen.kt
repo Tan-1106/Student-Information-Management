@@ -34,6 +34,7 @@ import com.example.studentinformationmanagement.AppScreen
 import com.example.studentinformationmanagement.R
 import com.example.studentinformationmanagement.data.shared.NavItem
 import com.example.studentinformationmanagement.ui.manager.StudentManagement
+import com.example.studentinformationmanagement.ui.shared.LoginViewModel
 import com.example.studentinformationmanagement.ui.shared.UserDetailProfile
 import com.example.studentinformationmanagement.ui.theme.kanit_bold_font
 import com.example.studentinformationmanagement.ui.theme.primary_container
@@ -43,8 +44,9 @@ import com.example.studentinformationmanagement.ui.theme.third_content
 // Composable: Admin Home screen
 @Composable
 fun AdminScreen(
-    screenNavController: NavHostController,
-    navController: NavHostController = rememberNavController()
+    loginViewModel: LoginViewModel,
+    navController: NavHostController,
+    subNavController: NavHostController = rememberNavController()
 ) {
     val navItems = listOf(
         NavItem("Student", Icons.Default.Home, AppScreen.StudentManagement.name),
@@ -52,7 +54,7 @@ fun AdminScreen(
         NavItem("Profile", Icons.Default.Person, AppScreen.UserDetailProfile.name)
     )
 
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val navBackStackEntry by subNavController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
     Scaffold(
@@ -100,7 +102,7 @@ fun AdminScreen(
                 currentRoute = currentRoute,
                 onItemClick = { item ->
                     if (currentRoute != item.route) {
-                        navController.navigate(item.route) {
+                        subNavController.navigate(item.route) {
                             popUpTo(AppScreen.StudentManagement.name) { inclusive = false }
                             launchSingleTop = true
                         }
@@ -110,18 +112,24 @@ fun AdminScreen(
         }
     ) { innerPadding ->
         NavHost(
-            navController = navController,
+            navController = subNavController,
             startDestination = AppScreen.StudentManagement.name,
             modifier = Modifier.padding(innerPadding)
         ) {
             composable(AppScreen.StudentManagement.name) {
-                StudentManagement(navController = screenNavController)
+                StudentManagement(
+                    navController = navController
+                )
             }
             composable(AppScreen.UserManagement.name) {
-                UserManagement(navController = screenNavController)
+                UserManagement(
+                    navController = navController
+                )
             }
             composable(AppScreen.UserDetailProfile.name) {
-                UserDetailProfile()
+                UserDetailProfile(
+                    loginViewModel = loginViewModel
+                )
             }
         }
     }
@@ -134,5 +142,10 @@ fun AdminScreen(
 @Composable
 fun AdminScreenPreview() {
     val fakeScreenNavController = rememberNavController()
-    AdminScreen(fakeScreenNavController)
+    AdminScreen(
+        loginViewModel = viewModel(),
+        fakeScreenNavController
+    )
 }
+
+

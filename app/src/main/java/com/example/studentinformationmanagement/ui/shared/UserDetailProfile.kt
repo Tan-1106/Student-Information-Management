@@ -10,22 +10,21 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.studentinformationmanagement.ui.theme.primary_content
-import androidx.compose.runtime.getValue
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun UserDetailProfile(userDetailViewModel: UserDetailViewModel = viewModel()) {
-    val user by userDetailViewModel.user
-    LaunchedEffect(Unit) {
-        userDetailViewModel.fetchUser()
-    }
-    if (user != null) {
+fun UserDetailProfile(
+    loginViewModel: LoginViewModel
+) {
+    val loginUiState by loginViewModel.loginUiState.collectAsState()
+    val currentUser = loginUiState.currentUser
+
+    if (currentUser != null) {
         DetailProfile(
             topBar = {
                 TopAppBar(
@@ -43,10 +42,10 @@ fun UserDetailProfile(userDetailViewModel: UserDetailViewModel = viewModel()) {
                             )
                         }
                     },
-                    title = {},
-                    actions = {
+                    title = {}, actions = {
                         IconButton(onClick = {
                             // Xử lý setting
+
                         }) {
                             Icon(
                                 Icons.Outlined.Settings,
@@ -57,6 +56,7 @@ fun UserDetailProfile(userDetailViewModel: UserDetailViewModel = viewModel()) {
                         }
                         IconButton(onClick = {
                             // Xử lý logout
+
                         }) {
                             Icon(
                                 Icons.AutoMirrored.Outlined.Logout,
@@ -68,7 +68,7 @@ fun UserDetailProfile(userDetailViewModel: UserDetailViewModel = viewModel()) {
                     }
                 )
             },
-            user = user!!
+            user = currentUser
         )
     }
 }

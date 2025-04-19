@@ -70,5 +70,7 @@ dependencies {
     implementation("com.google.firebase:firebase-auth-ktx")
     apply(plugin = "com.google.gms.google-services")
 
+    implementation("com.google.android.gms:play-services-auth:20.0.0")
+
     implementation("org.mindrot:jbcrypt:0.4")
 }

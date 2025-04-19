@@ -1,11 +1,13 @@
 package com.example.studentinformationmanagement.data.shared
 
 data class CurrentUser(
-    val uid: String = "",
+    val userImageUrl: String = "",
     val userName: String = "",
+    val userBirthday: String = "",
     val userEmail: String = "",
     val userPhoneNumber: String = "",
-    val userRole: String = "Student"
+    val userRole: String = "",
+    val userStatus: String = ""
 )
 
 data class LoginUiState(
