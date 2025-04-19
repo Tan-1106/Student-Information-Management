@@ -12,10 +12,10 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
@@ -67,7 +67,7 @@ fun StudentManagement(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(bottom = 70.dp)
+                .padding(bottom = 10.dp)
         ) {
             // Search + Filter
             Row(
@@ -132,27 +132,20 @@ fun StudentManagement(
             StudentList(managerUiState.userList)
         }
 
-        // Add Student Button
-        Row(
+    // Add Student Button
+        FloatingActionButton(
+            onClick = { managerViewModel.onAddButtonClicked(navController) },
+            shape = RoundedCornerShape(50),
+            containerColor = primary_content,
+            contentColor = third_content,
             modifier = Modifier
-                .align(Alignment.BottomCenter)
+                .align(Alignment.BottomEnd)
+                .padding(16.dp)
         ) {
-            Button(
-                onClick = { managerViewModel.onAddButtonClicked(navController) },
-                shape = RoundedCornerShape(16.dp),
-                modifier = Modifier
-                    .fillMaxWidth(0.6f),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = third_content,
-                    contentColor = primary_content
-                )
-            ) {
-                Text(
-                    text = "Add Student",
-                    fontSize = 18.sp,
-                    fontFamily = kanit_bold_font,
-                )
-            }
+            Icon(
+                imageVector = Icons.Default.Add,
+                contentDescription = "Add Student"
+            )
         }
     }
 }
