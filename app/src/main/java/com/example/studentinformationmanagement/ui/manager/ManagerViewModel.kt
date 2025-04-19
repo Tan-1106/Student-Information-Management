@@ -1,12 +1,11 @@
 package com.example.studentinformationmanagement.ui.manager
 
 import android.util.Log
+import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.example.studentinformationmanagement.AppScreen
-import com.example.studentinformationmanagement.data.manager.Certificate
 import com.example.studentinformationmanagement.data.manager.ManagerUiState
 import com.example.studentinformationmanagement.data.manager.Student
 import com.google.firebase.Firebase
@@ -14,9 +13,6 @@ import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
-import androidx.compose.runtime.State
 
 class ManagerViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(ManagerUiState())
