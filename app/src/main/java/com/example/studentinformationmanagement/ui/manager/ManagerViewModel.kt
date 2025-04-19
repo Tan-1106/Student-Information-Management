@@ -20,7 +20,6 @@ class ManagerViewModel : ViewModel() {
 
     // Fetch Student List
     private val _studentList = mutableStateOf<List<Student>>(emptyList())
-    val studentList: State<List<Student>> = _studentList
     init {
         fetchStudentsFromFirestore()
     }
@@ -41,7 +40,9 @@ class ManagerViewModel : ViewModel() {
                     }
                 }
 
-                _studentList.value = students
+                _uiState.value = _uiState.value.copy(
+                    userList = students
+                )
             }
     }
 
