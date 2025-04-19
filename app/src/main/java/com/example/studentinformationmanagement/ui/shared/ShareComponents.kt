@@ -89,14 +89,13 @@ import java.time.format.DateTimeFormatter
 fun DetailProfile(
     modifier: Modifier = Modifier,
     topBar: @Composable () -> Unit = {},
-    user: User
+    user: User?
 ) {
     Scaffold(
         containerColor = Color.White,
         modifier = modifier
             .systemBarsPadding(),
         topBar = topBar,
-
     ) { paddingValues ->
         Box(
             modifier = modifier
@@ -106,26 +105,34 @@ fun DetailProfile(
                 .verticalScroll(rememberScrollState()),
             contentAlignment = Alignment.TopCenter
         ) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Box(Modifier.padding(vertical = 20.dp)) {
-                    Image(
-                        painter = painterResource(R.drawable.ic_launcher_foreground),
-                        contentDescription = null,
+            if (user == null) {
+                // Loading State
+                androidx.compose.material3.CircularProgressIndicator(
+                    color = primary_content,
+                    modifier = Modifier.padding(32.dp)
+                )
+            } else {
+                // Data Loaded — Hiển thị thông tin chi tiết
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Box(Modifier.padding(vertical = 20.dp)) {
+                        Image(
+                            painter = painterResource(R.drawable.ic_launcher_foreground),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .clip(CircleShape)
+                                .border(2.dp, color = secondary_dark, shape = CircleShape)
+                                .size(150.dp),
+                            contentScale = ContentScale.Crop,
+                        )
+                    }
+                    InformationLine(Icons.Filled.Person, "Name", user.userName)
+                    InformationLine(Icons.Filled.Cake, "Birthday", user.userBirthday)
+                    InformationLine(Icons.Filled.Email, "Email", user.userEmail)
+                    InformationLine(Icons.Filled.Phone, "Phone", user.userPhoneNumber)
+                    InformationLine(Icons.Filled.Person, "Role", user.userRole)
+                    InformationLine(Icons.Filled.BrokenImage, "Status", user.userStatus)
 
-                        modifier = Modifier
-                            .clip(CircleShape)
-                            .border(
-                                2.dp, color = secondary_dark, shape = CircleShape
-                            )
-                            .size(150.dp),
-                        contentScale = ContentScale.Crop,
-                    )
                 }
-                InformationLine(Icons.Filled.Person, "Name", user.userName)
-                InformationLine(Icons.Filled.Cake, "Birthday", user.userBirthday)
-                InformationLine(Icons.Filled.Email, "Email", user.userEmail)
-                InformationLine(Icons.Filled.Phone, "Phone", user.userPhoneNumber)
-                InformationLine(Icons.Filled.BrokenImage, "Status", user.userStatus)
             }
         }
     }

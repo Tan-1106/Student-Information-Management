@@ -1,9 +1,9 @@
 package com.example.studentinformationmanagement.ui.admin
 
 import android.util.Log
+import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.example.studentinformationmanagement.data.admin.AdminRepository
 import com.example.studentinformationmanagement.data.admin.AdminUiState
 import com.example.studentinformationmanagement.data.admin.User
@@ -12,8 +12,6 @@ import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
-import androidx.compose.runtime.State
 
 class AdminViewModel : ViewModel() {
     private val repository = AdminRepository()
