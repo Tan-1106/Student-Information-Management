@@ -66,11 +66,9 @@ dependencies {
     implementation("io.coil-kt:coil-compose:2.2.2")
     implementation("com.google.firebase:firebase-firestore-ktx")
     implementation(platform( libs.firebase.bom))
-    implementation(libs.firebase.firestore)
     implementation("com.google.firebase:firebase-auth-ktx")
     apply(plugin = "com.google.gms.google-services")
-
     implementation("com.google.android.gms:play-services-auth:20.0.0")
-
     implementation("org.mindrot:jbcrypt:0.4")
+    implementation("me.saket.swipe:swipe:1.3.0")
 }

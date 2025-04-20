@@ -1,19 +1,31 @@
 package com.example.studentinformationmanagement
 
 import android.os.Build
+import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.studentinformationmanagement.ui.admin.AddUser
 import com.example.studentinformationmanagement.ui.admin.AdminScreen
-import com.example.studentinformationmanagement.ui.manager.StudentManagement
 import com.example.studentinformationmanagement.ui.shared.LoginScreen
 import com.example.studentinformationmanagement.ui.shared.LoginViewModel
 import com.example.studentinformationmanagement.ui.shared.UserDetailProfile
+import com.example.studentinformationmanagement.ui.shared.SwipeActionItem
+import com.example.studentinformationmanagement.ui.shared.SwipeComponent
 
 enum class AppScreen() {
     Login,
@@ -58,7 +70,23 @@ fun AppScreen(
 
         }
         composable(route = AppScreen.AddStudent.name) {
-
+            var context = LocalContext.current
+            Scaffold {
+                Box(modifier = Modifier
+                    .padding(it)
+                    .systemBarsPadding()) {
+                    Column(modifier = Modifier.fillMaxSize()) {
+                        SwipeComponent(
+                            onSwipeLeft = {
+                                Toast.makeText(context, "edit", Toast.LENGTH_SHORT).show()
+                            },
+                            onSwipeRight = {
+                                Toast.makeText(context, "delete", Toast.LENGTH_SHORT).show()
+                            },
+                            content = { Text("TEST", color = Color.Red) })
+                    }
+                }
+            }
         }
         composable(route = AppScreen.EditStudent.name) {
 
