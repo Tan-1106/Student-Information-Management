@@ -21,7 +21,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -44,16 +43,16 @@ import com.example.studentinformationmanagement.ui.theme.third_content
 // Composable: Admin Home screen
 @Composable
 fun AdminScreen(
-    loginViewModel: LoginViewModel,
-    navController: NavHostController,
+    loginViewModel: LoginViewModel = viewModel(),
+    navController: NavHostController = rememberNavController(),
     subNavController: NavHostController = rememberNavController()
 ) {
+    // Bottom navigation bar's items
     val navItems = listOf(
         NavItem("Student", Icons.Default.Home, AppScreen.StudentManagement.name),
         NavItem("User", Icons.Default.AccountCircle, AppScreen.UserManagement.name),
         NavItem("Profile", Icons.Default.Person, AppScreen.UserDetailProfile.name)
     )
-
     val navBackStackEntry by subNavController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
@@ -111,6 +110,7 @@ fun AdminScreen(
             )
         }
     ) { innerPadding ->
+        // Admin feature navigation
         NavHost(
             navController = subNavController,
             startDestination = AppScreen.StudentManagement.name,
@@ -128,24 +128,11 @@ fun AdminScreen(
             }
             composable(AppScreen.UserDetailProfile.name) {
                 UserDetailProfile(
-                    loginViewModel = loginViewModel
+                    loginViewModel = loginViewModel,
+                    navController = navController
                 )
             }
         }
     }
 }
-
-@Preview(
-    showBackground = true,
-    showSystemUi = true,
-)
-@Composable
-fun AdminScreenPreview() {
-    val fakeScreenNavController = rememberNavController()
-    AdminScreen(
-        loginViewModel = viewModel(),
-        fakeScreenNavController
-    )
-}
-
 

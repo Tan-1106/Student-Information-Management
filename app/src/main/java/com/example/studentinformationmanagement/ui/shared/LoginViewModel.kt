@@ -1,7 +1,6 @@
 package com.example.studentinformationmanagement.ui.shared
 
 import android.content.Context
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -21,27 +20,32 @@ import kotlinx.coroutines.launch
 class LoginViewModel(
     private val loginRepository: LoginRepository = LoginRepository()
 ) : ViewModel() {
+    // UiState
     private val _loginUiState = MutableStateFlow(LoginUiState())
     val loginUiState: StateFlow<LoginUiState> = _loginUiState.asStateFlow()
 
-    // Các hàm xử lý dữ liệu và xử lý sự kiện Login viết tại đây
-    var userUsernameInput by mutableStateOf("")
+    // User's phone number input
+    var userPhoneNumberInput by mutableStateOf("")
         private set
+    fun onPhoneNumberChange(userInput: String) {
+        userPhoneNumberInput = userInput
+    }
+
+    // User's password input
     var userPasswordInput by mutableStateOf("")
         private set
-    fun onUsernameChange(userInput: String) {
-        userUsernameInput = userInput
-    }
     fun onPasswordChange(userInput: String) {
         userPasswordInput = userInput
     }
 
+    // Showing or hiding the password text field
     var isPasswordShowing by mutableStateOf(false)
         private set
     fun onPasswordVisibilityChange() {
         isPasswordShowing = !isPasswordShowing
     }
 
+    // Login button event
     fun onLoginButtonClicked(
         context: Context,
         navController: NavHostController
@@ -53,7 +57,7 @@ class LoginViewModel(
                 )
             }
 
-            val result = loginRepository.login(userUsernameInput, userPasswordInput)
+            val result = loginRepository.login(userPhoneNumberInput, userPasswordInput)
 
             if (result.isSuccess) {
                 val currentUser = result.getOrNull()
@@ -76,6 +80,20 @@ class LoginViewModel(
                     errorMessage = result.exceptionOrNull()?.message ?: "Login failed."
                 )
                 Toast.makeText(context, "Wrong phone number or password.", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    fun onLogOutButtonClicked() {
+        userPhoneNumberInput = ""
+        userPasswordInput = ""
+
+        viewModelScope.launch {
+            _loginUiState.update { currentState ->
+                currentState.copy(
+                    currentUser = null,
+                    errorMessage = null
+                )
             }
         }
     }

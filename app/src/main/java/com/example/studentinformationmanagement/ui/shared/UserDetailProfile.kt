@@ -14,37 +14,48 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import com.example.studentinformationmanagement.AppScreen
 import com.example.studentinformationmanagement.ui.theme.primary_content
 
+// Composable: User's detail profile
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UserDetailProfile(
-    loginViewModel: LoginViewModel
+    loginViewModel: LoginViewModel,
+    navController: NavHostController,
 ) {
+    // UiState
     val loginUiState by loginViewModel.loginUiState.collectAsState()
+    // Get current logged in user
     val currentUser = loginUiState.currentUser
+    // Admin detail profile doesn't need navigation back button
+    val showBackButton = currentUser?.userRole != "Admin"
 
     if (currentUser != null) {
         DetailProfile(
             topBar = {
                 TopAppBar(
                     navigationIcon = {
-                        IconButton(
-                            onClick = {
-                                // Xử lý back
+                        /* TODO: Check again if Manager and Employee need this button ? */
+                        if (showBackButton) {
+                            IconButton(
+                                onClick = {
+                                    navController.navigateUp()
+                                }
+                            ) {
+                                Icon(
+                                    Icons.AutoMirrored.Filled.ArrowBack,
+                                    contentDescription = null,
+                                    tint = primary_content,
+                                    modifier = Modifier.size(40.dp)
+                                )
                             }
-                        ) {
-                            Icon(
-                                Icons.AutoMirrored.Filled.ArrowBack,
-                                contentDescription = null,
-                                tint = primary_content,
-                                modifier = Modifier.size(40.dp)
-                            )
                         }
                     },
                     title = {}, actions = {
                         IconButton(onClick = {
-                            // Xử lý setting
+                            /* TODO: Setting button's UI implementation */
 
                         }) {
                             Icon(
@@ -54,9 +65,10 @@ fun UserDetailProfile(
                                 modifier = Modifier.size(40.dp)
                             )
                         }
+                        // Log out event
                         IconButton(onClick = {
-                            // Xử lý logout
-
+                            loginViewModel.onLogOutButtonClicked()
+                            navController.navigate(AppScreen.Login.name)
                         }) {
                             Icon(
                                 Icons.AutoMirrored.Outlined.Logout,

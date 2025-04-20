@@ -1,8 +1,6 @@
 package com.example.studentinformationmanagement.ui.admin
 
 import android.util.Log
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.example.studentinformationmanagement.data.admin.AdminRepository
 import com.example.studentinformationmanagement.data.admin.AdminUiState
@@ -12,6 +10,7 @@ import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 
 class AdminViewModel : ViewModel() {
     private val repository = AdminRepository()
@@ -19,9 +18,8 @@ class AdminViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(AdminUiState())
     val uiState: StateFlow<AdminUiState> = _uiState.asStateFlow()
 
-    // Realtime User List
-    private val _userList = mutableStateOf<List<User>>(emptyList())
-    val userList: State<List<User>> = _userList
+    private var allUserList: List<User> = emptyList()
+    private var currentSearchQuery: String = ""
 
     init {
         fetchAllUsers()
@@ -44,12 +42,30 @@ class AdminViewModel : ViewModel() {
                     }
                 }
 
-                _userList.value = users
-
-                // Đồng bộ luôn vào AdminUiState nếu cần
-                _uiState.value = _uiState.value.copy(userList = users)
+                allUserList = users
+                // applySearch(currentSearchQuery)
             }
     }
+
+//    fun onUserSearch(userInput: String) {
+//        currentSearchQuery = userInput
+//        applySearch(userInput)
+//    }
+//
+//    private fun applySearch(query: String) {
+//        val filteredList = if (query == "") {
+//            allUserList
+//        } else {
+//            allUserList.filter { user ->
+//                user.userName.contains(query.trim(), ignoreCase = true) || user.userPhoneNumber.contains(query.trim(), ignoreCase = true)
+//            }
+//        }
+//
+//        _uiState.update { currentState ->
+//            currentState.copy(userList = filteredList)
+//        }
+//    }
+
 
     fun onUserEditClicked(userPhoneNumber: String) {
         // TODO: Xử lý sự kiện chỉnh sửa user

@@ -21,6 +21,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.studentinformationmanagement.ui.admin.AddUser
 import com.example.studentinformationmanagement.ui.admin.AdminScreen
+import com.example.studentinformationmanagement.ui.manager.StudentManagement
 import com.example.studentinformationmanagement.ui.shared.LoginScreen
 import com.example.studentinformationmanagement.ui.shared.LoginViewModel
 import com.example.studentinformationmanagement.ui.shared.UserDetailProfile
@@ -99,7 +100,8 @@ fun AppScreen(
         }
         composable(route = AppScreen.UserDetailProfile.name) {
             UserDetailProfile(
-                loginViewModel = loginViewModel
+                loginViewModel = loginViewModel,
+                navController = navController
             )
         }
         composable(route = AppScreen.StudentDetailProfile.name) {

@@ -2,7 +2,6 @@ package com.example.studentinformationmanagement.ui.shared
 
 
 import android.widget.Toast
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -11,6 +10,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -33,7 +33,6 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Edit
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -89,7 +88,7 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
 
-// Composable: Thông tin chi tiết của người dùng
+// Composable: User's detail profile
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetailProfile(
@@ -112,31 +111,42 @@ fun DetailProfile(
             contentAlignment = Alignment.TopCenter
         ) {
             // Data Loaded — Hiển thị thông tin chi tiết
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Box(Modifier.padding(vertical = 20.dp)) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Box(
+                    modifier = Modifier
+                        .padding(vertical = 20.dp)
+                        .size(100.dp)
+                ) {
                     AsyncImage(
                         model = user.userImageUrl,
                         contentDescription = "Avatar",
                         modifier = Modifier
-                            .size(64.dp)
+                            .fillMaxSize()
                             .clip(CircleShape),
+                        contentScale = ContentScale.Crop,
                         placeholder = painterResource(id = R.drawable.avt_placeholder),
                         error = painterResource(id = R.drawable.avt_error)
                     )
                 }
                 InformationLine(Icons.Filled.Person, "Name", user.userName)
+                Divider()
                 InformationLine(Icons.Filled.Cake, "Birthday", user.userBirthday)
+                Divider()
                 InformationLine(Icons.Filled.Email, "Email", user.userEmail)
+                Divider()
                 InformationLine(Icons.Filled.Phone, "Phone", user.userPhoneNumber)
+                Divider()
                 InformationLine(Icons.Filled.Person, "Role", user.userRole)
+                Divider()
                 InformationLine(Icons.Filled.BrokenImage, "Status", user.userStatus)
             }
         }
     }
 }
 
-// Composable: Dòng thông tin
-// Sử dụng bởi: DetailProfile
+// Composable: Information line in user's detail information
 @Composable
 fun InformationLine(
     icon: ImageVector,
@@ -147,10 +157,10 @@ fun InformationLine(
     placeholder: String = ""
 ) {
     Row(
+        verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 10.dp),
-        verticalAlignment = Alignment.CenterVertically
+            .padding(vertical = 10.dp)
     ) {
         Icon(
             icon,
@@ -160,7 +170,9 @@ fun InformationLine(
         )
         Column(modifier = Modifier.weight(0.8f)) {
             Text(
-                label, fontSize = 18.sp, fontWeight = FontWeight.Bold, color = primary_content,
+                label, fontSize = 18.sp,
+                fontWeight = FontWeight.Bold,
+                color = primary_content,
                 fontFamily = kanit_bold_font
             )
             BasicTextField(
@@ -171,7 +183,7 @@ fun InformationLine(
                     ) {
                         if (value.isEmpty()) {
                             Text(
-                                text = placeholder,  // Placeholder text
+                                text = placeholder,
                                 style = TextStyle(
                                     color = primary_dark,
                                     fontSize = 14.sp,
@@ -179,34 +191,39 @@ fun InformationLine(
                                 )
                             )
                         }
-                        innerTextField()  // Hiển thị TextField thực sự
+                        innerTextField()
                     }
                 },
                 value = value,
-
                 onValueChange = onValueChange,
                 enabled = enable,
                 textStyle = TextStyle(
                     color = primary_dark,
-                    fontSize = 14.sp, fontFamily = kanit_regular_font
+                    fontSize = 14.sp,
+                    fontFamily = kanit_regular_font
                 ),
 
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 5.dp),
             )
-
-            HorizontalDivider(
-                color = Color.Gray,
-                thickness = 1.dp,
-                modifier = Modifier.fillMaxWidth(0.9f)
-            )
         }
     }
 }
 
+// Composable: Divide between information line
+@Composable
+fun Divider() {
+    Spacer(modifier = Modifier.height(5.dp))
+    HorizontalDivider(
+        color = Color.Gray,
+        thickness = 1.dp,
+        modifier = Modifier.fillMaxWidth(0.9f)
+    )
+}
 
-// Composable: Danh sách người dùng
+
+// Composable: User list
 @Composable
 fun UserList(
     userList: List<User>,
@@ -227,6 +244,7 @@ fun UserList(
     }
 }
 
+// Composable: User information box for user list
 @Composable
 fun InformationBox(
     imageUrl: String,
@@ -258,19 +276,18 @@ fun InformationBox(
                 modifier = Modifier
                     .padding(10.dp)
             ) {
-//             Avatar Image
+                // Avatar Image
                 AsyncImage(
                     model = imageUrl,
                     contentDescription = "Avatar",
                     modifier = Modifier
                         .size(64.dp)
                         .clip(CircleShape),
+                    contentScale = ContentScale.Crop,
                     placeholder = painterResource(id = R.drawable.avt_placeholder),
                     error = painterResource(id = R.drawable.avt_error)
                 )
-
                 Spacer(modifier = Modifier.width(16.dp))
-
                 Column(
                     verticalArrangement = Arrangement.SpaceEvenly,
                     horizontalAlignment = Alignment.Start,

@@ -47,6 +47,7 @@ import com.example.studentinformationmanagement.R
 import com.example.studentinformationmanagement.ui.theme.primary_content
 import com.example.studentinformationmanagement.ui.theme.secondary_content
 
+// Composable: Login screen
 @Composable
 fun LoginScreen(
     loginViewModel: LoginViewModel,
@@ -83,9 +84,9 @@ fun LoginScreen(
             contentDescription = null
         )
         Spacer(modifier = Modifier.height(20.dp))
-        UsernameTextField(
-            value = loginViewModel.userUsernameInput,
-            onValueChange = { loginViewModel.onUsernameChange(it) },
+        PhoneNumberTextField(
+            value = loginViewModel.userPhoneNumberInput,
+            onValueChange = { loginViewModel.onPhoneNumberChange(it) },
             label = R.string.username_label,
             leadingIcon = Icons.Filled.Phone
         )
@@ -99,6 +100,8 @@ fun LoginScreen(
             onPasswordVisibilityChange = { loginViewModel.onPasswordVisibilityChange() }
         )
         Spacer(modifier = Modifier.height(40.dp))
+        
+        // Login Event
         Button(
             onClick = {
                 loginViewModel.onLoginButtonClicked(context, navController)
@@ -119,9 +122,9 @@ fun LoginScreen(
     }
 }
 
-// Phone number
+// Composable: Phone number text field
 @Composable
-fun UsernameTextField(
+fun PhoneNumberTextField(
     value: String,
     onValueChange: (String) -> Unit,
     @StringRes label: Int,
@@ -165,7 +168,7 @@ fun UsernameTextField(
     )
 }
 
-// Password
+// Composable: Password text field
 @Composable
 fun PasswordTextField(
     value: String,
@@ -224,6 +227,7 @@ fun PasswordTextField(
     )
 }
 
+// Preview
 @Preview(
     showBackground = true,
     showSystemUi = true
