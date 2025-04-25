@@ -389,6 +389,7 @@ fun InformationDate(
     label: String,
     placeholder: String,
     onDatePick: (String) -> Unit,
+    errorMessage:String="",
     modifier: Modifier = Modifier
 ) {
     val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
@@ -460,7 +461,27 @@ fun InformationDate(
                     }
                 }
             }
-            Divider()
+            if (errorMessage != "") {
+                Divider(color = Color.Red)
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(vertical = 5.dp)
+                ) {
+                    Icon(
+                        Icons.Outlined.Info,
+                        contentDescription = null,
+                        tint = Color.Red,
+                        modifier = Modifier.size(15.dp)
+                    )
+                    Spacer(modifier = Modifier.width(5.dp))
+                    Text(
+                        errorMessage,
+                        style = TextStyle(color = Color.Red),
+                    )
+                }
+            } else {
+                Divider()
+            }
         }
     }
 }
@@ -470,7 +491,8 @@ fun InformationSelect(
     icon: ImageVector,
     label: String,
     options: List<String>,
-    onOptionPick: (String) -> Unit
+    onOptionPick: (String) -> Unit,
+    errorMessage:String=""
 ) {
     var expanded by remember { mutableStateOf(false) }
     var selectedOption by remember { mutableStateOf("Choose 1 option") }
@@ -520,8 +542,27 @@ fun InformationSelect(
                     )
                 }
             }
-            Divider()
-        }
+            if (errorMessage != "") {
+                Divider(color = Color.Red)
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(vertical = 5.dp)
+                ) {
+                    Icon(
+                        Icons.Outlined.Info,
+                        contentDescription = null,
+                        tint = Color.Red,
+                        modifier = Modifier.size(15.dp)
+                    )
+                    Spacer(modifier = Modifier.width(5.dp))
+                    Text(
+                        errorMessage,
+                        style = TextStyle(color = Color.Red),
+                    )
+                }
+            } else {
+                Divider()
+            }        }
     }
 }
 
