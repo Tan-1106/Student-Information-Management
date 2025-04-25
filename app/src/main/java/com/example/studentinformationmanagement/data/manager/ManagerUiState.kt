@@ -1,7 +1,7 @@
 package com.example.studentinformationmanagement.data.manager
 
 data class Student(
-    val studentImageUrl: String = "",
+    val studentImageUrl: String = "https://drive.google.com/uc?id=1kem0Hwjm7UUYKHNKx4RXAkfZFCXvrxYQ",
     val studentName: String = "",
     val studentBirthday: String = "",
     val studentEmail: String = "",

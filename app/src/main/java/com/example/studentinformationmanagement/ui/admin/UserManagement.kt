@@ -11,8 +11,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
@@ -22,14 +24,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -50,7 +48,6 @@ fun UserManagement(
     navController: NavHostController
 ) {
     val adminUiState by adminViewModel.uiState.collectAsState()
-    var searchText by remember { mutableStateOf(TextFieldValue("")) }
 
     Box(
         modifier = modifier
@@ -71,11 +68,9 @@ fun UserManagement(
             ) {
                 // Search Bar
                 OutlinedTextField(
-                    value = searchText,
+                    value = adminViewModel.searchBarValue,
                     onValueChange = {
-                        /* TODO: Search event handling implementation */
-                        searchText = it
-                        // adminViewModel.onUserSearch(searchText.toString())
+                        adminViewModel.onUserSearch(it)
                     },
                     modifier = Modifier.weight(1f),
                     placeholder = { Text("Search users...", fontSize = 16.sp, color = primary_content) },
@@ -94,6 +89,7 @@ fun UserManagement(
                 Spacer(modifier = Modifier.width(8.dp))
                 IconButton(onClick = {
                     /* TODO: Filter implementation */
+
                 }) {
                     Box(
                         modifier = Modifier
@@ -119,6 +115,20 @@ fun UserManagement(
 
             // User list
             UserList(adminUiState.userList)
+        }
+        FloatingActionButton(
+            onClick = { adminViewModel.onAddButtonClicked(navController) },
+            shape = RoundedCornerShape(50),
+            containerColor = primary_content,
+            contentColor = third_content,
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(16.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Default.Add,
+                contentDescription = "Add Student"
+            )
         }
     }
 }

@@ -1,8 +1,14 @@
 package com.example.studentinformationmanagement.ui.admin
 
+import android.content.Context
 import android.util.Log
+import android.widget.Toast
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import com.example.studentinformationmanagement.data.admin.AdminRepository
+import androidx.navigation.NavHostController
+import com.example.studentinformationmanagement.AppScreen
 import com.example.studentinformationmanagement.data.admin.AdminUiState
 import com.example.studentinformationmanagement.data.admin.User
 import com.google.firebase.Firebase
@@ -10,21 +16,16 @@ import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+
 
 class AdminViewModel : ViewModel() {
-    private val repository = AdminRepository()
-
     private val _uiState = MutableStateFlow(AdminUiState())
     val uiState: StateFlow<AdminUiState> = _uiState.asStateFlow()
 
-    private var allUserList: List<User> = emptyList()
-    private var currentSearchQuery: String = ""
-
+    // Fetching user list
     init {
         fetchAllUsers()
     }
-
     private fun fetchAllUsers() {
         Firebase.firestore.collection("users")
             .addSnapshotListener { snapshot, e ->
@@ -42,30 +43,23 @@ class AdminViewModel : ViewModel() {
                     }
                 }
 
-                allUserList = users
-                // applySearch(currentSearchQuery)
+                _uiState.value = _uiState.value.copy(
+                    userList = users
+                )
             }
     }
 
-//    fun onUserSearch(userInput: String) {
-//        currentSearchQuery = userInput
-//        applySearch(userInput)
-//    }
-//
-//    private fun applySearch(query: String) {
-//        val filteredList = if (query == "") {
-//            allUserList
-//        } else {
-//            allUserList.filter { user ->
-//                user.userName.contains(query.trim(), ignoreCase = true) || user.userPhoneNumber.contains(query.trim(), ignoreCase = true)
-//            }
-//        }
-//
-//        _uiState.update { currentState ->
-//            currentState.copy(userList = filteredList)
-//        }
-//    }
+    var searchBarValue by mutableStateOf("")
+        private set
+    fun onUserSearch(userInput: String) {
+        searchBarValue = userInput
+        // TODO: Xử lý sự kiện tìm kiếm
 
+    }
+
+    fun onAddButtonClicked(navController: NavHostController) {
+        navController.navigate(AppScreen.AddUser.name)
+    }
 
     fun onUserEditClicked(userPhoneNumber: String) {
         // TODO: Xử lý sự kiện chỉnh sửa user
@@ -74,4 +68,177 @@ class AdminViewModel : ViewModel() {
     fun onUserSeeMoreClicked(userPhoneNumber: String) {
         // TODO: Xử lý sự kiện xem thêm user
     }
+
+    // Add User
+    var newUserName by mutableStateOf("")
+        private set
+    var newUserEmail by mutableStateOf("")
+        private set
+    var newUserPhone by mutableStateOf("")
+        private set
+    var newUserBirthday by mutableStateOf("")
+        private set
+    var newUserStatus by mutableStateOf("")
+        private set
+    var newUserRole by mutableStateOf("")
+        private set
+
+    fun onNewUserNameChange(userInput: String) {
+        newUserName = userInput
+    }
+    fun onNewUserEmailChange(userInput: String) {
+        newUserEmail = userInput
+    }
+    fun onNewUserPhoneChange(userInput: String) {
+        newUserPhone = userInput
+    }
+    fun onNewUserBirthdayPick(userInput: String) {
+        newUserBirthday = userInput
+    }
+    fun onNewUserStatusPick(userInput: String) {
+        newUserStatus = userInput
+    }
+    fun onNewUserRolePick(userInput: String) {
+        newUserRole = userInput
+    }
+
+    fun clearAddUserInputs() {
+        newUserName = ""
+        newUserEmail = ""
+        newUserPhone = ""
+        newUserBirthday = ""
+        newUserStatus = ""
+        newUserRole = ""
+    }
+    var nameError by mutableStateOf("")
+        private set
+    var emailError by mutableStateOf("")
+        private set
+    var phoneError by mutableStateOf("")
+        private set
+    var birthdayError by mutableStateOf("")
+        private set
+    var statusError by mutableStateOf("")
+        private set
+    var roleError by mutableStateOf("")
+        private set
+    fun onAddUserButtonClick(
+        navController: NavHostController,
+        context: Context
+    ) {
+        if (validateUserInputs()) {
+            val db = Firebase.firestore
+
+            val name = newUserName.trim()
+            val email = newUserEmail.trim()
+            val phone = newUserPhone.trim()
+            val birthday = newUserBirthday.trim()
+            val role = newUserRole.trim()
+            val status = newUserStatus.trim()
+
+            db.collection("users")
+                .whereEqualTo("userPhoneNumber", phone)
+                .get()
+                .addOnSuccessListener { phoneResult ->
+                    if (phoneResult.isEmpty) {
+                        db.collection("users")
+                            .whereEqualTo("userEmail", email)
+                            .get()
+                            .addOnSuccessListener { emailResult ->
+                                if (emailResult.isEmpty) {
+                                    val newUser = User(
+                                        userName = name,
+                                        userEmail = email,
+                                        userPhoneNumber = phone,
+                                        userBirthday = birthday,
+                                        userRole = role,
+                                        userStatus = status
+                                    )
+
+                                    db.collection("users")
+                                        .add(newUser)
+                                        .addOnSuccessListener {
+                                            nameError = ""
+                                            emailError = ""
+                                            phoneError = ""
+                                            birthdayError = ""
+                                            statusError = ""
+                                            roleError = ""
+
+                                            clearAddUserInputs()
+                                            navController.navigateUp()
+                                        }
+                                        .addOnFailureListener {
+                                            Toast.makeText(context, "Cannot add user", Toast.LENGTH_SHORT).show()
+                                        }
+                                } else {
+                                    emailError = "Email is existed"
+                                }
+                            }
+                            .addOnFailureListener {
+                                Toast.makeText(context, "Cannot check existing email", Toast.LENGTH_SHORT).show()
+                            }
+                    } else {
+                        phoneError = "Phone number is existed"
+                    }
+                }
+                .addOnFailureListener {
+                    Toast.makeText(context, "Cannot check existing phone number", Toast.LENGTH_SHORT).show()
+                }
+        }
+    }
+
+    fun validateUserInputs(): Boolean {
+        var isValid = true
+
+        if (newUserName.trim().isEmpty()) {
+            nameError = "Name is required"
+            isValid = false
+        } else {
+            nameError = ""
+        }
+
+        if (newUserEmail.trim().isEmpty()) {
+            emailError = "Email is required"
+            isValid = false
+        } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(newUserEmail.trim()).matches()) {
+            emailError = "Invalid email format"
+            isValid = false
+        } else {
+            emailError = ""
+        }
+
+        if (newUserPhone.trim().isEmpty()) {
+            phoneError = "Phone number is required"
+            isValid = false
+        } else if (newUserPhone.trim().length != 10) {
+            phoneError = "Invalid phone number"
+        }
+        else {
+            phoneError = ""
+        }
+
+        if (newUserBirthday.trim().isEmpty()) {
+            birthdayError = "Birthday is required"
+            isValid = false
+        } else {
+            birthdayError = ""
+        }
+
+        if (newUserStatus.trim().isEmpty()) {
+            statusError = "Status is required"
+            isValid = false
+        } else {
+            statusError = ""
+        }
+
+        if (newUserRole.trim().isEmpty()) {
+            roleError = "Role is required"
+            isValid = false
+        } else {
+            roleError = ""
+        }
+        return isValid
+    }
+
 }

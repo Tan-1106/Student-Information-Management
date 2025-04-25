@@ -33,6 +33,7 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Edit
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -130,16 +131,17 @@ fun DetailProfile(
                         error = painterResource(id = R.drawable.avt_error)
                     )
                 }
-                InformationLine(Icons.Filled.Person, "Name", user.userName)
-                Divider()
+                InformationLine(
+                    Icons.Filled.Person,
+                    "Name",
+                    user.userName,
+
+                    errorMessage = "Please enter your name"
+                )
                 InformationLine(Icons.Filled.Cake, "Birthday", user.userBirthday)
-                Divider()
                 InformationLine(Icons.Filled.Email, "Email", user.userEmail)
-                Divider()
                 InformationLine(Icons.Filled.Phone, "Phone", user.userPhoneNumber)
-                Divider()
                 InformationLine(Icons.Filled.Person, "Role", user.userRole)
-                Divider()
                 InformationLine(Icons.Filled.BrokenImage, "Status", user.userStatus)
             }
         }
@@ -154,7 +156,8 @@ fun InformationLine(
     value: String,
     enable: Boolean = false,
     onValueChange: (String) -> Unit = {},
-    placeholder: String = ""
+    placeholder: String = "",
+    errorMessage: String = ""
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -207,16 +210,37 @@ fun InformationLine(
                     .fillMaxWidth()
                     .padding(vertical = 5.dp),
             )
+            if (errorMessage != "") {
+                Divider(color = Color.Red)
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(vertical = 5.dp)
+                ) {
+                    Icon(
+                        Icons.Outlined.Info,
+                        contentDescription = null,
+                        tint = Color.Red,
+                        modifier = Modifier.size(15.dp)
+                    )
+                    Spacer(modifier = Modifier.width(5.dp))
+                    Text(
+                        errorMessage,
+                        style = TextStyle(color = Color.Red),
+                    )
+                }
+            } else {
+                Divider()
+            }
         }
     }
 }
 
 // Composable: Divide between information line
 @Composable
-fun Divider() {
-    Spacer(modifier = Modifier.height(5.dp))
+fun Divider(color: Color = Color.Gray) {
+//    Spacer(modifier = Modifier.height(5.dp))
     HorizontalDivider(
-        color = Color.Gray,
+        color = color,
         thickness = 1.dp,
         modifier = Modifier.fillMaxWidth(0.9f)
     )
@@ -364,6 +388,8 @@ fun InformationDate(
     icon: ImageVector,
     label: String,
     placeholder: String,
+    onDatePick: (String) -> Unit,
+    errorMessage:String="",
     modifier: Modifier = Modifier
 ) {
     val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
@@ -427,6 +453,7 @@ fun InformationDate(
                                         .toLocalDate()
                                 }?.format(formatter) ?: ""
                                 openSheet = false
+                                onDatePick(birthday)
                             }) {
                                 Text("Chọn")
                             }
@@ -434,19 +461,39 @@ fun InformationDate(
                     }
                 }
             }
-            HorizontalDivider(
-                color = Color.Gray,
-                thickness = 1.dp,
-                modifier = Modifier.fillMaxWidth(0.9f)
-            )
+            if (errorMessage != "") {
+                Divider(color = Color.Red)
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(vertical = 5.dp)
+                ) {
+                    Icon(
+                        Icons.Outlined.Info,
+                        contentDescription = null,
+                        tint = Color.Red,
+                        modifier = Modifier.size(15.dp)
+                    )
+                    Spacer(modifier = Modifier.width(5.dp))
+                    Text(
+                        errorMessage,
+                        style = TextStyle(color = Color.Red),
+                    )
+                }
+            } else {
+                Divider()
+            }
         }
     }
-
-
 }
 
 @Composable
-fun InformationSelect(icon: ImageVector, label: String, options: List<String>) {
+fun InformationSelect(
+    icon: ImageVector,
+    label: String,
+    options: List<String>,
+    onOptionPick: (String) -> Unit,
+    errorMessage:String=""
+) {
     var expanded by remember { mutableStateOf(false) }
     var selectedOption by remember { mutableStateOf("Choose 1 option") }
 
@@ -457,14 +504,17 @@ fun InformationSelect(icon: ImageVector, label: String, options: List<String>) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
-            icon,
+            imageVector = icon,
             contentDescription = null,
             modifier = Modifier.weight(0.2f),
             tint = primary_content
         )
         Column(modifier = Modifier.weight(0.8f)) {
             Text(
-                label, fontSize = 18.sp, fontWeight = FontWeight.Bold, color = primary_content,
+                text = label,
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold,
+                color = primary_content,
                 fontFamily = kanit_bold_font
             )
 
@@ -487,16 +537,32 @@ fun InformationSelect(icon: ImageVector, label: String, options: List<String>) {
                         onClick = {
                             selectedOption = option
                             expanded = false
+                            onOptionPick(selectedOption)
                         }
                     )
                 }
             }
-            HorizontalDivider(
-                color = Color.Gray,
-                thickness = 1.dp,
-                modifier = Modifier.fillMaxWidth(0.9f)
-            )
-        }
+            if (errorMessage != "") {
+                Divider(color = Color.Red)
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(vertical = 5.dp)
+                ) {
+                    Icon(
+                        Icons.Outlined.Info,
+                        contentDescription = null,
+                        tint = Color.Red,
+                        modifier = Modifier.size(15.dp)
+                    )
+                    Spacer(modifier = Modifier.width(5.dp))
+                    Text(
+                        errorMessage,
+                        style = TextStyle(color = Color.Red),
+                    )
+                }
+            } else {
+                Divider()
+            }        }
     }
 }
 
@@ -531,9 +597,8 @@ fun SwipeComponent(
         startActions = listOf(startAction),
         endActions = listOf(endAction),
         swipeThreshold = 100.dp,
-        backgroundUntilSwipeThreshold = Color.White ,
+        backgroundUntilSwipeThreshold = Color.White,
     ) {
-
         content()
     }
 }
@@ -546,7 +611,15 @@ fun SwipeComponent(
 @Composable
 fun DetailProfilePreview() {
     DetailProfile(
-        user = CurrentUser("", "Nguyễn Văn A", "01/01/2004", "nguyenvana@gmail.com", "0123456789", "Manager", "Enable")
+        user = CurrentUser(
+            "",
+            "Nguyễn Văn A",
+            "01/01/2004",
+            "nguyenvana@gmail.com",
+            "0123456789",
+            "Manager",
+            "Enable"
+        )
     )
 }
 
