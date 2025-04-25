@@ -114,6 +114,15 @@ class ManagerViewModel : ViewModel() {
         val email = newStudentEmail.trim()
         val phone = newStudentPhone.trim()
 
+        if (newStudentName == "" || newStudentEmail == "" ||
+            newStudentPhone == "" || newStudentId == "" ||
+            newStudentClass == "" || newStudentBirthday == "" ||
+            newStudentFaculty == ""
+            ) {
+            invalidMessage = "All fields must be filled"
+            return
+        }
+
         db.collection("students")
             .whereIn("studentId", listOf(id))
             .get()
@@ -140,11 +149,13 @@ class ManagerViewModel : ViewModel() {
                                             )
 
                                             db.collection("students")
-                                                .add(newStudent)
+                                                .document(id)
+                                                .set(newStudent)
                                                 .addOnSuccessListener {
                                                     invalidMessage = ""
                                                     clearAddStudentInputs()
                                                 }
+
                                                 .addOnFailureListener { e ->
                                                     invalidMessage = "Cannot add student."
                                                 }
