@@ -21,6 +21,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.studentinformationmanagement.ui.admin.AddUser
 import com.example.studentinformationmanagement.ui.admin.AdminScreen
+import com.example.studentinformationmanagement.ui.manager.AddStudent
 import com.example.studentinformationmanagement.ui.manager.StudentManagement
 import com.example.studentinformationmanagement.ui.shared.LoginScreen
 import com.example.studentinformationmanagement.ui.shared.LoginViewModel
@@ -62,7 +63,7 @@ fun AppScreen(
             )
         }
         composable(route = AppScreen.AddUser.name) {
-            AddUser()
+            AddUser(navController = navController)
         }
         composable(route = AppScreen.EditUser.name) {
 
@@ -71,23 +72,24 @@ fun AppScreen(
 
         }
         composable(route = AppScreen.AddStudent.name) {
-            var context = LocalContext.current
-            Scaffold {
-                Box(modifier = Modifier
-                    .padding(it)
-                    .systemBarsPadding()) {
-                    Column(modifier = Modifier.fillMaxSize()) {
-                        SwipeComponent(
-                            onSwipeLeft = {
-                                Toast.makeText(context, "edit", Toast.LENGTH_SHORT).show()
-                            },
-                            onSwipeRight = {
-                                Toast.makeText(context, "delete", Toast.LENGTH_SHORT).show()
-                            },
-                            content = { Text("TEST", color = Color.Red) })
-                    }
-                }
-            }
+//            var context = LocalContext.current
+//            Scaffold {
+//                Box(modifier = Modifier
+//                    .padding(it)
+//                    .systemBarsPadding()) {
+//                    Column(modifier = Modifier.fillMaxSize()) {
+//                        SwipeComponent(
+//                            onSwipeLeft = {
+//                                Toast.makeText(context, "edit", Toast.LENGTH_SHORT).show()
+//                            },
+//                            onSwipeRight = {
+//                                Toast.makeText(context, "delete", Toast.LENGTH_SHORT).show()
+//                            },
+//                            content = { Text("TEST", color = Color.Red) })
+//                    }
+//                }
+//            }
+            AddStudent(navController = navController)
         }
         composable(route = AppScreen.EditStudent.name) {
 

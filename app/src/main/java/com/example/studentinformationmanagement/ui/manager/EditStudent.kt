@@ -122,7 +122,8 @@ fun EditStudent() {
             InformationDate(
                 icon = Icons.Filled.Cake,
                 label = "Birthday",
-                placeholder = "01/01/2000"
+                placeholder = "01/01/2000",
+                onDatePick = { }
             )
             InformationLine(
                 icon = Icons.Filled.Email,

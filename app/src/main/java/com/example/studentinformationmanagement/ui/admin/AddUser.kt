@@ -41,6 +41,9 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.example.studentinformationmanagement.R
 import com.example.studentinformationmanagement.ui.shared.InformationDate
 import com.example.studentinformationmanagement.ui.shared.InformationLine
@@ -54,7 +57,10 @@ import com.example.studentinformationmanagement.ui.theme.secondary_dark
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 @Preview(showSystemUi = true)
-fun AddUser() {
+fun AddUser(
+    adminViewModel: AdminViewModel = viewModel(),
+    navController: NavHostController = rememberNavController()
+) {
     Scaffold(modifier = Modifier.systemBarsPadding(), containerColor = Color.White, topBar = {
         TopAppBar(
             title = {
@@ -71,21 +77,28 @@ fun AddUser() {
                 }
             },
             navigationIcon = {
-                IconButton(content = {
-                    Icon(
-                        Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = null,
-                        tint = primary_content,
-                        modifier = Modifier.size(40.dp)
-                    )
-                }, onClick = {})
+                IconButton(
+                    content = {
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = null,
+                            tint = primary_content,
+                            modifier = Modifier.size(40.dp)
+                        )
+                },
+                    onClick = {
+                        navController.navigateUp()
+                    }
+                )
             },
 
             )
     }, bottomBar = {
         Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
             Button(
-                onClick = {},
+                onClick = {
+                    adminViewModel.onAddUserButtonClick()
+                },
                 colors = ButtonDefaults.outlinedButtonColors(
                     containerColor = secondary_content,
                 ),
@@ -133,7 +146,8 @@ fun AddUser() {
             }
             InformationLine(
                 icon = Icons.Filled.Person,
-                value = "",
+                value = adminViewModel.newUserName,
+                onValueChange = { adminViewModel.onNewUserNameChange(it) },
                 label = "Name",
                 enable = true,
                 placeholder = "Enter name"
@@ -141,31 +155,36 @@ fun AddUser() {
             InformationDate(
                 icon = Icons.Default.Cake,
                 label = "Birthday",
-                placeholder = "Enter Birthday"
+                placeholder = "Enter Birthday",
+                onDatePick = { adminViewModel.onNewUserBirthdayPick(it) }
             )
             InformationLine(
                 icon = Icons.Filled.Email,
                 label = "Email",
-                value = "",
+                value = adminViewModel.newUserEmail,
+                onValueChange = { adminViewModel.onNewUserEmailChange(it) },
                 enable = true,
                 placeholder = "Enter email"
             )
             InformationLine(
                 icon = Icons.Filled.Phone,
                 label = "Phone",
-                value = "",
+                value = adminViewModel.newUserPhone,
+                onValueChange = { adminViewModel.onNewUserPhoneChange(it) },
                 enable = true,
                 placeholder = "Enter phone number"
             )
             InformationSelect(
                 icon = Icons.Filled.BrokenImage,
                 label = "Status",
-                options = listOf("Active", "Inactive")
+                options = listOf("Active", "Inactive"),
+                onOptionPick = { adminViewModel.onNewUserStatusPick(it) }
             )
             InformationSelect(
                 icon = Icons.Filled.Settings,
                 label = "Role",
-                options = listOf("Manager", "Employee")
+                options = listOf("Manager", "Employee"),
+                onOptionPick = { adminViewModel.onNewUserRolePick(it) }
             )
 
         }

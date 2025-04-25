@@ -45,6 +45,9 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.example.studentinformationmanagement.R
 import com.example.studentinformationmanagement.ui.shared.InformationDate
 import com.example.studentinformationmanagement.ui.shared.InformationLine
@@ -59,7 +62,10 @@ import com.example.studentinformationmanagement.ui.theme.secondary_dark
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 @Preview(showSystemUi = true)
-fun AddStudent() {
+fun AddStudent(
+    managerViewModel: ManagerViewModel = viewModel(),
+    navController: NavHostController = rememberNavController()
+) {
     Scaffold(modifier = Modifier.systemBarsPadding(), containerColor = Color.White, topBar = {
         TopAppBar(
             title = {
@@ -83,14 +89,20 @@ fun AddStudent() {
                         tint = primary_content,
                         modifier = Modifier.size(40.dp)
                     )
-                }, onClick = {})
+                },
+                    onClick = {
+                        navController.navigateUp()
+                    }
+                )
             },
 
             )
     }, bottomBar = {
         Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
             Button(
-                onClick = {},
+                onClick = {
+                    managerViewModel.onAddStudentButtonClick()
+                },
                 colors = ButtonDefaults.outlinedButtonColors(
                     containerColor = secondary_content,
                 ),
@@ -138,7 +150,8 @@ fun AddStudent() {
             }
             InformationLine(
                 icon = Icons.Filled.Person,
-                value = "",
+                value = managerViewModel.newStudentName,
+                onValueChange = { managerViewModel.onNewStudentNameChange(it) },
                 label = "Name",
                 enable = true,
                 placeholder = "Enter name"
@@ -146,40 +159,46 @@ fun AddStudent() {
             InformationDate(
                 icon = Icons.Default.Cake,
                 label = "Birthday",
-                placeholder = "Enter Birthday"
+                placeholder = "Enter Birthday",
+                onDatePick = { managerViewModel.onNewStudentBirthdayPick(it) }
             )
             InformationLine(
                 icon = Icons.Filled.Email,
                 label = "Email",
-                value = "",
+                value = managerViewModel.newStudentEmail,
+                onValueChange = { managerViewModel.onNewStudentEmailChange(it) },
                 enable = true,
                 placeholder = "Enter email"
             )
             InformationLine(
                 icon = Icons.Filled.Phone,
                 label = "Phone",
-                value = "",
+                value = managerViewModel.newStudentPhone,
+                onValueChange = { managerViewModel.onNewStudentPhoneChange(it) },
                 enable = true,
                 placeholder = "Enter phone number"
             )
             InformationLine(
                 icon = Icons.Filled.FilterCenterFocus,
                 label = "Student ID",
-                value = "",
+                value = managerViewModel.newStudentId,
+                onValueChange = { managerViewModel.onNewStudentIdChange(it) },
                 enable = true,
                 placeholder = "Enter student ID"
             )
             InformationLine(
                 icon = Icons.Filled.Book,
                 label = "Class",
-                value = "",
+                value = managerViewModel.newStudentClass,
+                onValueChange = { managerViewModel.onNewStudentClassChange(it) },
                 enable = true,
                 placeholder = "Enter class"
             )
             InformationLine(
                 icon = Icons.Filled.AccountBalance,
                 label = "Faculty",
-                value = "",
+                value = managerViewModel.newStudentFaculty,
+                onValueChange = { managerViewModel.onNewStudentFacultyChange(it) },
                 enable = true,
                 placeholder = "Enter faculty"
             )

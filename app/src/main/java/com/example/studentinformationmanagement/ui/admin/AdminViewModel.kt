@@ -1,8 +1,10 @@
 package com.example.studentinformationmanagement.ui.admin
 
 import android.util.Log
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import com.example.studentinformationmanagement.data.admin.AdminRepository
+import androidx.navigation.NavHostController
 import com.example.studentinformationmanagement.data.admin.AdminUiState
 import com.example.studentinformationmanagement.data.admin.User
 import com.google.firebase.Firebase
@@ -10,21 +12,18 @@ import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import androidx.compose.runtime.getValue
+import com.example.studentinformationmanagement.AppScreen
+
 
 class AdminViewModel : ViewModel() {
-    private val repository = AdminRepository()
-
     private val _uiState = MutableStateFlow(AdminUiState())
     val uiState: StateFlow<AdminUiState> = _uiState.asStateFlow()
 
-    private var allUserList: List<User> = emptyList()
-    private var currentSearchQuery: String = ""
-
+    // Fetching user list
     init {
         fetchAllUsers()
     }
-
     private fun fetchAllUsers() {
         Firebase.firestore.collection("users")
             .addSnapshotListener { snapshot, e ->
@@ -42,30 +41,23 @@ class AdminViewModel : ViewModel() {
                     }
                 }
 
-                allUserList = users
-                // applySearch(currentSearchQuery)
+                _uiState.value = _uiState.value.copy(
+                    userList = users
+                )
             }
     }
 
-//    fun onUserSearch(userInput: String) {
-//        currentSearchQuery = userInput
-//        applySearch(userInput)
-//    }
-//
-//    private fun applySearch(query: String) {
-//        val filteredList = if (query == "") {
-//            allUserList
-//        } else {
-//            allUserList.filter { user ->
-//                user.userName.contains(query.trim(), ignoreCase = true) || user.userPhoneNumber.contains(query.trim(), ignoreCase = true)
-//            }
-//        }
-//
-//        _uiState.update { currentState ->
-//            currentState.copy(userList = filteredList)
-//        }
-//    }
+    var searchBarValue by mutableStateOf("")
+        private set
+    fun onUserSearch(userInput: String) {
+        searchBarValue = userInput
+        // TODO: Xử lý sự kiện tìm kiếm
 
+    }
+
+    fun onAddButtonClicked(navController: NavHostController) {
+        navController.navigate(AppScreen.AddUser.name)
+    }
 
     fun onUserEditClicked(userPhoneNumber: String) {
         // TODO: Xử lý sự kiện chỉnh sửa user
@@ -73,5 +65,42 @@ class AdminViewModel : ViewModel() {
 
     fun onUserSeeMoreClicked(userPhoneNumber: String) {
         // TODO: Xử lý sự kiện xem thêm user
+    }
+
+    // Add User
+    var newUserName by mutableStateOf("")
+        private set
+    var newUserEmail by mutableStateOf("")
+        private set
+    var newUserPhone by mutableStateOf("")
+        private set
+    var newUserBirthday by mutableStateOf("")
+        private set
+    var newUserStatus by mutableStateOf("")
+        private set
+    var newUserRole by mutableStateOf("")
+        private set
+
+    fun onNewUserNameChange(userInput: String) {
+        newUserName = userInput
+    }
+    fun onNewUserEmailChange(userInput: String) {
+        newUserEmail = userInput
+    }
+    fun onNewUserPhoneChange(userInput: String) {
+        newUserPhone = userInput
+    }
+    fun onNewUserBirthdayPick(userInput: String) {
+        newUserBirthday = userInput
+    }
+    fun onNewUserStatusPick(userInput: String) {
+        newUserStatus = userInput
+    }
+    fun onNewUserRolePick(userInput: String) {
+        newUserRole = userInput
+    }
+
+    fun onAddUserButtonClick() {
+
     }
 }

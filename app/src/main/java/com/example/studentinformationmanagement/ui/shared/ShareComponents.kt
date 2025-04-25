@@ -364,6 +364,7 @@ fun InformationDate(
     icon: ImageVector,
     label: String,
     placeholder: String,
+    onDatePick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
@@ -427,6 +428,7 @@ fun InformationDate(
                                         .toLocalDate()
                                 }?.format(formatter) ?: ""
                                 openSheet = false
+                                onDatePick(birthday)
                             }) {
                                 Text("Chọn")
                             }
@@ -441,12 +443,15 @@ fun InformationDate(
             )
         }
     }
-
-
 }
 
 @Composable
-fun InformationSelect(icon: ImageVector, label: String, options: List<String>) {
+fun InformationSelect(
+    icon: ImageVector,
+    label: String,
+    options: List<String>,
+    onOptionPick: (String) -> Unit
+) {
     var expanded by remember { mutableStateOf(false) }
     var selectedOption by remember { mutableStateOf("Choose 1 option") }
 
@@ -487,6 +492,7 @@ fun InformationSelect(icon: ImageVector, label: String, options: List<String>) {
                         onClick = {
                             selectedOption = option
                             expanded = false
+                            onOptionPick(selectedOption)
                         }
                     )
                 }

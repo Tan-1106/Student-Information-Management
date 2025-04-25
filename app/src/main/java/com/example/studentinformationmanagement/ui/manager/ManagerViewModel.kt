@@ -1,6 +1,9 @@
 package com.example.studentinformationmanagement.ui.manager
 
 import android.util.Log
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import com.example.studentinformationmanagement.AppScreen
@@ -51,7 +54,49 @@ class ManagerViewModel : ViewModel() {
 
     }
 
-    fun onAddButtonClicked(navController: NavController) {
+    // Add Student
+    fun onAddStudentButtonClicked(navController: NavController) {
         navController.navigate(AppScreen.AddStudent.name)
+    }
+
+    var newStudentName by mutableStateOf("")
+        private set
+    var newStudentEmail by mutableStateOf("")
+        private set
+    var newStudentPhone by mutableStateOf("")
+        private set
+    var newStudentBirthday by mutableStateOf("")
+        private set
+    var newStudentId by mutableStateOf("")
+        private set
+    var newStudentClass by mutableStateOf("")
+        private set
+    var newStudentFaculty by mutableStateOf("")
+        private set
+
+    fun onNewStudentNameChange(userInput: String) {
+        newStudentName = userInput
+    }
+    fun onNewStudentEmailChange(userInput: String) {
+        newStudentEmail = userInput
+    }
+    fun onNewStudentPhoneChange(userInput: String) {
+        newStudentPhone = userInput
+    }
+    fun onNewStudentIdChange(userInput: String) {
+        newStudentId = userInput
+    }
+    fun onNewStudentClassChange(userInput: String) {
+        newStudentClass = userInput
+    }
+    fun onNewStudentBirthdayPick(userInput: String) {
+        newStudentBirthday = userInput
+    }
+    fun onNewStudentFacultyChange(userInput: String) {
+        newStudentFaculty = userInput
+    }
+
+    fun onAddStudentButtonClick() {
+
     }
 }
