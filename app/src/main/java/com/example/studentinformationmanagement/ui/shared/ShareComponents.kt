@@ -207,6 +207,7 @@ fun InformationLine(
                     .fillMaxWidth()
                     .padding(vertical = 5.dp),
             )
+            Divider()
         }
     }
 }
@@ -436,11 +437,7 @@ fun InformationDate(
                     }
                 }
             }
-            HorizontalDivider(
-                color = Color.Gray,
-                thickness = 1.dp,
-                modifier = Modifier.fillMaxWidth(0.9f)
-            )
+            Divider()
         }
     }
 }
@@ -462,14 +459,17 @@ fun InformationSelect(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
-            icon,
+            imageVector = icon,
             contentDescription = null,
             modifier = Modifier.weight(0.2f),
             tint = primary_content
         )
         Column(modifier = Modifier.weight(0.8f)) {
             Text(
-                label, fontSize = 18.sp, fontWeight = FontWeight.Bold, color = primary_content,
+                text = label,
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold,
+                color = primary_content,
                 fontFamily = kanit_bold_font
             )
 
@@ -497,11 +497,7 @@ fun InformationSelect(
                     )
                 }
             }
-            HorizontalDivider(
-                color = Color.Gray,
-                thickness = 1.dp,
-                modifier = Modifier.fillMaxWidth(0.9f)
-            )
+            Divider()
         }
     }
 }
@@ -539,7 +535,6 @@ fun SwipeComponent(
         swipeThreshold = 100.dp,
         backgroundUntilSwipeThreshold = Color.White ,
     ) {
-
         content()
     }
 }

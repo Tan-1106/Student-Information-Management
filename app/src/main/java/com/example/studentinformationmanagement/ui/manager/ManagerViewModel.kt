@@ -95,8 +95,79 @@ class ManagerViewModel : ViewModel() {
     fun onNewStudentFacultyChange(userInput: String) {
         newStudentFaculty = userInput
     }
+    fun clearAddStudentInputs() {
+        newStudentName = ""
+        newStudentEmail = ""
+        newStudentPhone = ""
+        newStudentId = ""
+        newStudentClass = ""
+        newStudentBirthday = ""
+        newStudentFaculty = ""
+    }
 
+    var invalidMessage by mutableStateOf("")
+        private set
     fun onAddStudentButtonClick() {
+        val db = Firebase.firestore
 
+        val id = newStudentId.trim()
+        val email = newStudentEmail.trim()
+        val phone = newStudentPhone.trim()
+
+        db.collection("students")
+            .whereIn("studentId", listOf(id))
+            .get()
+            .addOnSuccessListener { idResult ->
+                if (idResult.isEmpty) {
+                    db.collection("students")
+                        .whereIn("studentEmail", listOf(email))
+                        .get()
+                        .addOnSuccessListener { emailResult ->
+                            if (emailResult.isEmpty) {
+                                db.collection("students")
+                                    .whereIn("studentPhoneNumber", listOf(phone))
+                                    .get()
+                                    .addOnSuccessListener { phoneResult ->
+                                        if (phoneResult.isEmpty) {
+                                            val newStudent = Student(
+                                                studentName = newStudentName,
+                                                studentBirthday = newStudentBirthday,
+                                                studentEmail = email,
+                                                studentPhoneNumber = phone,
+                                                studentId = id,
+                                                studentClass = newStudentClass,
+                                                studentFaculty = newStudentFaculty
+                                            )
+
+                                            db.collection("students")
+                                                .add(newStudent)
+                                                .addOnSuccessListener {
+                                                    invalidMessage = ""
+                                                    clearAddStudentInputs()
+                                                }
+                                                .addOnFailureListener { e ->
+                                                    invalidMessage = "Cannot add student."
+                                                }
+                                        } else {
+                                            invalidMessage = "Phone number is existed."
+                                        }
+                                    }
+                                    .addOnFailureListener { e ->
+                                        invalidMessage = "Cannot check existing phone number."
+                                    }
+                            } else {
+                                invalidMessage = "Email is existed."
+                            }
+                        }
+                        .addOnFailureListener { e ->
+                            invalidMessage = "Cannot check existing email."
+                        }
+                } else {
+                    invalidMessage = "Student's ID is existed."
+                }
+            }
+            .addOnFailureListener { e ->
+                invalidMessage = "Cannot check existing student's ID."
+            }
     }
 }
