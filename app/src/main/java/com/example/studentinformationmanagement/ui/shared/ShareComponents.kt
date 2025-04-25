@@ -131,15 +131,10 @@ fun DetailProfile(
                     )
                 }
                 InformationLine(Icons.Filled.Person, "Name", user.userName)
-                Divider()
                 InformationLine(Icons.Filled.Cake, "Birthday", user.userBirthday)
-                Divider()
                 InformationLine(Icons.Filled.Email, "Email", user.userEmail)
-                Divider()
                 InformationLine(Icons.Filled.Phone, "Phone", user.userPhoneNumber)
-                Divider()
                 InformationLine(Icons.Filled.Person, "Role", user.userRole)
-                Divider()
                 InformationLine(Icons.Filled.BrokenImage, "Status", user.userStatus)
             }
         }
