@@ -186,7 +186,6 @@ fun AddUser(
                 options = listOf("Manager", "Employee"),
                 onOptionPick = { adminViewModel.onNewUserRolePick(it) }
             )
-
         }
     }
 }

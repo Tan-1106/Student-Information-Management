@@ -72,23 +72,6 @@ fun AppScreen(
 
         }
         composable(route = AppScreen.AddStudent.name) {
-//            var context = LocalContext.current
-//            Scaffold {
-//                Box(modifier = Modifier
-//                    .padding(it)
-//                    .systemBarsPadding()) {
-//                    Column(modifier = Modifier.fillMaxSize()) {
-//                        SwipeComponent(
-//                            onSwipeLeft = {
-//                                Toast.makeText(context, "edit", Toast.LENGTH_SHORT).show()
-//                            },
-//                            onSwipeRight = {
-//                                Toast.makeText(context, "delete", Toast.LENGTH_SHORT).show()
-//                            },
-//                            content = { Text("TEST", color = Color.Red) })
-//                    }
-//                }
-//            }
             AddStudent(navController = navController)
         }
         composable(route = AppScreen.EditStudent.name) {
