@@ -1,5 +1,6 @@
 package com.example.studentinformationmanagement.ui.admin
 
+import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -36,6 +37,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
@@ -61,6 +63,7 @@ fun AddUser(
     adminViewModel: AdminViewModel = viewModel(),
     navController: NavHostController = rememberNavController()
 ) {
+    val context: Context = LocalContext.current
     Scaffold(modifier = Modifier.systemBarsPadding(), containerColor = Color.White, topBar = {
         TopAppBar(
             title = {
@@ -97,7 +100,10 @@ fun AddUser(
         Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
             Button(
                 onClick = {
-                    adminViewModel.onAddUserButtonClick()
+                    adminViewModel.onAddUserButtonClick(
+                        navController = navController,
+                        context = context
+                    )
                 },
                 colors = ButtonDefaults.outlinedButtonColors(
                     containerColor = secondary_content,
@@ -126,13 +132,14 @@ fun AddUser(
                 onValueChange = { adminViewModel.onNewUserNameChange(it) },
                 label = "Name",
                 enable = true,
-                placeholder = "Enter name"
+                placeholder = "Enter name",
+                errorMessage = adminViewModel.nameError
             )
             InformationDate(
                 icon = Icons.Default.Cake,
                 label = "Birthday",
                 placeholder = "Enter Birthday",
-                onDatePick = { adminViewModel.onNewUserBirthdayPick(it) }
+                onDatePick = { adminViewModel.onNewUserBirthdayPick(it) },
             )
             InformationLine(
                 icon = Icons.Filled.Email,
@@ -140,7 +147,8 @@ fun AddUser(
                 value = adminViewModel.newUserEmail,
                 onValueChange = { adminViewModel.onNewUserEmailChange(it) },
                 enable = true,
-                placeholder = "Enter email"
+                placeholder = "Enter email",
+                errorMessage = adminViewModel.emailError
             )
             InformationLine(
                 icon = Icons.Filled.Phone,
@@ -148,7 +156,8 @@ fun AddUser(
                 value = adminViewModel.newUserPhone,
                 onValueChange = { adminViewModel.onNewUserPhoneChange(it) },
                 enable = true,
-                placeholder = "Enter phone number"
+                placeholder = "Enter phone number",
+                errorMessage = adminViewModel.phoneError
             )
             InformationSelect(
                 icon = Icons.Filled.BrokenImage,
