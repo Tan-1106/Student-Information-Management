@@ -33,6 +33,7 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Edit
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -130,7 +131,13 @@ fun DetailProfile(
                         error = painterResource(id = R.drawable.avt_error)
                     )
                 }
-                InformationLine(Icons.Filled.Person, "Name", user.userName)
+                InformationLine(
+                    Icons.Filled.Person,
+                    "Name",
+                    user.userName,
+
+                    errorMessage = "Please enter your name"
+                )
                 InformationLine(Icons.Filled.Cake, "Birthday", user.userBirthday)
                 InformationLine(Icons.Filled.Email, "Email", user.userEmail)
                 InformationLine(Icons.Filled.Phone, "Phone", user.userPhoneNumber)
@@ -149,7 +156,8 @@ fun InformationLine(
     value: String,
     enable: Boolean = false,
     onValueChange: (String) -> Unit = {},
-    placeholder: String = ""
+    placeholder: String = "",
+    errorMessage: String = ""
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -202,17 +210,37 @@ fun InformationLine(
                     .fillMaxWidth()
                     .padding(vertical = 5.dp),
             )
-            Divider()
+            if (errorMessage != "") {
+                Divider(color = Color.Red)
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(vertical = 5.dp)
+                ) {
+                    Icon(
+                        Icons.Outlined.Info,
+                        contentDescription = null,
+                        tint = Color.Red,
+                        modifier = Modifier.size(15.dp)
+                    )
+                    Spacer(modifier = Modifier.width(5.dp))
+                    Text(
+                        errorMessage,
+                        style = TextStyle(color = Color.Red),
+                    )
+                }
+            } else {
+                Divider()
+            }
         }
     }
 }
 
 // Composable: Divide between information line
 @Composable
-fun Divider() {
-    Spacer(modifier = Modifier.height(5.dp))
+fun Divider(color: Color = Color.Gray) {
+//    Spacer(modifier = Modifier.height(5.dp))
     HorizontalDivider(
-        color = Color.Gray,
+        color = color,
         thickness = 1.dp,
         modifier = Modifier.fillMaxWidth(0.9f)
     )
@@ -528,7 +556,7 @@ fun SwipeComponent(
         startActions = listOf(startAction),
         endActions = listOf(endAction),
         swipeThreshold = 100.dp,
-        backgroundUntilSwipeThreshold = Color.White ,
+        backgroundUntilSwipeThreshold = Color.White,
     ) {
         content()
     }
@@ -542,7 +570,15 @@ fun SwipeComponent(
 @Composable
 fun DetailProfilePreview() {
     DetailProfile(
-        user = CurrentUser("", "Nguyễn Văn A", "01/01/2004", "nguyenvana@gmail.com", "0123456789", "Manager", "Enable")
+        user = CurrentUser(
+            "",
+            "Nguyễn Văn A",
+            "01/01/2004",
+            "nguyenvana@gmail.com",
+            "0123456789",
+            "Manager",
+            "Enable"
+        )
     )
 }
 

@@ -124,30 +124,6 @@ fun AddStudent(
                 .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Box(
-                contentAlignment = Alignment.BottomCenter
-            ) {
-                Image(
-                    painter = painterResource(R.drawable.login_image),
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
-
-                    modifier = Modifier
-                        .clip(CircleShape)
-                        .border(shape = CircleShape, color = secondary_dark, width = 2.dp)
-                        .size(200.dp)
-                )
-                IconButton(
-                    onClick = {}
-                ) {
-                    Icon(
-                        Icons.Outlined.CameraAlt,
-                        contentDescription = null,
-                        modifier = Modifier.size(40.dp),
-                        tint = primary_content
-                    )
-                }
-            }
             InformationLine(
                 icon = Icons.Filled.Person,
                 value = managerViewModel.newStudentName,
