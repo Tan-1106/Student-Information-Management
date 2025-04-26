@@ -259,7 +259,6 @@ fun UserList(
                 stateOrClass = userList[index].userStatus,
                 phoneNumber = userList[index].userPhoneNumber,
                 onSeeMoreClicked = { viewModel.onUserSeeMoreClicked(it) },
-                onEditButtonClicked = { viewModel.onUserEditClicked(it) }
             )
         }
     }
@@ -273,7 +272,6 @@ fun InformationBox(
     roleOrStuId: String,
     stateOrClass: String,
     phoneNumber: String,
-    onEditButtonClicked: (String) -> Unit,
     onSeeMoreClicked: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -290,8 +288,6 @@ fun InformationBox(
             onSwipeLeft = { Toast.makeText(context, "edit", Toast.LENGTH_SHORT).show() },
             onSwipeRight = { Toast.makeText(context, "delete", Toast.LENGTH_SHORT).show() },
         ) {
-
-
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
@@ -327,51 +323,43 @@ fun InformationBox(
                         color = Color.DarkGray,
                         fontFamily = kanit_regular_font
                     )
-                    if (stateOrClass == "Active") {
-                        Text(
-                            text = stateOrClass,
-                            fontSize = 14.sp,
-                            fontFamily = kanit_regular_font,
-                            color = primary_content
-                        )
-                    } else if (stateOrClass == "Inactive") {
-                        Text(
-                            text = stateOrClass,
-                            fontSize = 14.sp,
-                            fontFamily = kanit_regular_font,
-                            color = secondary_dark
-                        )
-                    } else {
-                        Text(
-                            text = stateOrClass,
-                            fontSize = 14.sp,
-                            fontFamily = kanit_regular_font,
-                            color = secondary_content
-                        )
-                    }
-
-                }
-                Column(
-                    verticalArrangement = Arrangement.SpaceEvenly,
-                    horizontalAlignment = Alignment.End
-                ) {
-                    IconButton(
-                        onClick = { onEditButtonClicked(phoneNumber) }
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
                     ) {
-                        Icon(
-                            imageVector = Icons.Filled.Edit,
-                            contentDescription = null,
+                        if (stateOrClass == "Active") {
+                            Text(
+                                text = stateOrClass,
+                                fontSize = 14.sp,
+                                fontFamily = kanit_regular_font,
+                                color = primary_content
+                            )
+                        } else if (stateOrClass == "Inactive") {
+                            Text(
+                                text = stateOrClass,
+                                fontSize = 14.sp,
+                                fontFamily = kanit_regular_font,
+                                color = secondary_dark
+                            )
+                        } else {
+                            Text(
+                                text = stateOrClass,
+                                fontSize = 14.sp,
+                                fontFamily = kanit_regular_font,
+                                color = secondary_content
+                            )
+                        }
+                        Spacer(modifier = Modifier.weight(1f))
+                        Text(
+                            text = stringResource(R.string.see_more),
+                            fontFamily = kanit_regular_font,
+                            color = primary_content,
+                            modifier = Modifier
+                                .clickable {
+                                    onSeeMoreClicked(phoneNumber)
+                                }
                         )
                     }
-                    Text(
-                        text = stringResource(R.string.see_more),
-                        fontFamily = kanit_regular_font,
-                        color = primary_content,
-                        modifier = Modifier
-                            .clickable {
-                                onSeeMoreClicked(phoneNumber)
-                            }
-                    )
                 }
             }
         }

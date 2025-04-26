@@ -17,12 +17,14 @@ import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 
 class ManagerViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(ManagerUiState())
     val uiState: StateFlow<ManagerUiState> = _uiState.asStateFlow()
 
     // Fetch Student List
+    private var fullStudentList: List<Student> = emptyList()
     init {
         fetchStudentsFromFirestore()
     }
@@ -43,17 +45,38 @@ class ManagerViewModel : ViewModel() {
                     }
                 }
 
-                _uiState.value = _uiState.value.copy(
-                    userList = students
-                )
+                _uiState.update { currentState ->
+                    currentState.copy(
+                        studentList = students
+                    )
+                }
+                // For search function
+                fullStudentList = students
             }
     }
 
-    fun onUserEditClicked(userPhoneNumber: String) {
+    var searchInput by mutableStateOf("")
+        private set
+    fun onStudentSearch(userSearchInput: String) {
+        searchInput = userSearchInput
 
+        val keyword = searchInput.trim().lowercase()
+
+        if (keyword.isEmpty()) {
+            fetchStudentsFromFirestore()
+        } else {
+            val filteredList = fullStudentList.filter { student ->
+                student.studentName.contains(keyword, ignoreCase = true) || student.studentId.contains(keyword, ignoreCase = true)
+            }
+            _uiState.update { currentState ->
+                currentState.copy(
+                    studentList = filteredList
+                )
+            }
+        }
     }
 
-    fun onUserSeeMoreClicked(userPhoneNumber: String) {
+    fun onStudentSeeMoreClicked(userPhoneNumber: String) {
 
     }
 

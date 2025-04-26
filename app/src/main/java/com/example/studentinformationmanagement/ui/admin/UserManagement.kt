@@ -68,12 +68,12 @@ fun UserManagement(
             ) {
                 // Search Bar
                 OutlinedTextField(
-                    value = adminViewModel.searchBarValue,
+                    value = adminViewModel.searchInput,
                     onValueChange = {
                         adminViewModel.onUserSearch(it)
                     },
                     modifier = Modifier.weight(1f),
-                    placeholder = { Text("Search users...", fontSize = 16.sp, color = primary_content) },
+                    placeholder = { Text("Name or Phone number...", fontSize = 16.sp, color = primary_content) },
                     leadingIcon = {
                         Icon(Icons.Default.Search, contentDescription = "Search", tint = primary_content)
                     },

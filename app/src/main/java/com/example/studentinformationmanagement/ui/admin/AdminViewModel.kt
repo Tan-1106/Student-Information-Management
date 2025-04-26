@@ -16,6 +16,7 @@ import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 
 
 class AdminViewModel : ViewModel() {
@@ -24,9 +25,10 @@ class AdminViewModel : ViewModel() {
 
     // Fetching user list
     init {
-        fetchAllUsers()
+        fetchUsersFromFirestore()
     }
-    private fun fetchAllUsers() {
+    private var fullUserList: List<User> = emptyList()
+    private fun fetchUsersFromFirestore() {
         Firebase.firestore.collection("users")
             .addSnapshotListener { snapshot, e ->
                 if (e != null || snapshot == null) {
@@ -43,26 +45,38 @@ class AdminViewModel : ViewModel() {
                     }
                 }
 
-                _uiState.value = _uiState.value.copy(
-                    userList = users
-                )
+                _uiState.update { currentState ->
+                    currentState.copy(
+                        userList = users
+                    )
+                }
+                // For search function
+                fullUserList = users
             }
     }
 
-    var searchBarValue by mutableStateOf("")
+    var searchInput by mutableStateOf("")
         private set
-    fun onUserSearch(userInput: String) {
-        searchBarValue = userInput
-        // TODO: Xử lý sự kiện tìm kiếm
+    fun onUserSearch(userSearchInput: String) {
+        searchInput = userSearchInput
 
+        val keyword = searchInput.trim().lowercase()
+
+        if (keyword.isEmpty()) {
+            fetchUsersFromFirestore()
+        } else {
+            val filteredList = fullUserList.filter { user ->
+                user.userName.contains(keyword, ignoreCase = true) || user.userPhoneNumber.contains(keyword, ignoreCase = true)
+            }
+            _uiState.update { currentState ->
+                currentState.copy(
+                    userList = filteredList
+                )
+            }
+        }
     }
-
     fun onAddButtonClicked(navController: NavHostController) {
         navController.navigate(AppScreen.AddUser.name)
-    }
-
-    fun onUserEditClicked(userPhoneNumber: String) {
-        // TODO: Xử lý sự kiện chỉnh sửa user
     }
 
     fun onUserSeeMoreClicked(userPhoneNumber: String) {
