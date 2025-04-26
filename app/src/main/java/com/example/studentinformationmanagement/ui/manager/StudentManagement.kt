@@ -162,7 +162,7 @@ fun StudentManagement(
             StudentList(managerUiState.studentList)
         }
 
-        // Add Student Button
+        // Add user button
         FloatingActionButton(
             onClick = { managerViewModel.onAddStudentButtonClicked(navController) },
             shape = RoundedCornerShape(50),

@@ -55,6 +55,7 @@ class AdminViewModel : ViewModel() {
             }
     }
 
+    // Search bar
     var searchInput by mutableStateOf("")
         private set
     fun onUserSearch(userSearchInput: String) {
@@ -77,15 +78,74 @@ class AdminViewModel : ViewModel() {
             }
         }
     }
-    fun onAddButtonClicked(navController: NavHostController) {
-        navController.navigate(AppScreen.AddUser.name)
+
+    // Filter feature
+    var isShowDialog by mutableStateOf(false)
+        private set
+    private var sortSelected by mutableStateOf("")
+    private var roleSelected by mutableStateOf("")
+    private var statusSelected by mutableStateOf("")
+
+    fun onSortSelected(userInput: String) {
+        sortSelected = userInput
+    }
+    fun onRoleSelected(userInput: String) {
+        roleSelected = userInput
+    }
+    fun onStatusSelected(userInput: String) {
+        statusSelected = userInput
     }
 
+    fun onFilterClick() {
+        isShowDialog = true
+    }
+    fun onDismissFilterClick() {
+        isShowDialog = false
+    }
+    fun onApplyFilterClick() {
+        var filtered = fullUserList
+
+        if (roleSelected.isNotBlank()) {
+            filtered = filtered.filter { it.userRole == roleSelected }
+        }
+
+        if (statusSelected.isNotBlank()) {
+            filtered = filtered.filter { it.userStatus == statusSelected }
+        }
+
+        filtered = when (sortSelected) {
+            "A → Z" -> filtered.sortedBy { it.userName }
+            "Z → A" -> filtered.sortedByDescending { it.userName }
+            else -> filtered
+        }
+
+        _uiState.update { currentState ->
+            currentState.copy(userList = filtered)
+        }
+
+        isShowDialog = false
+    }
+
+    fun onClearFilterClick() {
+        sortSelected = ""
+        roleSelected = ""
+        statusSelected = ""
+
+        _uiState.update { currentState ->
+            currentState.copy(userList = fullUserList)
+        }
+        isShowDialog = false
+    }
+
+    // User's detail profile
     fun onUserSeeMoreClicked(userPhoneNumber: String) {
-        // TODO: Xử lý sự kiện xem thêm user
     }
 
     // Add User
+    fun onAddUserButtonClicked(navController: NavHostController) {
+        navController.navigate(AppScreen.AddUser.name)
+    }
+
     var newUserName by mutableStateOf("")
         private set
     var newUserEmail by mutableStateOf("")
