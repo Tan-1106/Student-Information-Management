@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.studentinformationmanagement.AppScreen
+import com.example.studentinformationmanagement.data.shared.CurrentUser
 import com.example.studentinformationmanagement.ui.theme.primary_content
 
 // Composable: User's detail profile
@@ -24,6 +25,7 @@ import com.example.studentinformationmanagement.ui.theme.primary_content
 fun UserDetailProfile(
     loginViewModel: LoginViewModel,
     navController: NavHostController,
+    user: CurrentUser
 ) {
     // UiState
     val loginUiState by loginViewModel.loginUiState.collectAsState()
@@ -80,7 +82,7 @@ fun UserDetailProfile(
                     }
                 )
             },
-            user = currentUser
+            user = user
         )
     }
 }

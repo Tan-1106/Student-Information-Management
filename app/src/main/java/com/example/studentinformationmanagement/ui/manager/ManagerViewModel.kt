@@ -2,6 +2,7 @@ package com.example.studentinformationmanagement.ui.manager
 
 import android.content.Context
 import android.util.Log
+import android.util.Patterns
 import android.widget.Toast
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -12,6 +13,7 @@ import androidx.navigation.NavHostController
 import com.example.studentinformationmanagement.AppScreen
 import com.example.studentinformationmanagement.data.manager.ManagerUiState
 import com.example.studentinformationmanagement.data.manager.Student
+import com.example.studentinformationmanagement.ui.shared.StudentDetailProfile
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -30,9 +32,11 @@ class ManagerViewModel : ViewModel() {
 
     // Fetch Student List
     private var fullStudentList: List<Student> = emptyList()
+
     init {
         fetchStudentsFromFirestore()
     }
+
     private fun fetchStudentsFromFirestore() {
         Firebase.firestore.collection("students")
             .addSnapshotListener { snapshot, e ->
@@ -65,6 +69,7 @@ class ManagerViewModel : ViewModel() {
     // Search bar
     var searchInput by mutableStateOf("")
         private set
+
     fun onStudentSearch(userSearchInput: String) {
         searchInput = userSearchInput
 
@@ -74,9 +79,18 @@ class ManagerViewModel : ViewModel() {
             fetchStudentsFromFirestore()
         } else {
             val filteredList = fullStudentList.filter { student ->
-                student.studentName.contains(keyword, ignoreCase = true) || student.studentEmail.contains(keyword, ignoreCase = true) ||
-                        student.studentPhoneNumber.contains(keyword, ignoreCase = true) || student.studentId.contains(keyword, ignoreCase = true) ||
-                                student.studentClass.contains(keyword, ignoreCase = true) || student.studentFaculty.contains(keyword, ignoreCase = true)
+                student.studentName.contains(
+                    keyword,
+                    ignoreCase = true
+                ) || student.studentEmail.contains(keyword, ignoreCase = true) ||
+                        student.studentPhoneNumber.contains(
+                            keyword,
+                            ignoreCase = true
+                        ) || student.studentId.contains(keyword, ignoreCase = true) ||
+                        student.studentClass.contains(
+                            keyword,
+                            ignoreCase = true
+                        ) || student.studentFaculty.contains(keyword, ignoreCase = true)
             }
             _uiState.update { currentState ->
                 currentState.copy(
@@ -97,12 +111,15 @@ class ManagerViewModel : ViewModel() {
     fun onSortSelected(userInput: String) {
         sortSelected = userInput
     }
+
     fun onMinimumCertificatesInput(userInput: String) {
         minimumCertificates = userInput
     }
+
     fun onFacultyPick(userInput: String) {
         facultySelected = userInput
     }
+
     fun onClassPick(userInput: String) {
         classSelected = userInput
     }
@@ -110,9 +127,11 @@ class ManagerViewModel : ViewModel() {
     fun onFilterClick() {
         isShowDialog = true
     }
+
     fun onDismissFilterClick() {
         isShowDialog = false
     }
+
     fun onApplyFilterClick() {
         var filtered = fullStudentList
 
@@ -153,8 +172,16 @@ class ManagerViewModel : ViewModel() {
     }
 
     // Student's detail profile
-    fun onStudentSeeMoreClicked(userPhoneNumber: String) {
+    fun onStudentSeeMoreClicked(
+        userPhoneNumber: String, navController: NavHostController,
+    ) {
+        val student = fullStudentList.find { it.studentPhoneNumber == userPhoneNumber }
 
+        student?.let { selectedStudent ->
+            navController.navigate(AppScreen.StudentDetailProfile.name)
+        } ?: run {
+            Log.e("ManagerViewModel", "Student not found with phone number: $userPhoneNumber")
+        }
     }
 
     // Add Student
@@ -180,24 +207,31 @@ class ManagerViewModel : ViewModel() {
     fun onNewStudentNameChange(userInput: String) {
         newStudentName = userInput
     }
+
     fun onNewStudentEmailChange(userInput: String) {
         newStudentEmail = userInput
     }
+
     fun onNewStudentPhoneChange(userInput: String) {
         newStudentPhone = userInput
     }
+
     fun onNewStudentIdChange(userInput: String) {
         newStudentId = userInput
     }
+
     fun onNewStudentClassChange(userInput: String) {
         newStudentClass = userInput
     }
+
     fun onNewStudentBirthdayPick(userInput: String) {
         newStudentBirthday = userInput
     }
+
     fun onNewStudentFacultyChange(userInput: String) {
         newStudentFaculty = userInput
     }
+
     fun clearAddStudentInputs() {
         newStudentName = ""
         newStudentEmail = ""
@@ -222,6 +256,7 @@ class ManagerViewModel : ViewModel() {
         private set
     var facultyError by mutableStateOf("")
         private set
+
     fun onAddStudentButtonClick(
         navController: NavHostController,
         context: Context
@@ -270,28 +305,44 @@ class ManagerViewModel : ViewModel() {
                                                         navController.navigateUp()
                                                     }
                                                     .addOnFailureListener {
-                                                        Toast.makeText(context, "Cannot add student", Toast.LENGTH_SHORT).show()
+                                                        Toast.makeText(
+                                                            context,
+                                                            "Cannot add student",
+                                                            Toast.LENGTH_SHORT
+                                                        ).show()
                                                     }
                                             } else {
                                                 phoneError = "Phone number is existed."
                                             }
                                         }
                                         .addOnFailureListener {
-                                            Toast.makeText(context, "Cannot check existing phone number", Toast.LENGTH_SHORT).show()
+                                            Toast.makeText(
+                                                context,
+                                                "Cannot check existing phone number",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
                                         }
                                 } else {
                                     emailError = "Email is existed."
                                 }
                             }
                             .addOnFailureListener {
-                                Toast.makeText(context, "Cannot check existing email", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(
+                                    context,
+                                    "Cannot check existing email",
+                                    Toast.LENGTH_SHORT
+                                ).show()
                             }
                     } else {
                         idError = "Student's ID is existed."
                     }
                 }
                 .addOnFailureListener {
-                    Toast.makeText(context, "Cannot check existing student's ID", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        context,
+                        "Cannot check existing student's ID",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
         }
     }
@@ -309,7 +360,7 @@ class ManagerViewModel : ViewModel() {
         if (newStudentEmail.trim().isEmpty()) {
             emailError = "Email is required"
             isValid = false
-        } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(newStudentEmail.trim()).matches()) {
+        } else if (!Patterns.EMAIL_ADDRESS.matcher(newStudentEmail.trim()).matches()) {
             emailError = "Invalid email format"
             isValid = false
         } else {
@@ -321,8 +372,7 @@ class ManagerViewModel : ViewModel() {
             isValid = false
         } else if (newStudentPhone.trim().length != 10) {
             phoneError = "Invalid phone number"
-        }
-        else {
+        } else {
             phoneError = ""
         }
 

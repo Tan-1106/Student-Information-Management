@@ -1,20 +1,11 @@
 package com.example.studentinformationmanagement
 
 import android.os.Build
-import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.systemBarsPadding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -26,8 +17,6 @@ import com.example.studentinformationmanagement.ui.manager.StudentManagement
 import com.example.studentinformationmanagement.ui.shared.LoginScreen
 import com.example.studentinformationmanagement.ui.shared.LoginViewModel
 import com.example.studentinformationmanagement.ui.shared.UserDetailProfile
-import com.example.studentinformationmanagement.ui.shared.SwipeActionItem
-import com.example.studentinformationmanagement.ui.shared.SwipeComponent
 
 enum class AppScreen() {
     Login,
@@ -84,20 +73,25 @@ fun AppScreen(
 
         }
         composable(route = AppScreen.UserDetailProfile.name) {
-            UserDetailProfile(
-                loginViewModel = loginViewModel,
-                navController = navController
-            )
+            val loginUiState by loginViewModel.loginUiState.collectAsState()
+            val currentUser = loginUiState.currentUser
+            if (currentUser != null) {
+                UserDetailProfile(
+                    loginViewModel = loginViewModel,
+                    navController = navController, user = currentUser
+
+                )
+            }
         }
         composable(route = AppScreen.StudentDetailProfile.name) {
 
         }
-        composable (route = AppScreen.StudentManagement.name) {
+        composable(route = AppScreen.StudentManagement.name) {
             StudentManagement(
                 navController = navController
             )
         }
-        composable (route = AppScreen.AdminScreen.name){
+        composable(route = AppScreen.AdminScreen.name) {
             AdminScreen(
                 loginViewModel = loginViewModel,
                 navController = navController

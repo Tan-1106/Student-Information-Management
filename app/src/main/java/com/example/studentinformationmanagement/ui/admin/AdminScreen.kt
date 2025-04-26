@@ -16,6 +16,7 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -127,10 +128,15 @@ fun AdminScreen(
                 )
             }
             composable(AppScreen.UserDetailProfile.name) {
-                UserDetailProfile(
-                    loginViewModel = loginViewModel,
-                    navController = navController
-                )
+                val loginUiState by loginViewModel.loginUiState.collectAsState()
+                val currentUser = loginUiState.currentUser
+                if (currentUser != null) {
+                    UserDetailProfile(
+                        loginViewModel = loginViewModel,
+                        navController = navController, user = currentUser
+
+                    )
+                }
             }
         }
     }
