@@ -1,11 +1,14 @@
 package com.example.studentinformationmanagement.ui.manager
 
+import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.example.studentinformationmanagement.AppScreen
 import com.example.studentinformationmanagement.data.manager.ManagerUiState
 import com.example.studentinformationmanagement.data.manager.Student
@@ -105,80 +108,152 @@ class ManagerViewModel : ViewModel() {
         newStudentFaculty = ""
     }
 
-    var invalidMessage by mutableStateOf("")
+    var nameError by mutableStateOf("")
         private set
-    fun onAddStudentButtonClick() {
+    var emailError by mutableStateOf("")
+        private set
+    var phoneError by mutableStateOf("")
+        private set
+    var idError by mutableStateOf("")
+        private set
+    var classError by mutableStateOf("")
+        private set
+    var birthdayError by mutableStateOf("")
+        private set
+    var facultyError by mutableStateOf("")
+        private set
+    fun onAddStudentButtonClick(
+        navController: NavHostController,
+        context: Context
+    ) {
         val db = Firebase.firestore
 
-        val id = newStudentId.trim()
+        val name = newStudentName.trim()
         val email = newStudentEmail.trim()
         val phone = newStudentPhone.trim()
+        val id = newStudentId.trim()
+        val studentClass = newStudentClass.trim()
+        val birthday = newStudentBirthday.trim()
+        val faculty = newStudentFaculty.trim()
 
-        if (newStudentName == "" || newStudentEmail == "" ||
-            newStudentPhone == "" || newStudentId == "" ||
-            newStudentClass == "" || newStudentBirthday == "" ||
-            newStudentFaculty == ""
-            ) {
-            invalidMessage = "All fields must be filled"
-            return
+        if (validateUserInputs()) {
+            db.collection("students")
+                .whereIn("studentId", listOf(id))
+                .get()
+                .addOnSuccessListener { idResult ->
+                    if (idResult.isEmpty) {
+                        db.collection("students")
+                            .whereIn("studentEmail", listOf(email))
+                            .get()
+                            .addOnSuccessListener { emailResult ->
+                                if (emailResult.isEmpty) {
+                                    db.collection("students")
+                                        .whereIn("studentPhoneNumber", listOf(phone))
+                                        .get()
+                                        .addOnSuccessListener { phoneResult ->
+                                            if (phoneResult.isEmpty) {
+                                                val newStudent = Student(
+                                                    studentName = name,
+                                                    studentBirthday = birthday,
+                                                    studentEmail = email,
+                                                    studentPhoneNumber = phone,
+                                                    studentId = id,
+                                                    studentClass = studentClass,
+                                                    studentFaculty = faculty
+                                                )
+
+                                                db.collection("students")
+                                                    .document(id)
+                                                    .set(newStudent)
+                                                    .addOnSuccessListener {
+                                                        clearAddStudentInputs()
+                                                        navController.navigateUp()
+                                                    }
+                                                    .addOnFailureListener {
+                                                        Toast.makeText(context, "Cannot add student", Toast.LENGTH_SHORT).show()
+                                                    }
+                                            } else {
+                                                phoneError = "Phone number is existed."
+                                            }
+                                        }
+                                        .addOnFailureListener {
+                                            Toast.makeText(context, "Cannot check existing phone number", Toast.LENGTH_SHORT).show()
+                                        }
+                                } else {
+                                    emailError = "Email is existed."
+                                }
+                            }
+                            .addOnFailureListener {
+                                Toast.makeText(context, "Cannot check existing email", Toast.LENGTH_SHORT).show()
+                            }
+                    } else {
+                        idError = "Student's ID is existed."
+                    }
+                }
+                .addOnFailureListener {
+                    Toast.makeText(context, "Cannot check existing student's ID", Toast.LENGTH_SHORT).show()
+                }
+        }
+    }
+
+    fun validateUserInputs(): Boolean {
+        var isValid = true
+
+        if (newStudentName.trim().isEmpty()) {
+            nameError = "Name is required"
+            isValid = false
+        } else {
+            nameError = ""
         }
 
-        db.collection("students")
-            .whereIn("studentId", listOf(id))
-            .get()
-            .addOnSuccessListener { idResult ->
-                if (idResult.isEmpty) {
-                    db.collection("students")
-                        .whereIn("studentEmail", listOf(email))
-                        .get()
-                        .addOnSuccessListener { emailResult ->
-                            if (emailResult.isEmpty) {
-                                db.collection("students")
-                                    .whereIn("studentPhoneNumber", listOf(phone))
-                                    .get()
-                                    .addOnSuccessListener { phoneResult ->
-                                        if (phoneResult.isEmpty) {
-                                            val newStudent = Student(
-                                                studentName = newStudentName,
-                                                studentBirthday = newStudentBirthday,
-                                                studentEmail = email,
-                                                studentPhoneNumber = phone,
-                                                studentId = id,
-                                                studentClass = newStudentClass,
-                                                studentFaculty = newStudentFaculty
-                                            )
+        if (newStudentEmail.trim().isEmpty()) {
+            emailError = "Email is required"
+            isValid = false
+        } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(newStudentEmail.trim()).matches()) {
+            emailError = "Invalid email format"
+            isValid = false
+        } else {
+            emailError = ""
+        }
 
-                                            db.collection("students")
-                                                .document(id)
-                                                .set(newStudent)
-                                                .addOnSuccessListener {
-                                                    invalidMessage = ""
-                                                    clearAddStudentInputs()
-                                                }
+        if (newStudentPhone.trim().isEmpty()) {
+            phoneError = "Phone number is required"
+            isValid = false
+        } else if (newStudentPhone.trim().length != 10) {
+            phoneError = "Invalid phone number"
+        }
+        else {
+            phoneError = ""
+        }
 
-                                                .addOnFailureListener { e ->
-                                                    invalidMessage = "Cannot add student."
-                                                }
-                                        } else {
-                                            invalidMessage = "Phone number is existed."
-                                        }
-                                    }
-                                    .addOnFailureListener { e ->
-                                        invalidMessage = "Cannot check existing phone number."
-                                    }
-                            } else {
-                                invalidMessage = "Email is existed."
-                            }
-                        }
-                        .addOnFailureListener { e ->
-                            invalidMessage = "Cannot check existing email."
-                        }
-                } else {
-                    invalidMessage = "Student's ID is existed."
-                }
-            }
-            .addOnFailureListener { e ->
-                invalidMessage = "Cannot check existing student's ID."
-            }
+        if (newStudentId.trim().isEmpty()) {
+            idError = "Student's ID is required"
+            isValid = false
+        } else {
+            idError = ""
+        }
+
+        if (newStudentClass.trim().isEmpty()) {
+            classError = "Class is required"
+            isValid = false
+        } else {
+            classError = ""
+        }
+
+        if (newStudentBirthday.trim().isEmpty()) {
+            birthdayError = "Birthday is required"
+            isValid = false
+        } else {
+            birthdayError = ""
+        }
+
+        if (newStudentFaculty.trim().isEmpty()) {
+            facultyError = "Faculty is required"
+            isValid = false
+        } else {
+            facultyError = ""
+        }
+
+        return isValid
     }
 }

@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -40,6 +41,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -140,6 +142,7 @@ fun AddUser(
                 label = "Birthday",
                 placeholder = "Enter Birthday",
                 onDatePick = { adminViewModel.onNewUserBirthdayPick(it) },
+                errorMessage = adminViewModel.birthdayError
             )
             InformationLine(
                 icon = Icons.Filled.Email,
@@ -157,19 +160,24 @@ fun AddUser(
                 onValueChange = { adminViewModel.onNewUserPhoneChange(it) },
                 enable = true,
                 placeholder = "Enter phone number",
-                errorMessage = adminViewModel.phoneError
+                errorMessage = adminViewModel.phoneError,
+                keyboardOptions = KeyboardOptions.Default.copy(
+                    keyboardType = KeyboardType.Phone
+                )
             )
             InformationSelect(
                 icon = Icons.Filled.BrokenImage,
                 label = "Status",
                 options = listOf("Active", "Inactive"),
-                onOptionPick = { adminViewModel.onNewUserStatusPick(it) }
+                onOptionPick = { adminViewModel.onNewUserStatusPick(it) },
+                errorMessage = adminViewModel.statusError
             )
             InformationSelect(
                 icon = Icons.Filled.Settings,
                 label = "Role",
                 options = listOf("Manager", "Employee"),
-                onOptionPick = { adminViewModel.onNewUserRolePick(it) }
+                onOptionPick = { adminViewModel.onNewUserRolePick(it) },
+                errorMessage = adminViewModel.roleError
             )
         }
     }

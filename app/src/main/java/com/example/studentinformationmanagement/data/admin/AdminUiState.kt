@@ -2,7 +2,7 @@ package com.example.studentinformationmanagement.data.admin
 
 // All User Basic Information
 data class User(
-    val userImageUrl: String = "",
+    val userImageUrl: String = "https://drive.google.com/uc?id=1XGMQWOMTV5lxHGLpYQMk--3Zqm7-iEtK",
     val userName: String = "",
     val userBirthday: String = "",
     val userEmail: String = "",

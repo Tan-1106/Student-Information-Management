@@ -156,7 +156,8 @@ class AdminViewModel : ViewModel() {
                                     )
 
                                     db.collection("users")
-                                        .add(newUser)
+                                        .document(phone)
+                                        .set(newUser)
                                         .addOnSuccessListener {
                                             nameError = ""
                                             emailError = ""

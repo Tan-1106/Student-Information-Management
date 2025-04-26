@@ -22,6 +22,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
@@ -131,13 +132,7 @@ fun DetailProfile(
                         error = painterResource(id = R.drawable.avt_error)
                     )
                 }
-                InformationLine(
-                    Icons.Filled.Person,
-                    "Name",
-                    user.userName,
-
-                    errorMessage = "Please enter your name"
-                )
+                InformationLine(Icons.Filled.Person, "Name", user.userName)
                 InformationLine(Icons.Filled.Cake, "Birthday", user.userBirthday)
                 InformationLine(Icons.Filled.Email, "Email", user.userEmail)
                 InformationLine(Icons.Filled.Phone, "Phone", user.userPhoneNumber)
@@ -157,7 +152,8 @@ fun InformationLine(
     enable: Boolean = false,
     onValueChange: (String) -> Unit = {},
     placeholder: String = "",
-    errorMessage: String = ""
+    errorMessage: String = "",
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -205,10 +201,11 @@ fun InformationLine(
                     fontSize = 14.sp,
                     fontFamily = kanit_regular_font
                 ),
-
+                singleLine = true,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 5.dp),
+                keyboardOptions = keyboardOptions
             )
             if (errorMessage != "") {
                 Divider(color = Color.Red)
@@ -389,8 +386,8 @@ fun InformationDate(
     label: String,
     placeholder: String,
     onDatePick: (String) -> Unit,
-    errorMessage:String="",
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    errorMessage: String= ""
 ) {
     val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
     val datePickerState = rememberDatePickerState(selectableDates = object : SelectableDates {
@@ -562,7 +559,8 @@ fun InformationSelect(
                 }
             } else {
                 Divider()
-            }        }
+            }
+        }
     }
 }
 
