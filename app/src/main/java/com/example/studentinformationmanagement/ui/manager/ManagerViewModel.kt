@@ -66,7 +66,9 @@ class ManagerViewModel : ViewModel() {
             fetchStudentsFromFirestore()
         } else {
             val filteredList = fullStudentList.filter { student ->
-                student.studentName.contains(keyword, ignoreCase = true) || student.studentId.contains(keyword, ignoreCase = true)
+                student.studentName.contains(keyword, ignoreCase = true) || student.studentEmail.contains(keyword, ignoreCase = true) ||
+                        student.studentPhoneNumber.contains(keyword, ignoreCase = true) || student.studentId.contains(keyword, ignoreCase = true) ||
+                                student.studentClass.contains(keyword, ignoreCase = true) || student.studentFaculty.contains(keyword, ignoreCase = true)
             }
             _uiState.update { currentState ->
                 currentState.copy(

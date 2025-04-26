@@ -66,7 +66,9 @@ class AdminViewModel : ViewModel() {
             fetchUsersFromFirestore()
         } else {
             val filteredList = fullUserList.filter { user ->
-                user.userName.contains(keyword, ignoreCase = true) || user.userPhoneNumber.contains(keyword, ignoreCase = true)
+                user.userName.contains(keyword, ignoreCase = true) || user.userEmail.contains(keyword, ignoreCase = true) ||
+                        user.userPhoneNumber.contains(keyword, ignoreCase = true) || user.userStatus.contains(keyword, ignoreCase = true) ||
+                                user.userRole.contains(keyword, ignoreCase = true)
             }
             _uiState.update { currentState ->
                 currentState.copy(

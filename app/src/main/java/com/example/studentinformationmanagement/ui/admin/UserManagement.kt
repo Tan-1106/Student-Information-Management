@@ -73,7 +73,7 @@ fun UserManagement(
                         adminViewModel.onUserSearch(it)
                     },
                     modifier = Modifier.weight(1f),
-                    placeholder = { Text("Name or Phone number...", fontSize = 16.sp, color = primary_content) },
+                    placeholder = { Text("Search...", fontSize = 16.sp, color = primary_content) },
                     leadingIcon = {
                         Icon(Icons.Default.Search, contentDescription = "Search", tint = primary_content)
                     },

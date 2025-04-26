@@ -83,7 +83,7 @@ fun StudentManagement(
                     },
                     modifier = Modifier
                         .weight(1f),
-                    placeholder = { Text("Name or ID...", fontSize = 16.sp, color = primary_content) },
+                    placeholder = { Text("Search...", fontSize = 16.sp, color = primary_content) },
                     leadingIcon = {
                         Icon(
                             Icons.Default.Search,
@@ -168,6 +168,11 @@ fun StudentList(
             )
         }
     }
+}
+
+@Composable
+fun FilterDialog() {
+
 }
 
 @Preview(
