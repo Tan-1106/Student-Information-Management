@@ -23,6 +23,11 @@ class ManagerViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(ManagerUiState())
     val uiState: StateFlow<ManagerUiState> = _uiState.asStateFlow()
 
+    var facultyList by mutableStateOf<List<String>>(emptyList())
+        private set
+    var classList by mutableStateOf<List<String>>(emptyList())
+        private set
+
     // Fetch Student List
     private var fullStudentList: List<Student> = emptyList()
     init {
@@ -50,11 +55,14 @@ class ManagerViewModel : ViewModel() {
                         studentList = students
                     )
                 }
-                // For search function
+                // For search feature
                 fullStudentList = students
+                facultyList = students.map { it.studentFaculty }.distinct().sorted()
+                classList = students.map { it.studentClass }.distinct().sorted()
             }
     }
 
+    // Search bar
     var searchInput by mutableStateOf("")
         private set
     fun onStudentSearch(userSearchInput: String) {
@@ -78,6 +86,73 @@ class ManagerViewModel : ViewModel() {
         }
     }
 
+    // Filter feature
+    var isShowDialog by mutableStateOf(false)
+        private set
+    private var sortSelected by mutableStateOf("")
+    private var minimumCertificates by mutableStateOf("")
+    private var facultySelected by mutableStateOf("")
+    private var classSelected by mutableStateOf("")
+
+    fun onSortSelected(userInput: String) {
+        sortSelected = userInput
+    }
+    fun onMinimumCertificatesInput(userInput: String) {
+        minimumCertificates = userInput
+    }
+    fun onFacultyPick(userInput: String) {
+        facultySelected = userInput
+    }
+    fun onClassPick(userInput: String) {
+        classSelected = userInput
+    }
+
+    fun onFilterClick() {
+        isShowDialog = true
+    }
+    fun onDismissFilterClick() {
+        isShowDialog = false
+    }
+    fun onApplyFilterClick() {
+        var filtered = fullStudentList
+
+        val minCert = minimumCertificates.toIntOrNull() ?: 0
+        filtered = filtered.filter { it.studentCertificates.size >= minCert }
+
+        if (facultySelected.isNotBlank()) {
+            filtered = filtered.filter { it.studentFaculty == facultySelected }
+        }
+
+        if (classSelected.isNotBlank()) {
+            filtered = filtered.filter { it.studentClass == classSelected }
+        }
+
+        filtered = when (sortSelected) {
+            "A → Z" -> filtered.sortedBy { it.studentName }
+            "Z → A" -> filtered.sortedByDescending { it.studentName }
+            else -> filtered
+        }
+
+        _uiState.update { currentState ->
+            currentState.copy(studentList = filtered)
+        }
+
+        isShowDialog = false
+    }
+
+    fun onClearFilterClick() {
+        sortSelected = ""
+        minimumCertificates = ""
+        facultySelected = ""
+        classSelected = ""
+
+        _uiState.update { currentState ->
+            currentState.copy(studentList = fullStudentList)
+        }
+        isShowDialog = false
+    }
+
+    // Student's detail profile
     fun onStudentSeeMoreClicked(userPhoneNumber: String) {
 
     }
