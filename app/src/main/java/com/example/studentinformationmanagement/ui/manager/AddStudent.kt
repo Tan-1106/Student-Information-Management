@@ -51,10 +51,9 @@ import com.example.studentinformationmanagement.ui.theme.secondary_content
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-@Preview(showSystemUi = true)
 fun AddStudent(
-    managerViewModel: ManagerViewModel = viewModel(),
-    navController: NavHostController = rememberNavController()
+    managerViewModel: ManagerViewModel,
+    navController: NavHostController
 ) {
     val context: Context = LocalContext.current
 

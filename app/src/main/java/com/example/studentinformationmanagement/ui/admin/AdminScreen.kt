@@ -33,6 +33,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.studentinformationmanagement.AppScreen
 import com.example.studentinformationmanagement.R
 import com.example.studentinformationmanagement.data.shared.NavItem
+import com.example.studentinformationmanagement.ui.manager.ManagerViewModel
 import com.example.studentinformationmanagement.ui.manager.StudentManagement
 import com.example.studentinformationmanagement.ui.shared.LoginViewModel
 import com.example.studentinformationmanagement.ui.shared.UserDetailProfile
@@ -44,8 +45,10 @@ import com.example.studentinformationmanagement.ui.theme.third_content
 // Composable: Admin Home screen
 @Composable
 fun AdminScreen(
-    loginViewModel: LoginViewModel = viewModel(),
-    navController: NavHostController = rememberNavController(),
+    loginViewModel: LoginViewModel,
+    adminViewModel: AdminViewModel,
+    managerViewModel: ManagerViewModel,
+    navController: NavHostController,
     subNavController: NavHostController = rememberNavController()
 ) {
     // Bottom navigation bar's items
@@ -119,24 +122,21 @@ fun AdminScreen(
         ) {
             composable(AppScreen.StudentManagement.name) {
                 StudentManagement(
-                    navController = navController
+                    navController = navController,
+                    managerViewModel = managerViewModel
                 )
             }
             composable(AppScreen.UserManagement.name) {
                 UserManagement(
-                    navController = navController
+                    navController = navController,
+                    adminViewModel = adminViewModel
                 )
             }
             composable(AppScreen.UserDetailProfile.name) {
-                val loginUiState by loginViewModel.loginUiState.collectAsState()
-                val currentUser = loginUiState.currentUser
-                if (currentUser != null) {
-                    UserDetailProfile(
-                        loginViewModel = loginViewModel,
-                        navController = navController, user = currentUser
-
-                    )
-                }
+                UserDetailProfile(
+                    loginViewModel = loginViewModel,
+                    navController = navController,
+                )
             }
         }
     }

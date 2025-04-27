@@ -55,7 +55,7 @@ import com.example.studentinformationmanagement.ui.theme.third_content
 @Composable
 fun UserManagement(
     modifier: Modifier = Modifier,
-    adminViewModel: AdminViewModel = viewModel(),
+    adminViewModel: AdminViewModel,
     navController: NavHostController
 ) {
     val adminUiState by adminViewModel.uiState.collectAsState()

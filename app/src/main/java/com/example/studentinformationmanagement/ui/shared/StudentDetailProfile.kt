@@ -12,7 +12,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.automirrored.outlined.Logout
 import androidx.compose.material.icons.filled.BrokenImage
 import androidx.compose.material.icons.filled.Cake
 import androidx.compose.material.icons.filled.Email
@@ -26,7 +25,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -36,18 +34,20 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
-import com.example.studentinformationmanagement.AppScreen
 import com.example.studentinformationmanagement.R
-import com.example.studentinformationmanagement.data.manager.Student
-import com.example.studentinformationmanagement.data.shared.CurrentUser
+import com.example.studentinformationmanagement.ui.manager.ManagerViewModel
 import com.example.studentinformationmanagement.ui.theme.primary_content
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StudentDetailProfile(
     navController: NavHostController,
-    student: Student,modifier: Modifier= Modifier
+    managerViewModel: ManagerViewModel,
+    modifier: Modifier = Modifier
 ) {
+    val managerUiState = managerViewModel.uiState.collectAsState()
+    val student = managerUiState.value.currentStudent
+
     // UiState
     Scaffold(
         containerColor = Color.White,
@@ -56,7 +56,6 @@ fun StudentDetailProfile(
         topBar = {
             TopAppBar(
                 navigationIcon = {
-                    /* TODO: Check again if Manager and Employee need this button ? */
                         IconButton(
                             onClick = {
                                 navController.navigateUp()
@@ -95,7 +94,7 @@ fun StudentDetailProfile(
                 .verticalScroll(rememberScrollState()),
             contentAlignment = Alignment.TopCenter
         ) {
-            // Data Loaded — Hiển thị thông tin chi tiết
+            // Data Loaded
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {

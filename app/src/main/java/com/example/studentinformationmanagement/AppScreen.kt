@@ -12,10 +12,13 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.studentinformationmanagement.ui.admin.AddUser
 import com.example.studentinformationmanagement.ui.admin.AdminScreen
+import com.example.studentinformationmanagement.ui.admin.AdminViewModel
 import com.example.studentinformationmanagement.ui.manager.AddStudent
+import com.example.studentinformationmanagement.ui.manager.ManagerViewModel
 import com.example.studentinformationmanagement.ui.manager.StudentManagement
 import com.example.studentinformationmanagement.ui.shared.LoginScreen
 import com.example.studentinformationmanagement.ui.shared.LoginViewModel
+import com.example.studentinformationmanagement.ui.shared.StudentDetailProfile
 import com.example.studentinformationmanagement.ui.shared.UserDetailProfile
 
 enum class AppScreen() {
@@ -39,20 +42,46 @@ enum class AppScreen() {
 @Composable
 fun AppScreen(
     navController: NavHostController = rememberNavController(),
-    loginViewModel: LoginViewModel = viewModel()
+    loginViewModel: LoginViewModel = viewModel(),
+    adminViewModel: AdminViewModel = viewModel(),
+    managerViewModel: ManagerViewModel = viewModel()
 ) {
     NavHost(
         navController = navController,
         startDestination = AppScreen.Login.name
     ) {
+        // Login Screen
         composable(route = AppScreen.Login.name) {
             LoginScreen(
                 loginViewModel = loginViewModel,
                 navController = navController
             )
         }
+
+
+        // All Main Screens
+        composable(route = AppScreen.AdminScreen.name) {
+            AdminScreen(
+                loginViewModel = loginViewModel,
+                adminViewModel = adminViewModel,
+                managerViewModel = managerViewModel,
+                navController = navController
+            )
+        }
+        composable(route = AppScreen.StudentManagement.name) {
+            StudentManagement(
+                navController = navController,
+                managerViewModel = managerViewModel
+            )
+        }
+
+
+        // Admin Features
         composable(route = AppScreen.AddUser.name) {
-            AddUser(navController = navController)
+            AddUser(
+                adminViewModel = adminViewModel,
+                navController = navController
+            )
         }
         composable(route = AppScreen.EditUser.name) {
 
@@ -60,11 +89,23 @@ fun AppScreen(
         composable(route = AppScreen.LoginHistory.name) {
 
         }
+
+
+        // Manager Features
         composable(route = AppScreen.AddStudent.name) {
-            AddStudent(navController = navController)
+            AddStudent(
+                managerViewModel = managerViewModel,
+                navController = navController
+            )
         }
         composable(route = AppScreen.EditStudent.name) {
 
+        }
+        composable(route = AppScreen.StudentDetailProfile.name) {
+            StudentDetailProfile(
+                navController = navController,
+                managerViewModel = managerViewModel
+            )
         }
         composable(route = AppScreen.AddCertificate.name) {
 
@@ -72,29 +113,13 @@ fun AppScreen(
         composable(route = AppScreen.EditCertificate.name) {
 
         }
+
+
+        // General Features
         composable(route = AppScreen.UserDetailProfile.name) {
-            val loginUiState by loginViewModel.loginUiState.collectAsState()
-            val currentUser = loginUiState.currentUser
-            if (currentUser != null) {
-                UserDetailProfile(
-                    loginViewModel = loginViewModel,
-                    navController = navController, user = currentUser
-
-                )
-            }
-        }
-        composable(route = AppScreen.StudentDetailProfile.name) {
-
-        }
-        composable(route = AppScreen.StudentManagement.name) {
-            StudentManagement(
-                navController = navController
-            )
-        }
-        composable(route = AppScreen.AdminScreen.name) {
-            AdminScreen(
+            UserDetailProfile(
                 loginViewModel = loginViewModel,
-                navController = navController
+                navController = navController,
             )
         }
     }

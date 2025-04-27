@@ -64,9 +64,9 @@ import com.example.studentinformationmanagement.ui.theme.third_content
 // Composable: Student Management
 @Composable
 fun StudentManagement(
+    managerViewModel: ManagerViewModel,
+    navController: NavHostController,
     modifier: Modifier = Modifier,
-    managerViewModel: ManagerViewModel = viewModel(),
-    navController: NavHostController
 ) {
     val managerUiState by managerViewModel.uiState.collectAsState()
 
@@ -159,7 +159,11 @@ fun StudentManagement(
             )
 
             // User list
-            StudentList(managerUiState.studentList)
+            StudentList(
+                studentList = managerUiState.studentList,
+                managerViewModel = managerViewModel,
+                navController = navController
+            )
         }
 
         // Add user button
@@ -183,7 +187,8 @@ fun StudentManagement(
 @Composable
 fun StudentList(
     studentList: List<Student>,
-    viewModel: ManagerViewModel = viewModel()
+    navController: NavHostController,
+    managerViewModel: ManagerViewModel
 ) {
     LazyColumn {
         items(studentList.size) { index ->
@@ -193,7 +198,12 @@ fun StudentList(
                 roleOrStuId = studentList[index].studentId,
                 stateOrClass = studentList[index].studentClass,
                 phoneNumber = studentList[index].studentPhoneNumber,
-                onSeeMoreClicked = { viewModel.onStudentSeeMoreClicked(it) },
+                onSeeMoreClicked = {
+                    managerViewModel.onStudentSeeMoreClicked(
+                        studentPhoneNumber = it,
+                        navController = navController
+                    )
+                },
             )
         }
     }
@@ -329,18 +339,3 @@ fun FilterDialog(
         )
     }
 }
-
-//@Preview(
-//    showBackground = true,
-//    showSystemUi = true
-//)
-//@Composable
-//fun StudentManagementPreview() {
-//    val fakeScreenNavController = rememberNavController()
-//    Scaffold { innerPadding ->
-//        StudentManagement(
-//            modifier = Modifier.padding(innerPadding),
-//            navController = fakeScreenNavController
-//        )
-//    }
-//}

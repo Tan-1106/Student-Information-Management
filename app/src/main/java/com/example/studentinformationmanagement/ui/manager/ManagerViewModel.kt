@@ -13,7 +13,6 @@ import androidx.navigation.NavHostController
 import com.example.studentinformationmanagement.AppScreen
 import com.example.studentinformationmanagement.data.manager.ManagerUiState
 import com.example.studentinformationmanagement.data.manager.Student
-import com.example.studentinformationmanagement.ui.shared.StudentDetailProfile
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -173,14 +172,20 @@ class ManagerViewModel : ViewModel() {
 
     // Student's detail profile
     fun onStudentSeeMoreClicked(
-        userPhoneNumber: String, navController: NavHostController,
+        studentPhoneNumber: String,
+        navController: NavHostController,
     ) {
-        val student = fullStudentList.find { it.studentPhoneNumber == userPhoneNumber }
+        val student = fullStudentList.find { it.studentPhoneNumber == studentPhoneNumber }
+        student?.let {
+            _uiState.update { currentState ->
+                currentState.copy(
+                    currentStudent = student
+                )
+            }
 
-        student?.let { selectedStudent ->
             navController.navigate(AppScreen.StudentDetailProfile.name)
         } ?: run {
-            Log.e("ManagerViewModel", "Student not found with phone number: $userPhoneNumber")
+            Log.e("ManagerViewModel", "Student not found with phone number: $studentPhoneNumber")
         }
     }
 

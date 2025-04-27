@@ -25,13 +25,11 @@ import com.example.studentinformationmanagement.ui.theme.primary_content
 fun UserDetailProfile(
     loginViewModel: LoginViewModel,
     navController: NavHostController,
-    user: CurrentUser
 ) {
-    // UiState
     val loginUiState by loginViewModel.loginUiState.collectAsState()
+
     // Get current logged in user
     val currentUser = loginUiState.currentUser
-    // Admin detail profile doesn't need navigation back button
     val showBackButton = currentUser?.userRole != "Admin"
 
     if (currentUser != null) {
@@ -82,7 +80,7 @@ fun UserDetailProfile(
                     }
                 )
             },
-            user = user
+            user = currentUser
         )
     }
 }
