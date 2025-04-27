@@ -70,9 +70,9 @@ class LoginViewModel(
                 }
 
                 when (currentUser?.userRole) {
-                    "Admin" -> navController.navigate(AppScreen.AdminScreen.name)
-                    "Manager" -> navController.navigate(AppScreen.StudentManagement.name)
-                    "Employee" -> navController.navigate(AppScreen.StudentManagement.name)
+                    "Admin" -> navController.navigate(AppScreen.AdminScreen.name) { popUpTo(AppScreen.Login.name) { inclusive = true } }
+                    "Manager" -> navController.navigate(AppScreen.StudentManagement.name) { popUpTo(AppScreen.Login.name) { inclusive = true } }
+                    "Employee" -> navController.navigate(AppScreen.StudentManagement.name) { popUpTo(AppScreen.Login.name) { inclusive = true } }
                 }
             } else {
                 _loginUiState.value = _loginUiState.value.copy(

@@ -11,6 +11,7 @@ import androidx.navigation.NavHostController
 import com.example.studentinformationmanagement.AppScreen
 import com.example.studentinformationmanagement.data.admin.AdminUiState
 import com.example.studentinformationmanagement.data.admin.User
+import com.example.studentinformationmanagement.data.shared.CurrentUser
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -138,12 +139,34 @@ class AdminViewModel : ViewModel() {
     }
 
     // User's detail profile
-    fun onUserSeeMoreClicked(userPhoneNumber: String) {
+    var userToView by mutableStateOf(CurrentUser())
+        private set
 
+    fun onUserSeeMoreClicked(
+        userPhoneNumber: String,
+        navController: NavHostController
+    ) {
+        val selectedUser = _uiState.value.userList.find { it.userPhoneNumber == userPhoneNumber }
+        userToView = CurrentUser(
+            userImageUrl = selectedUser?.userImageUrl ?: "https://drive.google.com/uc?id=1XGMQWOMTV5lxHGLpYQMk--3Zqm7-iEtK",
+            userName = selectedUser?.userName ?: "",
+            userBirthday = selectedUser?.userBirthday ?: "",
+            userEmail = selectedUser?.userEmail ?: "",
+            userPhoneNumber = selectedUser?.userPhoneNumber ?: "",
+            userRole = selectedUser?.userRole ?: "",
+            userStatus = selectedUser?.userStatus ?: "",
+        )
+
+        navController.navigate(AppScreen.UserDetailProfile.name)
+    }
+    fun clearUserToView() {
+        userToView = CurrentUser()
     }
 
     // Add User
-    fun onAddUserButtonClicked(navController: NavHostController) {
+    fun onAddUserButtonClicked(
+        navController: NavHostController
+    ) {
         navController.navigate(AppScreen.AddUser.name)
     }
 
@@ -291,6 +314,7 @@ class AdminViewModel : ViewModel() {
             isValid = false
         } else if (newUserPhone.trim().length != 10) {
             phoneError = "Invalid phone number"
+            isValid = false
         }
         else {
             phoneError = ""

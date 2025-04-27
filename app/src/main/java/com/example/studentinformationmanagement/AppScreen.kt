@@ -1,10 +1,6 @@
 package com.example.studentinformationmanagement
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -37,8 +33,6 @@ enum class AppScreen() {
     AdminScreen
 }
 
-
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AppScreen(
     navController: NavHostController = rememberNavController(),
@@ -74,7 +68,6 @@ fun AppScreen(
                 managerViewModel = managerViewModel
             )
         }
-
 
         // Admin Features
         composable(route = AppScreen.AddUser.name) {
@@ -119,6 +112,7 @@ fun AppScreen(
         composable(route = AppScreen.UserDetailProfile.name) {
             UserDetailProfile(
                 loginViewModel = loginViewModel,
+                adminViewModel = adminViewModel,
                 navController = navController,
             )
         }

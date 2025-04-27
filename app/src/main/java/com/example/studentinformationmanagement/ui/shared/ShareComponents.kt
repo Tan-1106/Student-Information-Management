@@ -243,27 +243,6 @@ fun Divider(color: Color = Color.Gray) {
     )
 }
 
-
-// Composable: User list
-@Composable
-fun UserList(
-    userList: List<User>,
-    viewModel: AdminViewModel = viewModel()
-) {
-    LazyColumn {
-        items(userList.size) { index ->
-            InformationBox(
-                imageUrl = userList[index].userImageUrl,
-                name = userList[index].userName,
-                roleOrStuId = userList[index].userRole,
-                stateOrClass = userList[index].userStatus,
-                phoneNumber = userList[index].userPhoneNumber,
-                onSeeMoreClicked = { viewModel.onUserSeeMoreClicked(it) },
-            )
-        }
-    }
-}
-
 // Composable: User information box for user list
 @Composable
 fun InformationBox(
@@ -607,13 +586,4 @@ fun DetailProfilePreview() {
             "Enable"
         )
     )
-}
-
-@Preview(
-    showBackground = true,
-    showSystemUi = true
-)
-@Composable
-fun UserListPreview() {
-    UserList(SampleData.sampleUserList)
 }

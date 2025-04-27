@@ -179,7 +179,7 @@ class ManagerViewModel : ViewModel() {
         student?.let {
             _uiState.update { currentState ->
                 currentState.copy(
-                    currentStudent = student
+                    selectedStudent = student
                 )
             }
 
@@ -377,6 +377,7 @@ class ManagerViewModel : ViewModel() {
             isValid = false
         } else if (newStudentPhone.trim().length != 10) {
             phoneError = "Invalid phone number"
+            isValid = false
         } else {
             phoneError = ""
         }

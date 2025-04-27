@@ -46,7 +46,7 @@ fun StudentDetailProfile(
     modifier: Modifier = Modifier
 ) {
     val managerUiState = managerViewModel.uiState.collectAsState()
-    val student = managerUiState.value.currentStudent
+    val student = managerUiState.value.selectedStudent
 
     // UiState
     Scaffold(

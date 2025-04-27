@@ -15,8 +15,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.example.studentinformationmanagement.AppScreen
-import com.example.studentinformationmanagement.data.shared.CurrentUser
+import com.example.studentinformationmanagement.ui.admin.AdminViewModel
 import com.example.studentinformationmanagement.ui.theme.primary_content
 
 // Composable: User's detail profile
@@ -24,13 +25,14 @@ import com.example.studentinformationmanagement.ui.theme.primary_content
 @Composable
 fun UserDetailProfile(
     loginViewModel: LoginViewModel,
-    navController: NavHostController,
+    adminViewModel: AdminViewModel,
+    navController: NavHostController
 ) {
     val loginUiState by loginViewModel.loginUiState.collectAsState()
 
     // Get current logged in user
     val currentUser = loginUiState.currentUser
-    val showBackButton = currentUser?.userRole != "Admin"
+    val showBackButton = currentUser?.userRole != "Admin" || adminViewModel.userToView.userPhoneNumber != ""
 
     if (currentUser != null) {
         DetailProfile(
@@ -66,21 +68,33 @@ fun UserDetailProfile(
                             )
                         }
                         // Log out event
-                        IconButton(onClick = {
-                            loginViewModel.onLogOutButtonClicked()
-                            navController.navigate(AppScreen.Login.name)
-                        }) {
-                            Icon(
-                                Icons.AutoMirrored.Outlined.Logout,
-                                contentDescription = null,
-                                tint = primary_content,
-                                modifier = Modifier.size(50.dp)
-                            )
+                        if (adminViewModel.userToView.userPhoneNumber == "") {
+                            IconButton(
+                                onClick = {
+                                    loginViewModel.onLogOutButtonClicked()
+                                    navController.navigate(AppScreen.Login.name) {
+                                        popUpTo(AppScreen.Login.name) { inclusive = true }
+                                    }
+                                }
+                            ) {
+                                Icon(
+                                    Icons.AutoMirrored.Outlined.Logout,
+                                    contentDescription = null,
+                                    tint = primary_content,
+                                    modifier = Modifier.size(50.dp)
+                                )
+                            }
                         }
                     }
                 )
             },
-            user = currentUser
+            user = if (adminViewModel.userToView.userPhoneNumber == "") {
+                // Current Logged in user's profile
+                currentUser
+            } else {
+                // User want to view 's profile
+                adminViewModel.userToView
+            }
         )
     }
 }

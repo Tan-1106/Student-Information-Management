@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -42,10 +43,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import com.example.studentinformationmanagement.data.admin.User
+import com.example.studentinformationmanagement.ui.shared.InformationBox
 import com.example.studentinformationmanagement.ui.shared.InformationSelect
-import com.example.studentinformationmanagement.ui.shared.UserList
 import com.example.studentinformationmanagement.ui.theme.kanit_bold_font
 import com.example.studentinformationmanagement.ui.theme.primary_container
 import com.example.studentinformationmanagement.ui.theme.primary_content
@@ -136,7 +137,11 @@ fun UserManagement(
             )
 
             // User list
-            UserList(adminUiState.userList)
+            UserList(
+                userList = adminUiState.userList,
+                adminViewModel = adminViewModel,
+                navController = navController
+            )
         }
         // Add user button
         FloatingActionButton(
@@ -151,6 +156,32 @@ fun UserManagement(
             Icon(
                 imageVector = Icons.Default.Add,
                 contentDescription = "Add Student"
+            )
+        }
+    }
+}
+
+// Composable: User list
+@Composable
+fun UserList(
+    userList: List<User>,
+    adminViewModel: AdminViewModel,
+    navController: NavHostController
+) {
+    LazyColumn {
+        items(userList.size) { index ->
+            InformationBox(
+                imageUrl = userList[index].userImageUrl,
+                name = userList[index].userName,
+                roleOrStuId = userList[index].userRole,
+                stateOrClass = userList[index].userStatus,
+                phoneNumber = userList[index].userPhoneNumber,
+                onSeeMoreClicked = {
+                    adminViewModel.onUserSeeMoreClicked(
+                        userPhoneNumber = it,
+                        navController = navController
+                    )
+                },
             )
         }
     }
@@ -270,18 +301,3 @@ fun FilterDialog(
         )
     }
 }
-
-//@Preview(
-//    showBackground = true,
-//    showSystemUi = true
-//)
-//@Composable
-//fun UserManagementPreview() {
-//    val fakeScreenNavController = rememberNavController()
-//    Scaffold { innerPadding ->
-//        UserManagement(
-//            modifier = Modifier.padding(innerPadding),
-//            navController = fakeScreenNavController
-//        )
-//    }
-//}

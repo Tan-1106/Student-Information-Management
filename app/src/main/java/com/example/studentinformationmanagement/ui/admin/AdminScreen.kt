@@ -133,9 +133,11 @@ fun AdminScreen(
                 )
             }
             composable(AppScreen.UserDetailProfile.name) {
+                adminViewModel.clearUserToView()
                 UserDetailProfile(
                     loginViewModel = loginViewModel,
-                    navController = navController,
+                    adminViewModel = adminViewModel,
+                    navController = navController
                 )
             }
         }
