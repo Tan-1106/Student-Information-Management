@@ -87,7 +87,10 @@ fun AddStudent(
 
             )
     }, bottomBar = {
-        Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            modifier = Modifier.fillMaxWidth()
+        ) {
             Button(
                 onClick = {
                     managerViewModel.onAddStudentButtonClick(

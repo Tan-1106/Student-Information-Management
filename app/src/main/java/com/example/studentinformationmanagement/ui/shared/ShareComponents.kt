@@ -522,7 +522,7 @@ fun InformationSelect(
     label: String,
     options: List<String>,
     onOptionPick: (String) -> Unit,
-    errorMessage:String=""
+    errorMessage: String = ""
 ) {
     var expanded by remember { mutableStateOf(false) }
     var selectedOption by remember { mutableStateOf("Choose 1 option") }

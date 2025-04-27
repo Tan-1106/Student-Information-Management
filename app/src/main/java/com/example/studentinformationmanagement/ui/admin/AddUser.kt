@@ -89,7 +89,10 @@ fun AddUser(
             )
         },
         bottomBar = {
-            Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
+            Row(
+                horizontalArrangement = Arrangement.Center,
+                modifier = Modifier.fillMaxWidth()
+            ) {
                 Button(
                     onClick = {
                         adminViewModel.onAddUserButtonClick(

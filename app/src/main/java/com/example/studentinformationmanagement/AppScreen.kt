@@ -9,6 +9,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.studentinformationmanagement.ui.admin.AddUser
 import com.example.studentinformationmanagement.ui.admin.AdminScreen
 import com.example.studentinformationmanagement.ui.admin.AdminViewModel
+import com.example.studentinformationmanagement.ui.admin.EditUser
 import com.example.studentinformationmanagement.ui.manager.AddStudent
 import com.example.studentinformationmanagement.ui.manager.ManagerViewModel
 import com.example.studentinformationmanagement.ui.manager.StudentManagement
@@ -77,7 +78,10 @@ fun AppScreen(
             )
         }
         composable(route = AppScreen.EditUser.name) {
-
+            EditUser(
+                adminViewModel = adminViewModel,
+                navController = navController
+            )
         }
         composable(route = AppScreen.LoginHistory.name) {
 

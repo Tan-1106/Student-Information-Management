@@ -210,6 +210,7 @@ class AdminViewModel : ViewModel() {
         newUserStatus = ""
         newUserRole = ""
     }
+
     var nameError by mutableStateOf("")
         private set
     var emailError by mutableStateOf("")
@@ -222,19 +223,20 @@ class AdminViewModel : ViewModel() {
         private set
     var roleError by mutableStateOf("")
         private set
+
     fun onAddUserButtonClick(
         navController: NavHostController,
         context: Context
     ) {
-        if (validateUserInputs()) {
-            val db = Firebase.firestore
+        val name = newUserName.trim()
+        val email = newUserEmail.trim()
+        val phone = newUserPhone.trim()
+        val birthday = newUserBirthday.trim()
+        val role = newUserRole.trim()
+        val status = newUserStatus.trim()
 
-            val name = newUserName.trim()
-            val email = newUserEmail.trim()
-            val phone = newUserPhone.trim()
-            val birthday = newUserBirthday.trim()
-            val role = newUserRole.trim()
-            val status = newUserStatus.trim()
+        if (validateUserInputs(name, email, phone, birthday, role, status)) {
+            val db = Firebase.firestore
 
             db.collection("users")
                 .whereEqualTo("userPhoneNumber", phone)
@@ -289,30 +291,37 @@ class AdminViewModel : ViewModel() {
         }
     }
 
-    fun validateUserInputs(): Boolean {
+    fun validateUserInputs(
+        newName: String,
+        newEmail: String,
+        newPhone: String,
+        newBirthday: String,
+        newStatus: String,
+        newRole: String
+    ): Boolean {
         var isValid = true
 
-        if (newUserName.trim().isEmpty()) {
+        if (newName.isEmpty()) {
             nameError = "Name is required"
             isValid = false
         } else {
             nameError = ""
         }
 
-        if (newUserEmail.trim().isEmpty()) {
+        if (newEmail.isEmpty()) {
             emailError = "Email is required"
             isValid = false
-        } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(newUserEmail.trim()).matches()) {
+        } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(newEmail.trim()).matches()) {
             emailError = "Invalid email format"
             isValid = false
         } else {
             emailError = ""
         }
 
-        if (newUserPhone.trim().isEmpty()) {
+        if (newPhone.isEmpty()) {
             phoneError = "Phone number is required"
             isValid = false
-        } else if (newUserPhone.trim().length != 10) {
+        } else if (newPhone.trim().length != 10) {
             phoneError = "Invalid phone number"
             isValid = false
         }
@@ -320,21 +329,21 @@ class AdminViewModel : ViewModel() {
             phoneError = ""
         }
 
-        if (newUserBirthday.trim().isEmpty()) {
+        if (newBirthday.isEmpty()) {
             birthdayError = "Birthday is required"
             isValid = false
         } else {
             birthdayError = ""
         }
 
-        if (newUserStatus.trim().isEmpty()) {
+        if (newStatus.isEmpty()) {
             statusError = "Status is required"
             isValid = false
         } else {
             statusError = ""
         }
 
-        if (newUserRole.trim().isEmpty()) {
+        if (newRole.isEmpty()) {
             roleError = "Role is required"
             isValid = false
         } else {
@@ -368,5 +377,59 @@ class AdminViewModel : ViewModel() {
     ) {
         userToEdit = fullUserList.find { it.userPhoneNumber == userPhoneNumber }
         navController.navigate(AppScreen.EditUser.name)
+    }
+
+    fun onEditUserSaveClick(
+        newName: String,
+        newEmail: String,
+        newPhone: String,
+        newBirthday: String,
+        newStatus: String,
+        newRole: String,
+        context: Context
+    ) {
+        val userToEdit = userToEdit ?: return
+
+        val db = Firebase.firestore
+        val updatedData = mutableMapOf<String, Any>()
+
+        if (newName.isNotEmpty() && newName != userToEdit.userName) {
+            updatedData["userName"] = newName
+        }
+
+        if (newEmail.isNotEmpty() && newEmail != userToEdit.userEmail) {
+            updatedData["userEmail"] = newEmail
+        }
+
+        if (newPhone.isNotEmpty() && newPhone != userToEdit.userPhoneNumber) {
+            updatedData["userPhoneNumber"] = newPhone
+        }
+
+        if (newBirthday.isNotEmpty() && newBirthday != userToEdit.userBirthday) {
+            updatedData["userBirthday"] = newBirthday
+        }
+
+        if (newStatus.isNotEmpty() && newStatus != userToEdit.userStatus) {
+            updatedData["userStatus"] = newStatus
+        }
+
+        if (newRole.isNotEmpty() && newRole != userToEdit.userRole) {
+            updatedData["userRole"] = newRole
+        }
+
+        if (updatedData.isNotEmpty()) {
+            db.collection("users")
+                .document(userToEdit.userPhoneNumber)
+                .update(updatedData)
+                .addOnSuccessListener {
+                    Toast.makeText(context, "User details updated successfully", Toast.LENGTH_SHORT).show()
+                    fetchUsersFromFirestore()
+                }
+                .addOnFailureListener { e ->
+                    Toast.makeText(context, "Error updating user: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
+        } else {
+            Toast.makeText(context, "No changes detected", Toast.LENGTH_SHORT).show()
+        }
     }
 }
