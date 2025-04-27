@@ -412,4 +412,20 @@ class ManagerViewModel : ViewModel() {
 
         return isValid
     }
+
+    // Delete a student
+    fun onDeleteStudent(studentId: String) {
+        val db = Firebase.firestore
+
+        db.collection("students")
+            .document(studentId)
+            .delete()
+            .addOnSuccessListener {
+                Log.d("DeleteStudent", "Successfully deleted student with ID: $studentId")
+                fetchStudentsFromFirestore()
+            }
+            .addOnFailureListener { e ->
+                Log.e("DeleteStudent", "Error deleting student: ${e.message}")
+            }
+    }
 }

@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -34,12 +35,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.example.studentinformationmanagement.ui.shared.InformationDate
 import com.example.studentinformationmanagement.ui.shared.InformationLine
 import com.example.studentinformationmanagement.ui.shared.InformationSelect
@@ -50,10 +48,9 @@ import com.example.studentinformationmanagement.ui.theme.secondary_content
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-@Preview(showSystemUi = true)
 fun AddUser(
-    adminViewModel: AdminViewModel = viewModel(),
-    navController: NavHostController = rememberNavController()
+    adminViewModel: AdminViewModel,
+    navController: NavHostController
 ) {
     val context: Context = LocalContext.current
     Scaffold(modifier = Modifier.systemBarsPadding(), containerColor = Color.White, topBar = {
@@ -100,6 +97,10 @@ fun AddUser(
                 colors = ButtonDefaults.outlinedButtonColors(
                     containerColor = secondary_content,
                 ),
+                shape = RoundedCornerShape(4.dp),
+                modifier = Modifier
+                    .fillMaxWidth(0.9f)
+                    .padding(bottom = 10.dp)
             ) {
                 Text(
                     "Create User",

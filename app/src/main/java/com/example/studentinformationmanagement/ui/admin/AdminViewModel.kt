@@ -343,4 +343,19 @@ class AdminViewModel : ViewModel() {
         return isValid
     }
 
+    // Delete a user
+    fun onDeleteUser(userPhoneNumber: String) {
+        val db = Firebase.firestore
+
+        db.collection("users")
+            .document(userPhoneNumber)
+            .delete()
+            .addOnSuccessListener {
+                Log.d("DeleteUser", "Successfully deleted user with phone: $userPhoneNumber")
+                fetchUsersFromFirestore()
+            }
+            .addOnFailureListener { e ->
+                Log.e("DeleteUser", "Error deleting user: ${e.message}")
+            }
+    }
 }

@@ -49,9 +49,9 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.studentinformationmanagement.data.manager.Student
+import com.example.studentinformationmanagement.ui.shared.ConfirmationBox
 import com.example.studentinformationmanagement.ui.shared.InformationBox
 import com.example.studentinformationmanagement.ui.shared.InformationLine
 import com.example.studentinformationmanagement.ui.shared.InformationSelect
@@ -69,6 +69,8 @@ fun StudentManagement(
     modifier: Modifier = Modifier,
 ) {
     val managerUiState by managerViewModel.uiState.collectAsState()
+    var showConfirmDeleteDialog by remember { mutableStateOf(false) }
+    var selectedStudentId by remember { mutableStateOf("") }
 
     Box(
         modifier = modifier
@@ -162,7 +164,30 @@ fun StudentManagement(
             StudentList(
                 studentList = managerUiState.studentList,
                 managerViewModel = managerViewModel,
-                navController = navController
+                navController = navController,
+                onEditSwipe = {
+
+                },
+                onDeleteSwipe = { studentId ->
+                    selectedStudentId = studentId
+                    showConfirmDeleteDialog = true
+                }
+            )
+        }
+
+        if (showConfirmDeleteDialog) {
+            ConfirmationBox(
+                title = "Confirm deletion",
+                message = "Do you want to delete this student?",
+                onDismissRequest = {
+                    showConfirmDeleteDialog = false
+                    selectedStudentId = ""
+                },
+                onConfirmClick = {
+                    managerViewModel.onDeleteStudent(selectedStudentId)
+                    showConfirmDeleteDialog = false
+                    selectedStudentId = ""
+                }
             )
         }
 
@@ -188,7 +213,9 @@ fun StudentManagement(
 fun StudentList(
     studentList: List<Student>,
     navController: NavHostController,
-    managerViewModel: ManagerViewModel
+    managerViewModel: ManagerViewModel,
+    onEditSwipe: (String) -> Unit,
+    onDeleteSwipe: (String) -> Unit
 ) {
     LazyColumn {
         items(studentList.size) { index ->
@@ -204,6 +231,8 @@ fun StudentList(
                         navController = navController
                     )
                 },
+                onEditSwipe = { onEditSwipe(studentList[index].studentId) },
+                onDeleteSwipe = { onDeleteSwipe(studentList[index].studentId) }
             )
         }
     }
@@ -229,7 +258,6 @@ fun FilterDialog(
 ) {
     val sortOptions = listOf("A → Z", "Z → A")
     var minimumCertificate by remember { mutableStateOf("") }
-
 
     if (showDialog) {
         BasicAlertDialog(

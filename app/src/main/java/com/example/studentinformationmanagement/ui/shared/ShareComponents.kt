@@ -1,7 +1,6 @@
 package com.example.studentinformationmanagement.ui.shared
 
 
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -17,7 +16,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -28,20 +26,19 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.BrokenImage
 import androidx.compose.material.icons.filled.Cake
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SelectableDates
@@ -60,7 +57,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -68,13 +64,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.example.studentinformationmanagement.R
-import com.example.studentinformationmanagement.data.admin.User
 import com.example.studentinformationmanagement.data.shared.CurrentUser
-import com.example.studentinformationmanagement.data.shared.SampleData
-import com.example.studentinformationmanagement.ui.admin.AdminViewModel
 import com.example.studentinformationmanagement.ui.theme.kanit_bold_font
 import com.example.studentinformationmanagement.ui.theme.kanit_regular_font
 import com.example.studentinformationmanagement.ui.theme.primary_content
@@ -252,9 +244,10 @@ fun InformationBox(
     stateOrClass: String,
     phoneNumber: String,
     onSeeMoreClicked: (String) -> Unit,
-    modifier: Modifier = Modifier
+    onEditSwipe: () -> Unit,
+    onDeleteSwipe: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
-    var context = LocalContext.current
     Box(
         modifier = modifier
             .padding(16.dp)
@@ -264,8 +257,8 @@ fun InformationBox(
 
     ) {
         SwipeComponent(
-            onSwipeLeft = { Toast.makeText(context, "edit", Toast.LENGTH_SHORT).show() },
-            onSwipeRight = { Toast.makeText(context, "delete", Toast.LENGTH_SHORT).show() },
+            onEditSwipe = onEditSwipe,
+            onDeleteSwipe = onDeleteSwipe
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -343,6 +336,80 @@ fun InformationBox(
             }
         }
     }
+}
+
+@Composable
+fun SwipeComponent(
+    onEditSwipe: () -> Unit,
+    onDeleteSwipe: () -> Unit,
+    content: @Composable () -> Unit
+) {
+    var startAction =
+        SwipeAction(
+            icon = {
+                Box(
+                    contentAlignment = Alignment.TopCenter,
+                    modifier = Modifier.padding(end = 10.dp)
+                ) {
+                    Icon(Icons.Outlined.Edit, contentDescription = null)
+                }
+            },
+            onSwipe = onEditSwipe,
+            background = Color.Gray,
+        )
+    var endAction =
+        SwipeAction(
+            icon = {
+                Box(
+                    contentAlignment = Alignment.TopCenter,
+                    modifier = Modifier.padding(start = 10.dp)
+                ) {
+                    Icon(Icons.Outlined.Delete, contentDescription = null)
+                }
+            },
+            onSwipe = onDeleteSwipe,
+            background = Color.Red,
+        )
+    SwipeableActionsBox(
+        startActions = listOf(startAction),
+        endActions = listOf(endAction),
+        swipeThreshold = 100.dp,
+        backgroundUntilSwipeThreshold = Color.White,
+    ) {
+        content()
+    }
+}
+
+@Composable
+fun ConfirmationBox(
+    title: String,
+    message: String,
+    onDismissRequest: () -> Unit,
+    onConfirmClick: () -> Unit,
+) {
+    AlertDialog(
+        onDismissRequest = onDismissRequest,
+        title = {
+            Text(text = title)
+        },
+        text = {
+            Text(message)
+        },
+        confirmButton = {
+            TextButton(
+                onClick = onConfirmClick
+            ) {
+                Text("Confirm", color = Color.Red)
+            }
+        },
+        dismissButton = {
+            TextButton(
+                onClick = onDismissRequest
+            ) {
+                Text("Cancel")
+            }
+        }
+    )
 }
 
 
@@ -528,43 +595,6 @@ fun InformationSelect(
                 Divider()
             }
         }
-    }
-}
-
-@Composable
-fun SwipeComponent(
-    onSwipeLeft: () -> Unit,
-    onSwipeRight: () -> Unit,
-    content: @Composable () -> Unit
-) {
-    var startAction =
-        SwipeAction(
-            icon = {
-                Box(contentAlignment = Alignment.TopCenter) {
-                    Icon(Icons.Outlined.Edit, contentDescription = null)
-                }
-            },
-            onSwipe = onSwipeLeft,
-            background = Color.Gray,
-        )
-    var endAction =
-        SwipeAction(
-            icon = {
-                Box(contentAlignment = Alignment.TopCenter) {
-                    Icon(Icons.Outlined.Delete, contentDescription = null)
-                }
-            },
-            onSwipe = onSwipeRight,
-            background = Color.Red,
-        )
-    SwipeableActionsBox(
-
-        startActions = listOf(startAction),
-        endActions = listOf(endAction),
-        swipeThreshold = 100.dp,
-        backgroundUntilSwipeThreshold = Color.White,
-    ) {
-        content()
     }
 }
 

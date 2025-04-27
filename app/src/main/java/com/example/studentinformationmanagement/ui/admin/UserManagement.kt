@@ -35,6 +35,9 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -45,6 +48,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.studentinformationmanagement.data.admin.User
+import com.example.studentinformationmanagement.ui.shared.ConfirmationBox
 import com.example.studentinformationmanagement.ui.shared.InformationBox
 import com.example.studentinformationmanagement.ui.shared.InformationSelect
 import com.example.studentinformationmanagement.ui.theme.kanit_bold_font
@@ -60,6 +64,8 @@ fun UserManagement(
     navController: NavHostController
 ) {
     val adminUiState by adminViewModel.uiState.collectAsState()
+    var showConfirmDeleteDialog by remember { mutableStateOf(false) }
+    var selectedUserPhoneNumber by remember { mutableStateOf("") }
 
     Box(
         modifier = modifier
@@ -140,9 +146,33 @@ fun UserManagement(
             UserList(
                 userList = adminUiState.userList,
                 adminViewModel = adminViewModel,
-                navController = navController
+                navController = navController,
+                onEditSwipe = {
+
+                },
+                onDeleteSwipe = { phoneNumber ->
+                    selectedUserPhoneNumber = phoneNumber
+                    showConfirmDeleteDialog = true
+                }
             )
         }
+
+        if (showConfirmDeleteDialog) {
+            ConfirmationBox(
+                title = "Confirm deletion",
+                message = "Do you want to delete this user?",
+                onDismissRequest = {
+                    showConfirmDeleteDialog = false
+                    selectedUserPhoneNumber = ""
+                },
+                onConfirmClick = {
+                    adminViewModel.onDeleteUser(selectedUserPhoneNumber)
+                    showConfirmDeleteDialog = false
+                    selectedUserPhoneNumber = ""
+                }
+            )
+        }
+
         // Add user button
         FloatingActionButton(
             onClick = { adminViewModel.onAddUserButtonClicked(navController) },
@@ -166,7 +196,9 @@ fun UserManagement(
 fun UserList(
     userList: List<User>,
     adminViewModel: AdminViewModel,
-    navController: NavHostController
+    navController: NavHostController,
+    onEditSwipe: (String) -> Unit,
+    onDeleteSwipe: (String) -> Unit
 ) {
     LazyColumn {
         items(userList.size) { index ->
@@ -182,6 +214,8 @@ fun UserList(
                         navController = navController
                     )
                 },
+                onEditSwipe = { onEditSwipe(userList[index].userPhoneNumber) },
+                onDeleteSwipe = { onDeleteSwipe(userList[index].userPhoneNumber) }
             )
         }
     }

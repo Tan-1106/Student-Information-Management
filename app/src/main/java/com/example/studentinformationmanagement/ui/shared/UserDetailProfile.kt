@@ -15,7 +15,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.example.studentinformationmanagement.AppScreen
 import com.example.studentinformationmanagement.ui.admin.AdminViewModel
 import com.example.studentinformationmanagement.ui.theme.primary_content
@@ -73,7 +72,8 @@ fun UserDetailProfile(
                                 onClick = {
                                     loginViewModel.onLogOutButtonClicked()
                                     navController.navigate(AppScreen.Login.name) {
-                                        popUpTo(AppScreen.Login.name) { inclusive = true }
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
                                     }
                                 }
                             ) {
