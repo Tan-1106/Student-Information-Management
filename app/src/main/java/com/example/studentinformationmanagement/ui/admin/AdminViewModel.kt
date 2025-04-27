@@ -358,4 +358,15 @@ class AdminViewModel : ViewModel() {
                 Log.e("DeleteUser", "Error deleting user: ${e.message}")
             }
     }
+
+    // Edit a user
+    var userToEdit by mutableStateOf<User?>(null)
+        private set
+    fun onEditUserSwipe(
+        userPhoneNumber: String,
+        navController: NavHostController
+    ) {
+        userToEdit = fullUserList.find { it.userPhoneNumber == userPhoneNumber }
+        navController.navigate(AppScreen.EditUser.name)
+    }
 }

@@ -147,8 +147,11 @@ fun UserManagement(
                 userList = adminUiState.userList,
                 adminViewModel = adminViewModel,
                 navController = navController,
-                onEditSwipe = {
-
+                onEditSwipe = { phoneNumber ->
+                    adminViewModel.onEditUserSwipe(
+                        userPhoneNumber = phoneNumber,
+                        navController = navController
+                    )
                 },
                 onDeleteSwipe = { phoneNumber ->
                     selectedUserPhoneNumber = phoneNumber

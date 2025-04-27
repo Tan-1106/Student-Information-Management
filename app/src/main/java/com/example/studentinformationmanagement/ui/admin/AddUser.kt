@@ -53,63 +53,65 @@ fun AddUser(
     navController: NavHostController
 ) {
     val context: Context = LocalContext.current
-    Scaffold(modifier = Modifier.systemBarsPadding(), containerColor = Color.White, topBar = {
-        TopAppBar(
-            title = {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.fillMaxWidth()
+    Scaffold(
+        modifier = Modifier.systemBarsPadding(),
+        containerColor = Color.White,
+        topBar = {
+            TopAppBar(
+                title = {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(
+                            "Add User",
+                            fontSize = 35.sp,
+                            fontFamily = kanit_bold_font,
+                            color = primary_content
+                        )
+                    }
+                },
+                navigationIcon = {
+                    IconButton(
+                        content = {
+                            Icon(
+                                Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = null,
+                                tint = primary_content,
+                                modifier = Modifier.size(40.dp)
+                            )
+                    },
+                        onClick = {
+                            navController.navigateUp()
+                        }
+                    )
+                },
+            )
+        },
+        bottomBar = {
+            Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
+                Button(
+                    onClick = {
+                        adminViewModel.onAddUserButtonClick(
+                            navController = navController,
+                            context = context
+                        )
+                    },
+                    colors = ButtonDefaults.outlinedButtonColors(
+                        containerColor = secondary_content,
+                    ),
+                    shape = RoundedCornerShape(4.dp),
+                    modifier = Modifier
+                        .fillMaxWidth(0.9f)
+                        .padding(bottom = 10.dp)
                 ) {
                     Text(
-                        "Add User",
-                        fontSize = 35.sp,
-                        fontFamily = kanit_bold_font,
-                        color = primary_content
+                        "Create User",
+                        style = TextStyle(color = primary_dark, fontFamily = kanit_bold_font)
                     )
                 }
-            },
-            navigationIcon = {
-                IconButton(
-                    content = {
-                        Icon(
-                            Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = null,
-                            tint = primary_content,
-                            modifier = Modifier.size(40.dp)
-                        )
-                },
-                    onClick = {
-                        navController.navigateUp()
-                    }
-                )
-            },
-
-            )
-    }, bottomBar = {
-        Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
-            Button(
-                onClick = {
-                    adminViewModel.onAddUserButtonClick(
-                        navController = navController,
-                        context = context
-                    )
-                },
-                colors = ButtonDefaults.outlinedButtonColors(
-                    containerColor = secondary_content,
-                ),
-                shape = RoundedCornerShape(4.dp),
-                modifier = Modifier
-                    .fillMaxWidth(0.9f)
-                    .padding(bottom = 10.dp)
-            ) {
-                Text(
-                    "Create User",
-                    style = TextStyle(color = primary_dark, fontFamily = kanit_bold_font)
-                )
             }
         }
-    }
-
     ) { padding ->
         Column(
             modifier = Modifier

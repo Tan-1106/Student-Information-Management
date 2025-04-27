@@ -104,7 +104,6 @@ fun DetailProfile(
                 .verticalScroll(rememberScrollState()),
             contentAlignment = Alignment.TopCenter
         ) {
-            // Data Loaded — Hiển thị thông tin chi tiết
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
