@@ -600,4 +600,48 @@ class ManagerViewModel : ViewModel() {
             navController.navigate(AppScreen.CertificateDetail.name)
         }
     }
+
+    fun onDeleteCertificate(
+        studentId: String,
+        certificateId: String,
+        context: Context
+    ) {
+        val db = Firebase.firestore
+        val studentRef = db.collection("students").document(studentId)
+
+        studentRef.get()
+            .addOnSuccessListener { document ->
+                if (document.exists()) {
+                    val student = document.toObject(Student::class.java)
+                    student?.let {
+                        val updatedCertificates = it.studentCertificates.filter { cert ->
+                            cert.certificateId != certificateId
+                        }
+
+                        studentRef.update("studentCertificates", updatedCertificates)
+                            .addOnSuccessListener {
+                                Toast.makeText(context, "Certificate deleted", Toast.LENGTH_SHORT).show()
+                                _uiState.update { currentState ->
+                                    currentState.copy(
+                                        selectedStudent = student.copy(studentCertificates = updatedCertificates),
+                                        studentList = currentState.studentList.map { s ->
+                                            if (s.studentId == studentId) {
+                                                s.copy(studentCertificates = updatedCertificates)
+                                            } else s
+                                        }
+                                    )
+                                }
+                            }
+                            .addOnFailureListener { e ->
+                                Toast.makeText(context, "Failed to delete certificate: ${e.message}", Toast.LENGTH_SHORT).show()
+                            }
+                    }
+                } else {
+                    Toast.makeText(context, "Student not found", Toast.LENGTH_SHORT).show()
+                }
+            }
+            .addOnFailureListener { e ->
+                Toast.makeText(context, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+    }
 }

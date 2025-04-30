@@ -1,5 +1,6 @@
 package com.example.studentinformationmanagement.ui.shared
 
+import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -26,10 +27,15 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -49,8 +55,14 @@ fun StudentCertificationList(
     managerViewModel: ManagerViewModel,
     navController: NavHostController
 ) {
+    val context: Context = LocalContext.current
+
     val managerUiState = managerViewModel.uiState.collectAsState()
     val student = managerUiState.value.selectedStudent
+
+    var showConfirmDeleteDialog by remember { mutableStateOf(false) }
+    var selectedCertificateId by remember { mutableStateOf("") }
+
 
     Scaffold(
         containerColor = Color.White,
@@ -115,8 +127,25 @@ fun StudentCertificationList(
                     onEditSwipe = {
 
                     },
-                    onDeleteSwipe = {
+                    onDeleteSwipe = { certificateId ->
+                        selectedCertificateId = certificateId
+                        showConfirmDeleteDialog = true
+                    }
+                )
+            }
 
+            if (showConfirmDeleteDialog) {
+                ConfirmationBox(
+                    title = "Confirm deletion",
+                    message = "Do you want to delete this certificate?",
+                    onDismissRequest = {
+                        showConfirmDeleteDialog = false
+                        selectedCertificateId = ""
+                    },
+                    onConfirmClick = {
+                        managerViewModel.onDeleteCertificate(student.studentId, selectedCertificateId, context)
+                        showConfirmDeleteDialog = false
+                        selectedCertificateId = ""
                     }
                 )
             }
