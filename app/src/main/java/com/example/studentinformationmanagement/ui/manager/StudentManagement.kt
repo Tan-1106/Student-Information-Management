@@ -165,8 +165,11 @@ fun StudentManagement(
                 studentList = managerUiState.studentList,
                 managerViewModel = managerViewModel,
                 navController = navController,
-                onEditSwipe = {
-
+                onEditSwipe = { studentId ->
+                    managerViewModel.onEditStudentSwipe(
+                        studentId = studentId,
+                        navController = navController
+                    )
                 },
                 onDeleteSwipe = { studentId ->
                     selectedStudentId = studentId

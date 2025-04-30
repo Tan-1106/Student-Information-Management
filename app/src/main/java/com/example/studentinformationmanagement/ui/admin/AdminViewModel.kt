@@ -27,6 +27,11 @@ class AdminViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(AdminUiState())
     val uiState: StateFlow<AdminUiState> = _uiState.asStateFlow()
 
+    var emailList by mutableStateOf<List<String>>(emptyList())
+        private set
+    var phoneList by mutableStateOf<List<String>>(emptyList())
+        private set
+
     // Fetching user list
     init {
         fetchUsersFromFirestore()
@@ -56,6 +61,10 @@ class AdminViewModel : ViewModel() {
                 }
                 // For search function
                 fullUserList = users
+
+                // For checking duplicate
+                emailList = users.map { it.userEmail }.distinct()
+                phoneList = users.map { it.userPhoneNumber }.distinct()
             }
     }
 
@@ -226,6 +235,14 @@ class AdminViewModel : ViewModel() {
         private set
     var roleError by mutableStateOf("")
         private set
+    fun clearErrorMessage() {
+        nameError = ""
+        emailError = ""
+        phoneError = ""
+        birthdayError = ""
+        statusError = ""
+        roleError = ""
+    }
 
     fun onAddUserButtonClick(
         navController: NavHostController,
@@ -238,7 +255,7 @@ class AdminViewModel : ViewModel() {
         val role = newUserRole.trim()
         val status = newUserStatus.trim()
 
-        if (validateUserInputs(name, email, phone, birthday, role, status)) {
+        if (validateUserInputs(newName = name, newEmail = email, newPhone = phone, newBirthday = birthday, newRole = role, newStatus = status)) {
             val db = Firebase.firestore
 
             db.collection("users")
@@ -264,28 +281,18 @@ class AdminViewModel : ViewModel() {
                                         .document(phone)
                                         .set(newUser)
                                         .addOnSuccessListener {
-                                            nameError = ""
-                                            emailError = ""
-                                            phoneError = ""
-                                            birthdayError = ""
-                                            statusError = ""
-                                            roleError = ""
-
+                                            clearErrorMessage()
                                             clearAddUserInputs()
                                             navController.navigateUp()
                                         }
                                         .addOnFailureListener {
                                             Toast.makeText(context, "Cannot add user", Toast.LENGTH_SHORT).show()
                                         }
-                                } else {
-                                    emailError = "Email is existed"
                                 }
                             }
                             .addOnFailureListener {
                                 Toast.makeText(context, "Cannot check existing email", Toast.LENGTH_SHORT).show()
                             }
-                    } else {
-                        phoneError = "Phone number is existed"
                     }
                 }
                 .addOnFailureListener {
@@ -296,11 +303,15 @@ class AdminViewModel : ViewModel() {
 
     fun validateUserInputs(
         newName: String,
+        currentEmail: String = "",
         newEmail: String,
+        currentPhone: String = "",
         newPhone: String,
         newBirthday: String,
         newStatus: String,
-        newRole: String
+        newRole: String,
+        existingEmails: List<String> = emailList,
+        existingPhones: List<String> = phoneList,
     ): Boolean {
         var isValid = true
 
@@ -317,6 +328,12 @@ class AdminViewModel : ViewModel() {
         } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(newEmail.trim()).matches()) {
             emailError = "Invalid email format"
             isValid = false
+        } else if (currentEmail != "" && currentEmail == newEmail) {
+            phoneError = ""
+            isValid = true
+        } else if (existingEmails.contains(newEmail)) {
+            emailError = "Email already exists"
+            isValid = false
         } else {
             emailError = ""
         }
@@ -327,8 +344,13 @@ class AdminViewModel : ViewModel() {
         } else if (newPhone.trim().length != 10) {
             phoneError = "Invalid phone number"
             isValid = false
-        }
-        else {
+        } else if (currentPhone != "" && currentPhone == newPhone) {
+            phoneError = ""
+            isValid = true
+        } else if (existingPhones.contains(newPhone)) {
+            phoneError = "Phone number already exists"
+            isValid = false
+        } else {
             phoneError = ""
         }
 
@@ -389,7 +411,8 @@ class AdminViewModel : ViewModel() {
         newBirthday: String,
         newStatus: String,
         newRole: String,
-        context: Context
+        context: Context,
+        navController: NavHostController
     ) {
         val userToEdit = userToEdit ?: return
 
@@ -427,6 +450,7 @@ class AdminViewModel : ViewModel() {
                 .addOnSuccessListener {
                     Toast.makeText(context, "User details updated successfully", Toast.LENGTH_SHORT).show()
                     fetchUsersFromFirestore()
+                    navController.navigateUp()
                 }
                 .addOnFailureListener { e ->
                     Toast.makeText(context, "Error updating user: ${e.message}", Toast.LENGTH_SHORT).show()
@@ -438,7 +462,7 @@ class AdminViewModel : ViewModel() {
 
     // Change user's image event
     fun updateUserImage(imageUri: Uri, context: Context, onSuccess: (String) -> Unit) {
-        val fileName = "images/${UUID.randomUUID()}.jpg"
+        val fileName = "userImages/${UUID.randomUUID()}.jpg"
 
         val storageRef = FirebaseStorage.getInstance().reference
         val imageRef = storageRef.child(fileName)
@@ -464,5 +488,4 @@ class AdminViewModel : ViewModel() {
                 Toast.makeText(context, "Image upload failed: ${e.message}", Toast.LENGTH_SHORT).show()
             }
     }
-
 }

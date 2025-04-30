@@ -99,6 +99,7 @@ fun EditUser(
                     IconButton(
                         onClick = {
                             navController.navigateUp()
+                            adminViewModel.clearErrorMessage()
                         }
                     ) {
                         Icon(
@@ -120,12 +121,14 @@ fun EditUser(
                 Button(
                     onClick = {
                         if (adminViewModel.validateUserInputs(
-                                newName = nameValue,
-                                newEmail = emailValue,
-                                newPhone = phoneValue,
-                                newBirthday = birthdayValue,
-                                newStatus = statusValue,
-                                newRole = roleValue,
+                            newName = nameValue,
+                            currentEmail = user?.userEmail ?: "",
+                            newEmail = emailValue,
+                            currentPhone = user?.userPhoneNumber ?: "",
+                            newPhone = phoneValue,
+                            newBirthday = birthdayValue,
+                            newStatus = statusValue,
+                            newRole = roleValue,
                         )) {
                             adminViewModel.onEditUserSaveClick(
                                 newName = nameValue,
@@ -134,7 +137,8 @@ fun EditUser(
                                 newBirthday = birthdayValue,
                                 newStatus = statusValue,
                                 newRole = roleValue,
-                                context = context
+                                context = context,
+                                navController = navController
                             )
                         }
                     },

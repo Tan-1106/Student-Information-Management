@@ -11,6 +11,7 @@ import com.example.studentinformationmanagement.ui.admin.AdminScreen
 import com.example.studentinformationmanagement.ui.admin.AdminViewModel
 import com.example.studentinformationmanagement.ui.admin.EditUser
 import com.example.studentinformationmanagement.ui.manager.AddStudent
+import com.example.studentinformationmanagement.ui.manager.EditStudent
 import com.example.studentinformationmanagement.ui.manager.ManagerViewModel
 import com.example.studentinformationmanagement.ui.manager.StudentManagement
 import com.example.studentinformationmanagement.ui.shared.LoginScreen
@@ -96,7 +97,10 @@ fun AppScreen(
             )
         }
         composable(route = AppScreen.EditStudent.name) {
-
+            EditStudent(
+                managerViewModel = managerViewModel,
+                navController = navController
+            )
         }
         composable(route = AppScreen.StudentDetailProfile.name) {
             StudentDetailProfile(

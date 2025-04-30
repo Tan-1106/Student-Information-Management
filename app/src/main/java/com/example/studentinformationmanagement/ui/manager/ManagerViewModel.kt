@@ -1,8 +1,8 @@
 package com.example.studentinformationmanagement.ui.manager
 
 import android.content.Context
+import android.net.Uri
 import android.util.Log
-import android.util.Patterns
 import android.widget.Toast
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -15,10 +15,12 @@ import com.example.studentinformationmanagement.data.manager.ManagerUiState
 import com.example.studentinformationmanagement.data.manager.Student
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
+import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import java.util.UUID
 
 class ManagerViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(ManagerUiState())
@@ -27,6 +29,13 @@ class ManagerViewModel : ViewModel() {
     var facultyList by mutableStateOf<List<String>>(emptyList())
         private set
     var classList by mutableStateOf<List<String>>(emptyList())
+        private set
+
+    var idList by mutableStateOf<List<String>>(emptyList())
+        private set
+    var emailList by mutableStateOf<List<String>>(emptyList())
+        private set
+    var phoneList by mutableStateOf<List<String>>(emptyList())
         private set
 
     // Fetch Student List
@@ -62,6 +71,11 @@ class ManagerViewModel : ViewModel() {
                 fullStudentList = students
                 facultyList = students.map { it.studentFaculty }.distinct().sorted()
                 classList = students.map { it.studentClass }.distinct().sorted()
+
+                // For checking duplicate
+                idList = students.map { it.studentId }.distinct()
+                emailList = students.map { it.studentEmail }.distinct()
+                phoneList = students.map { it.studentPhoneNumber }.distinct()
             }
     }
 
@@ -261,12 +275,21 @@ class ManagerViewModel : ViewModel() {
         private set
     var facultyError by mutableStateOf("")
         private set
+    fun clearErrorMessage() {
+        nameError = ""
+        emailError = ""
+        phoneError = ""
+        idError = ""
+        classError = ""
+        birthdayError = ""
+        facultyError = ""
+    }
 
     fun onAddStudentButtonClick(
         navController: NavHostController,
         context: Context
     ) {
-        val db = Firebase.firestore
+
 
         val name = newStudentName.trim()
         val email = newStudentEmail.trim()
@@ -276,7 +299,9 @@ class ManagerViewModel : ViewModel() {
         val birthday = newStudentBirthday.trim()
         val faculty = newStudentFaculty.trim()
 
-        if (validateUserInputs()) {
+        if (validateUserInputs(newName = name, newEmail = email, newPhone = phone, newBirthday = birthday, newId = id, newClass = studentClass, newFaculty = faculty)) {
+            val db = Firebase.firestore
+
             db.collection("students")
                 .whereIn("studentId", listOf(id))
                 .get()
@@ -306,6 +331,7 @@ class ManagerViewModel : ViewModel() {
                                                     .document(id)
                                                     .set(newStudent)
                                                     .addOnSuccessListener {
+                                                        clearErrorMessage()
                                                         clearAddStudentInputs()
                                                         navController.navigateUp()
                                                     }
@@ -316,8 +342,6 @@ class ManagerViewModel : ViewModel() {
                                                             Toast.LENGTH_SHORT
                                                         ).show()
                                                     }
-                                            } else {
-                                                phoneError = "Phone number is existed."
                                             }
                                         }
                                         .addOnFailureListener {
@@ -327,8 +351,6 @@ class ManagerViewModel : ViewModel() {
                                                 Toast.LENGTH_SHORT
                                             ).show()
                                         }
-                                } else {
-                                    emailError = "Email is existed."
                                 }
                             }
                             .addOnFailureListener {
@@ -338,8 +360,6 @@ class ManagerViewModel : ViewModel() {
                                     Toast.LENGTH_SHORT
                                 ).show()
                             }
-                    } else {
-                        idError = "Student's ID is existed."
                     }
                 }
                 .addOnFailureListener {
@@ -352,58 +372,90 @@ class ManagerViewModel : ViewModel() {
         }
     }
 
-    fun validateUserInputs(): Boolean {
+    fun validateUserInputs(
+        newName: String,
+        currentEmail: String = "",
+        newEmail: String,
+        currentPhone: String = "",
+        newPhone: String,
+        newBirthday: String,
+        currentId: String = "",
+        newId: String,
+        newClass: String,
+        newFaculty: String,
+        existingEmails: List<String> = emailList,
+        existingPhones: List<String> = phoneList,
+        existingIds: List<String> = idList
+    ): Boolean {
         var isValid = true
 
-        if (newStudentName.trim().isEmpty()) {
+        if (newName.isEmpty()) {
             nameError = "Name is required"
             isValid = false
         } else {
             nameError = ""
         }
 
-        if (newStudentEmail.trim().isEmpty()) {
+        if (newEmail.isEmpty()) {
             emailError = "Email is required"
             isValid = false
-        } else if (!Patterns.EMAIL_ADDRESS.matcher(newStudentEmail.trim()).matches()) {
+        } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(newEmail.trim()).matches()) {
             emailError = "Invalid email format"
+            isValid = false
+        } else if (currentEmail != "" && currentEmail == newEmail) {
+            phoneError = ""
+            isValid = true
+        } else if (existingEmails.contains(newEmail)) {
+            emailError = "Email already exists"
             isValid = false
         } else {
             emailError = ""
         }
 
-        if (newStudentPhone.trim().isEmpty()) {
+        if (newPhone.isEmpty()) {
             phoneError = "Phone number is required"
             isValid = false
-        } else if (newStudentPhone.trim().length != 10) {
+        } else if (newPhone.trim().length != 10) {
             phoneError = "Invalid phone number"
+            isValid = false
+        } else if (currentPhone != "" && currentPhone == newPhone) {
+            phoneError = ""
+            isValid = true
+        } else if (existingPhones.contains(newPhone)) {
+            phoneError = "Phone number already exists"
             isValid = false
         } else {
             phoneError = ""
         }
 
-        if (newStudentId.trim().isEmpty()) {
-            idError = "Student's ID is required"
-            isValid = false
-        } else {
-            idError = ""
-        }
-
-        if (newStudentClass.trim().isEmpty()) {
-            classError = "Class is required"
-            isValid = false
-        } else {
-            classError = ""
-        }
-
-        if (newStudentBirthday.trim().isEmpty()) {
+        if (newBirthday.isEmpty()) {
             birthdayError = "Birthday is required"
             isValid = false
         } else {
             birthdayError = ""
         }
 
-        if (newStudentFaculty.trim().isEmpty()) {
+        if (newId.isEmpty()) {
+            idError = "ID is required"
+            isValid = false
+        } else if (currentId != "" && currentId == newId) {
+            idError = ""
+            isValid = true
+        } else if (existingIds.contains(newId)) {
+            idError = "Student ID already exists"
+            isValid = false
+        } else {
+            idError = ""
+        }
+
+        if (newClass.isEmpty()) {
+            classError = "Class is required"
+            isValid = false
+        } else {
+            classError = ""
+        }
+
+        if (newFaculty.isEmpty()) {
             facultyError = "Faculty is required"
             isValid = false
         } else {
@@ -426,6 +478,107 @@ class ManagerViewModel : ViewModel() {
             }
             .addOnFailureListener { e ->
                 Log.e("DeleteStudent", "Error deleting student: ${e.message}")
+            }
+    }
+
+    // Edit a student
+    var studentToEdit by mutableStateOf<Student?>(null)
+        private set
+    fun onEditStudentSwipe(
+        studentId: String,
+        navController: NavHostController
+    ) {
+        studentToEdit = fullStudentList.find { it.studentId == studentId }
+        navController.navigate(AppScreen.EditStudent.name)
+    }
+
+    fun onEditStudentSaveClick(
+        newName: String,
+        newEmail: String,
+        newPhone: String,
+        newBirthday: String,
+        newId: String,
+        newClass: String,
+        newFaculty: String,
+        context: Context,
+        navController: NavHostController
+    ) {
+        val studentToEdit = studentToEdit ?: return
+
+        val db = Firebase.firestore
+        val updatedData = mutableMapOf<String, Any>()
+
+        if (newName.isNotEmpty() && newName != studentToEdit.studentName) {
+            updatedData["studentName"] = newName
+        }
+
+        if (newEmail.isNotEmpty() && newEmail != studentToEdit.studentEmail) {
+            updatedData["studentEmail"] = newEmail
+        }
+
+        if (newPhone.isNotEmpty() && newPhone != studentToEdit.studentPhoneNumber) {
+            updatedData["studentPhoneNumber"] = newPhone
+        }
+
+        if (newBirthday.isNotEmpty() && newBirthday != studentToEdit.studentBirthday) {
+            updatedData["studentBirthday"] = newBirthday
+        }
+
+        if (newId.isNotEmpty() && newId != studentToEdit.studentId) {
+            updatedData["studentId"] = newId
+        }
+
+        if (newClass.isNotEmpty() && newClass != studentToEdit.studentClass) {
+            updatedData["studentClass"] = newClass
+        }
+
+        if (newFaculty.isNotEmpty() && newFaculty != studentToEdit.studentFaculty) {
+            updatedData["studentFaculty"] = newFaculty
+        }
+
+        if (updatedData.isNotEmpty()) {
+            db.collection("students")
+                .document(studentToEdit.studentId)
+                .update(updatedData)
+                .addOnSuccessListener {
+                    Toast.makeText(context, "Student details updated successfully", Toast.LENGTH_SHORT).show()
+                    fetchStudentsFromFirestore()
+                    navController.navigateUp()
+                }
+                .addOnFailureListener { e ->
+                    Toast.makeText(context, "Error updating student: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
+        } else {
+            Toast.makeText(context, "No changes detected", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    // Change user's image event
+    fun updateStudentImage(imageUri: Uri, context: Context, onSuccess: (String) -> Unit) {
+        val fileName = "studentImages/${UUID.randomUUID()}.jpg"
+
+        val storageRef = FirebaseStorage.getInstance().reference
+        val imageRef = storageRef.child(fileName)
+
+        // Upload the image to Firebase Storage
+        imageRef.putFile(imageUri)
+            .addOnSuccessListener {
+                imageRef.downloadUrl.addOnSuccessListener { downloadUri ->
+                    val db = Firebase.firestore
+                    db.collection("students")
+                        .document(studentToEdit?.studentId ?: "")
+                        .update("studentImageUrl", downloadUri.toString())
+                        .addOnSuccessListener {
+                            Toast.makeText(context, "Profile image updated ", Toast.LENGTH_SHORT).show()
+                            onSuccess(downloadUri.toString())
+                        }
+                        .addOnFailureListener { e ->
+                            Toast.makeText(context, "Error updating profile image: ${e.message}", Toast.LENGTH_SHORT).show()
+                        }
+                }
+            }
+            .addOnFailureListener { e ->
+                Toast.makeText(context, "Image upload failed: ${e.message}", Toast.LENGTH_SHORT).show()
             }
     }
 }

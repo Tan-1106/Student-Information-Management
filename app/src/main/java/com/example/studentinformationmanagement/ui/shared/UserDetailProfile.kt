@@ -56,8 +56,11 @@ fun UserDetailProfile(
                     },
                     title = {}, actions = {
                         IconButton(onClick = {
-                            /* TODO: Setting button's UI implementation */
-
+                            // Reuse swipe to edit function
+                            adminViewModel.onEditUserSwipe(
+                                userPhoneNumber = currentUser.userPhoneNumber,
+                                navController = navController
+                            )
                         }) {
                             Icon(
                                 Icons.Outlined.Settings,
