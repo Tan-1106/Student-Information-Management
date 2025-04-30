@@ -35,6 +35,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -54,6 +55,7 @@ import com.example.studentinformationmanagement.R
 import com.example.studentinformationmanagement.ui.shared.InformationDate
 import com.example.studentinformationmanagement.ui.shared.InformationLine
 import com.example.studentinformationmanagement.ui.shared.InformationSelect
+import com.example.studentinformationmanagement.ui.shared.LoginViewModel
 import com.example.studentinformationmanagement.ui.theme.kanit_bold_font
 import com.example.studentinformationmanagement.ui.theme.primary_content
 import com.example.studentinformationmanagement.ui.theme.primary_dark
@@ -62,12 +64,16 @@ import com.example.studentinformationmanagement.ui.theme.secondary_content
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditUser(
+    loginViewModel: LoginViewModel,
     adminViewModel: AdminViewModel,
     navController: NavHostController
 ) {
     val context: Context = LocalContext.current
+    val loginUiState by loginViewModel.loginUiState.collectAsState()
 
     val user = adminViewModel.userToEdit
+    val adminSelfEdit: Boolean = loginUiState.currentUser?.userPhoneNumber == user?.userPhoneNumber
+
     var updatedImageUrl by remember { mutableStateOf(user?.userImageUrl) }
     var nameValue by remember { mutableStateOf(user?.userName ?: "") }
     var birthdayValue by remember { mutableStateOf(user?.userBirthday ?: "") }
@@ -87,6 +93,10 @@ fun EditUser(
 
             adminViewModel.updateUserImage(imageUri = imageUri!!, context = context) { newImageUrl ->
                 updatedImageUrl = newImageUrl
+
+                if (adminSelfEdit) {
+                    loginViewModel.updateCurrentUserImage(newImageUrl = newImageUrl)
+                }
             }
         }
     }
@@ -110,7 +120,13 @@ fun EditUser(
                         )
                     }
                 },
-                title = {}, actions = {}
+                title = {
+                    Text(
+                        text = "EDIT USER",
+                        fontFamily = kanit_bold_font,
+                        color = primary_content
+                    )
+                }, actions = {}
             )
         },
         bottomBar = {
@@ -140,6 +156,9 @@ fun EditUser(
                                 context = context,
                                 navController = navController
                             )
+                            if (adminSelfEdit) {
+                                loginViewModel.updateCurrentUserInformation(nameValue, emailValue, phoneValue, birthdayValue, statusValue, roleValue)
+                            }
                         }
                     },
                     colors = ButtonDefaults.outlinedButtonColors(
@@ -227,11 +246,13 @@ fun EditUser(
                     onValueChange = { emailValue = it },
                     errorMessage = adminViewModel.emailError
                 )
+
+                // Fixed - Can't change the phone number
                 InformationLine(
                     icon = Icons.Filled.Phone,
                     label = "Phone",
-                    value = phoneValue,
-                    enable = true,
+                    value = "$phoneValue (Cannot be edited)",
+                    enable = false,
                     onValueChange = { phoneValue = it },
                     errorMessage = adminViewModel.phoneError,
                     keyboardOptions = KeyboardOptions.Default.copy(

@@ -2,26 +2,21 @@ package com.example.studentinformationmanagement.ui.shared
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Apartment
-import androidx.compose.material.icons.filled.Cake
-import androidx.compose.material.icons.filled.Class
-import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Book
+import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.LocationCity
 import androidx.compose.material.icons.filled.Newspaper
 import androidx.compose.material.icons.filled.Numbers
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Phone
+import androidx.compose.material.icons.filled.Timer
+import androidx.compose.material.icons.filled.Title
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -32,29 +27,24 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import coil.compose.AsyncImage
 import com.example.studentinformationmanagement.AppScreen
-import com.example.studentinformationmanagement.R
 import com.example.studentinformationmanagement.ui.manager.ManagerViewModel
 import com.example.studentinformationmanagement.ui.theme.kanit_bold_font
 import com.example.studentinformationmanagement.ui.theme.primary_content
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun StudentDetailProfile(
-    navController: NavHostController,
+fun StudentCertificateDetail(
     managerViewModel: ManagerViewModel,
+    navController: NavHostController,
     modifier: Modifier = Modifier
 ) {
     val managerUiState = managerViewModel.uiState.collectAsState()
-    val student = managerUiState.value.selectedStudent
 
+    val currentCertificate = managerUiState.value.selectedCertificate
     Scaffold(
         containerColor = Color.White,
         modifier = modifier
@@ -62,18 +52,18 @@ fun StudentDetailProfile(
         topBar = {
             TopAppBar(
                 navigationIcon = {
-                        IconButton(
-                            onClick = {
-                                navController.navigateUp()
-                            }
-                        ) {
-                            Icon(
-                                Icons.AutoMirrored.Filled.ArrowBack,
-                                contentDescription = null,
-                                tint = primary_content,
-                                modifier = Modifier.size(40.dp)
-                            )
+                    IconButton(
+                        onClick = {
+                            navController.navigateUp()
                         }
+                    ) {
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = null,
+                            tint = primary_content,
+                            modifier = Modifier.size(40.dp)
+                        )
+                    }
 
                 },
                 title = {
@@ -111,32 +101,14 @@ fun StudentDetailProfile(
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Box(
-                    modifier = Modifier
-                        .padding(vertical = 20.dp)
-                        .size(100.dp)
-                ) {
-                    AsyncImage(
-                        model = student.studentImageUrl,
-                        contentDescription = "Avatar",
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .clip(CircleShape),
-                        contentScale = ContentScale.Crop,
-                        placeholder = painterResource(id = R.drawable.avt_placeholder),
-                        error = painterResource(id = R.drawable.avt_error)
-                    )
-                }
-                InformationLine(Icons.Filled.Person, "Name", student.studentName)
-                InformationLine(Icons.Filled.Cake, "Birthday", student.studentBirthday)
-                InformationLine(Icons.Filled.Email, "Email", student.studentEmail)
-                InformationLine(Icons.Filled.Phone, "Phone", student.studentPhoneNumber)
-                InformationLine(Icons.Filled.Numbers, "Id", student.studentId)
-                InformationLine(Icons.Filled.Class, "Class", student.studentClass)
-                InformationLine(Icons.Filled.Apartment, "Faculty", student.studentFaculty)
-                InformationLine(Icons.Filled.Newspaper, "Number of certificates", student.studentCertificates.size.toString())
-                Spacer(modifier = Modifier.height(20.dp))
+               InformationLine(Icons.Filled.Title, "Title", currentCertificate.certificateTitle)
+               InformationLine(Icons.Filled.Book, "Course name", currentCertificate.courseName)
+               InformationLine(Icons.Filled.DateRange, "Issue date", currentCertificate.issueDate)
+               InformationLine(Icons.Filled.LocationCity, "Issuing organization", currentCertificate.issuingOrganization)
+               InformationLine(Icons.Filled.Numbers, "Certificate ID", currentCertificate.certificateId)
+               InformationLine(Icons.Filled.Timer, "Expiration date", currentCertificate.expirationDate)
             }
         }
     }
+
 }

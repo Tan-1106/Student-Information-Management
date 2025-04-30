@@ -16,23 +16,16 @@ import com.example.studentinformationmanagement.ui.manager.ManagerViewModel
 import com.example.studentinformationmanagement.ui.manager.StudentManagement
 import com.example.studentinformationmanagement.ui.shared.LoginScreen
 import com.example.studentinformationmanagement.ui.shared.LoginViewModel
+import com.example.studentinformationmanagement.ui.shared.StudentCertificateDetail
+import com.example.studentinformationmanagement.ui.shared.StudentCertificationList
 import com.example.studentinformationmanagement.ui.shared.StudentDetailProfile
 import com.example.studentinformationmanagement.ui.shared.UserDetailProfile
 
 enum class AppScreen() {
     Login,
-    UserManagement,
-    AddUser,
-    EditUser,
-    LoginHistory,
-    StudentManagement,
-    AddStudent,
-    EditStudent,
-    AddCertificate,
-    EditCertificate,
+    AdminScreen, UserManagement, AddUser, EditUser, LoginHistory,
+    StudentManagement, StudentDetailProfile, AddStudent, EditStudent, CertificateList, AddCertificate, EditCertificate, CertificateDetail,
     UserDetailProfile,
-    StudentDetailProfile,
-    AdminScreen
 }
 
 @Composable
@@ -80,6 +73,7 @@ fun AppScreen(
         }
         composable(route = AppScreen.EditUser.name) {
             EditUser(
+                loginViewModel = loginViewModel,
                 adminViewModel = adminViewModel,
                 navController = navController
             )
@@ -108,11 +102,23 @@ fun AppScreen(
                 managerViewModel = managerViewModel
             )
         }
+        composable(route = AppScreen.CertificateList.name) {
+            StudentCertificationList(
+                managerViewModel = managerViewModel,
+                navController = navController
+            )
+        }
         composable(route = AppScreen.AddCertificate.name) {
 
         }
         composable(route = AppScreen.EditCertificate.name) {
 
+        }
+        composable(route = AppScreen.CertificateDetail.name) {
+            StudentCertificateDetail(
+                managerViewModel = managerViewModel,
+                navController = navController
+            )
         }
 
 

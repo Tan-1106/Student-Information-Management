@@ -111,7 +111,13 @@ fun EditStudent(
                         )
                     }
                 },
-                title = {}, actions = {}
+                title = {
+                    Text(
+                        text = "EDIT STUDENT",
+                        fontFamily = kanit_bold_font,
+                        color = primary_content
+                    )
+                }, actions = {}
             )
         },
         bottomBar = {
@@ -246,11 +252,12 @@ fun EditStudent(
                     )
                 )
 
+                // Fixed - Can't change student's ID
                 InformationLine(
                     icon = Icons.Filled.FilterCenterFocus,
                     label = "Student ID",
-                    value = idValue,
-                    enable = true,
+                    value = "$idValue (Cannot be edited)",
+                    enable = false,
                     onValueChange = { idValue = it },
                     errorMessage = managerViewModel.idError
                 )
@@ -272,6 +279,8 @@ fun EditStudent(
                     onValueChange = { facultyValue = it },
                     errorMessage = managerViewModel.facultyError
                 )
+
+
             }
         }
     }

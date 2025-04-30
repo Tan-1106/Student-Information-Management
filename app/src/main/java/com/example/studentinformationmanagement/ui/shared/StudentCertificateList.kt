@@ -1,67 +1,219 @@
 package com.example.studentinformationmanagement.ui.shared
 
-import android.widget.Toast
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Numbers
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import me.saket.swipe.SwipeAction
-import me.saket.swipe.SwipeableActionsBox
+import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import com.example.studentinformationmanagement.R
+import com.example.studentinformationmanagement.data.manager.Certificate
+import com.example.studentinformationmanagement.ui.manager.ManagerViewModel
+import com.example.studentinformationmanagement.ui.theme.kanit_bold_font
+import com.example.studentinformationmanagement.ui.theme.kanit_regular_font
+import com.example.studentinformationmanagement.ui.theme.primary_content
+import com.example.studentinformationmanagement.ui.theme.secondary_dark
+import com.example.studentinformationmanagement.ui.theme.third_content
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun StudentCertificationList() {
-    Scaffold { paddingValue ->
-        Box(modifier = Modifier.padding(paddingValue)) {
+fun StudentCertificationList(
+    managerViewModel: ManagerViewModel,
+    navController: NavHostController
+) {
+    val managerUiState = managerViewModel.uiState.collectAsState()
+    val student = managerUiState.value.selectedStudent
 
+    Scaffold(
+        containerColor = Color.White,
+        topBar = {
+            TopAppBar(
+                navigationIcon = {
+                    IconButton(
+                        onClick = {
+                            navController.navigateUp()
+                        }
+                    ) {
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = null,
+                            tint = primary_content,
+                            modifier = Modifier.size(40.dp)
+                        )
+                    }
+                },
+                title = {
+                    Text(
+                        text = "STUDENT'S CERTIFICATES",
+                        fontFamily = kanit_bold_font,
+                        color = primary_content
+                    )
+                },
+                actions = {}
+            )
+        }
+    ) { innerPadding ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .padding(16.dp)
+                .background(Color.White)
+        ) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                InformationLine(Icons.Filled.Person, "Name", student.studentName)
+                InformationLine(Icons.Filled.Numbers, "Id", student.studentId)
+
+                Spacer(modifier = Modifier.height(10.dp))
+                Row(
+                    modifier = Modifier.padding(horizontal = 16.dp)
+                ) {
+                    Text(
+                        text = "List Of Certificates",
+                        fontSize = 24.sp,
+                        fontFamily = kanit_bold_font,
+                        color = primary_content
+                    )
+                    Spacer(modifier = Modifier.weight(1f))
+                }
+
+                CertificateList(
+                    certificateList = managerUiState.value.selectedStudent.studentCertificates,
+                    navController = navController,
+                    managerViewModel = managerViewModel,
+                    onEditSwipe = {
+
+                    },
+                    onDeleteSwipe = {
+
+                    }
+                )
+            }
         }
     }
 }
 
 @Composable
-fun SwipeActionItem(
-    text: String,
-    onEdit: () -> Unit,
-    onDelete: () -> Unit
+fun CertificateList(
+    certificateList: List<Certificate>,
+    navController: NavHostController,
+    managerViewModel: ManagerViewModel,
+    onEditSwipe: (String) -> Unit,
+    onDeleteSwipe: (String) -> Unit
 ) {
-    val edit = SwipeAction(
-        icon = { Text("✏️") },
-        background = Color(0xFFFFEB3B),
-        onSwipe = onEdit
-    )
-    val delete = SwipeAction(
-        icon = { Text("🗑️") },
-        background = Color(0xFFF44336),
-        onSwipe = onDelete
-    )
-
-    SwipeableActionsBox(
-        startActions = listOf(edit),
-        endActions = listOf(delete),
-    ) {
-            Text(text)
+    LazyColumn {
+        items(certificateList.size) { index ->
+            val certificate = certificateList[index]
+            CertificateBox(
+                certificateTitle = certificate.certificateTitle,
+                issueDate = certificate.issueDate,
+                certificateId = certificate.certificateId,
+                onSeeMoreClicked = {
+                    managerViewModel.onCertificateSeeMoreClicked(
+                        certificateId = it,
+                        navController = navController
+                    )
+                },
+                onEditSwipe = { onEditSwipe(certificate.certificateId) },
+                onDeleteSwipe = { onDeleteSwipe(certificate.certificateId) }
+            )
+        }
     }
 }
 
 @Composable
-@Preview(showSystemUi = true)
-fun PreviewSwipe() {
-    var context= LocalContext.current
-    Column(modifier = Modifier.fillMaxSize()) {
-        SwipeActionItem(
-            text = "Item 1",
-            onEdit = { Toast.makeText(context,"edit", Toast.LENGTH_SHORT) },
-            onDelete = {  Toast.makeText(context,"delete", Toast.LENGTH_SHORT) }
-        )
+fun CertificateBox(
+    certificateTitle: String,
+    issueDate: String,
+    certificateId: String,
+    onSeeMoreClicked: (String) -> Unit,
+    onEditSwipe: () -> Unit,
+    onDeleteSwipe: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Box(
+        modifier = modifier
+            .padding(16.dp)
+            .background(color = third_content, shape = RoundedCornerShape(16.dp))
+            .clip(shape = RoundedCornerShape(16.dp))
+            .border(shape = RoundedCornerShape(16.dp), width = 1.dp, color = primary_content)
+
+    ) {
+        SwipeComponent(
+            onEditSwipe = onEditSwipe,
+            onDeleteSwipe = onDeleteSwipe
+        ) {
+            Column(
+                verticalArrangement = Arrangement.SpaceEvenly,
+                horizontalAlignment = Alignment.Start,
+                modifier = Modifier
+                    .padding(10.dp)
+            ) {
+                Text(
+                    text = "Title: $certificateTitle",
+                    fontSize = 20.sp,
+                    color = primary_content,
+                    fontFamily = kanit_bold_font
+                )
+                Text(
+                    text = "Issue date: $issueDate",
+                    fontSize = 16.sp,
+                    color = Color.DarkGray,
+                    fontFamily = kanit_regular_font
+                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        text = "ID: $certificateId",
+                        fontSize = 14.sp,
+                        fontFamily = kanit_regular_font,
+                        color = secondary_dark
+                    )
+                    Spacer(modifier = Modifier.weight(1f))
+                    Text(
+                        text = stringResource(R.string.see_more),
+                        fontFamily = kanit_regular_font,
+                        color = primary_content,
+                        modifier = Modifier
+                            .clickable {
+                                onSeeMoreClicked(certificateId)
+                            }
+                    )
+                }
+            }
+        }
     }
 }

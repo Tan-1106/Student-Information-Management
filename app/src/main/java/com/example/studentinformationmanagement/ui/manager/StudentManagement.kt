@@ -88,7 +88,7 @@ fun StudentManagement(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 16.dp),
+                    .padding(16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 // Search Bar
@@ -225,9 +225,9 @@ fun StudentList(
             InformationBox(
                 imageUrl = studentList[index].studentImageUrl,
                 name = studentList[index].studentName,
-                roleOrStuId = studentList[index].studentId,
-                stateOrClass = studentList[index].studentClass,
-                phoneNumber = studentList[index].studentPhoneNumber,
+                mainInformation = studentList[index].studentId,
+                subInformation = studentList[index].studentClass,
+                identificationInformation = studentList[index].studentPhoneNumber,
                 onSeeMoreClicked = {
                     managerViewModel.onStudentSeeMoreClicked(
                         studentPhoneNumber = it,

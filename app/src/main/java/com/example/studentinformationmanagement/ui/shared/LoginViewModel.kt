@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 import com.example.studentinformationmanagement.AppScreen
+import com.example.studentinformationmanagement.data.shared.CurrentUser
 import com.example.studentinformationmanagement.data.shared.LoginRepository
 import com.example.studentinformationmanagement.data.shared.LoginUiState
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -83,6 +84,42 @@ class LoginViewModel(
             }
         }
     }
+
+    fun updateCurrentUserInformation(
+        newName: String,
+        newEmail: String,
+        newPhone: String,
+        newBirthday: String,
+        newStatus: String,
+        newRole: String
+    ) {
+        _loginUiState.update { currentState ->
+            val currentImage = currentState.currentUser?.userImageUrl
+
+            currentState.copy(
+                currentUser = CurrentUser(
+                    userImageUrl = currentImage.toString(),
+                    userName = newName,
+                    userEmail = newEmail,
+                    userPhoneNumber = newPhone,
+                    userBirthday = newBirthday,
+                    userStatus = newStatus,
+                    userRole =  newRole
+                )
+            )
+        }
+    }
+
+    fun updateCurrentUserImage(newImageUrl: String) {
+        _loginUiState.update { currentState ->
+            currentState.copy(
+                currentUser = currentState.currentUser?.copy(
+                    userImageUrl = newImageUrl
+                )
+            )
+        }
+    }
+
 
     fun onLogOutButtonClicked() {
         userPhoneNumberInput = ""

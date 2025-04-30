@@ -239,9 +239,9 @@ fun Divider(color: Color = Color.Gray) {
 fun InformationBox(
     imageUrl: String,
     name: String,
-    roleOrStuId: String,
-    stateOrClass: String,
-    phoneNumber: String,
+    mainInformation: String,
+    subInformation: String,
+    identificationInformation: String,
     onSeeMoreClicked: (String) -> Unit,
     onEditSwipe: () -> Unit,
     onDeleteSwipe: () -> Unit,
@@ -289,7 +289,7 @@ fun InformationBox(
                         fontFamily = kanit_bold_font
                     )
                     Text(
-                        text = roleOrStuId,
+                        text = mainInformation,
                         fontSize = 16.sp,
                         color = Color.DarkGray,
                         fontFamily = kanit_regular_font
@@ -298,23 +298,23 @@ fun InformationBox(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.Center
                     ) {
-                        if (stateOrClass == "Active") {
+                        if (subInformation == "Active") {
                             Text(
-                                text = stateOrClass,
+                                text = subInformation,
                                 fontSize = 14.sp,
                                 fontFamily = kanit_regular_font,
                                 color = primary_content
                             )
-                        } else if (stateOrClass == "Inactive") {
+                        } else if (subInformation == "Inactive") {
                             Text(
-                                text = stateOrClass,
+                                text = subInformation,
                                 fontSize = 14.sp,
                                 fontFamily = kanit_regular_font,
                                 color = secondary_dark
                             )
                         } else {
                             Text(
-                                text = stateOrClass,
+                                text = subInformation,
                                 fontSize = 14.sp,
                                 fontFamily = kanit_regular_font,
                                 color = secondary_content
@@ -327,7 +327,7 @@ fun InformationBox(
                             color = primary_content,
                             modifier = Modifier
                                 .clickable {
-                                    onSeeMoreClicked(phoneNumber)
+                                    onSeeMoreClicked(identificationInformation)
                                 }
                         )
                     }

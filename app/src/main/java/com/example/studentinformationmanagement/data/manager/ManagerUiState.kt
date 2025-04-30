@@ -23,5 +23,6 @@ data class Certificate(
 
 data class ManagerUiState(
     val studentList: List<Student> = emptyList(),
-    val selectedStudent: Student = Student()
+    val selectedStudent: Student = Student(),
+    val selectedCertificate: Certificate = Certificate()
 )

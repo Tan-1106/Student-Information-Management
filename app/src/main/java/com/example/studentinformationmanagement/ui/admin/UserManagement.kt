@@ -81,7 +81,7 @@ fun UserManagement(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 16.dp),
+                    .padding(16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 // Search Bar
@@ -208,9 +208,9 @@ fun UserList(
             InformationBox(
                 imageUrl = userList[index].userImageUrl,
                 name = userList[index].userName,
-                roleOrStuId = userList[index].userRole,
-                stateOrClass = userList[index].userStatus,
-                phoneNumber = userList[index].userPhoneNumber,
+                mainInformation = userList[index].userRole,
+                subInformation = userList[index].userStatus,
+                identificationInformation = userList[index].userPhoneNumber,
                 onSeeMoreClicked = {
                     adminViewModel.onUserSeeMoreClicked(
                         userPhoneNumber = it,

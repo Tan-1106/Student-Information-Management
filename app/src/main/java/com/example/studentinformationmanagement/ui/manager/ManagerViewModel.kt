@@ -581,4 +581,23 @@ class ManagerViewModel : ViewModel() {
                 Toast.makeText(context, "Image upload failed: ${e.message}", Toast.LENGTH_SHORT).show()
             }
     }
+
+    // CERTIFICATE PART
+    fun onCertificateSeeMoreClicked(
+        certificateId: String,
+        navController: NavHostController,
+    ) {
+        val selectedStudent = _uiState.value.selectedStudent
+
+        val certificate = selectedStudent.studentCertificates.find { it.certificateId == certificateId }
+        certificate?.let {
+            _uiState.update { currentState ->
+                currentState.copy(
+                    selectedCertificate = certificate
+                )
+            }
+
+            navController.navigate(AppScreen.CertificateDetail.name)
+        }
+    }
 }
