@@ -1,6 +1,10 @@
 package com.example.studentinformationmanagement.ui.admin
 
 import android.content.Context
+import android.net.Uri
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -64,12 +68,29 @@ fun EditUser(
     val context: Context = LocalContext.current
 
     val user = adminViewModel.userToEdit
+    var updatedImageUrl by remember { mutableStateOf(user?.userImageUrl) }
     var nameValue by remember { mutableStateOf(user?.userName ?: "") }
     var birthdayValue by remember { mutableStateOf(user?.userBirthday ?: "") }
     var emailValue by remember { mutableStateOf(user?.userEmail ?: "") }
     var phoneValue by remember { mutableStateOf(user?.userPhoneNumber ?: "") }
     var roleValue by remember { mutableStateOf(user?.userRole ?: "") }
     var statusValue by remember { mutableStateOf(user?.userStatus ?: "") }
+
+    // Update user's image
+    var imageUri by remember { mutableStateOf<Uri?>(null) }
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        uri?.let {
+            imageUri = it
+            Toast.makeText(context, "Uploading image...", Toast.LENGTH_LONG).show()
+
+            adminViewModel.updateUserImage(imageUri = imageUri!!, context = context) { newImageUrl ->
+                updatedImageUrl = newImageUrl
+            }
+        }
+    }
+
 
     Scaffold(
         topBar = {
@@ -98,7 +119,6 @@ fun EditUser(
             ) {
                 Button(
                     onClick = {
-                        // TODO: SAVE EVENT
                         if (adminViewModel.validateUserInputs(
                                 newName = nameValue,
                                 newEmail = emailValue,
@@ -157,7 +177,7 @@ fun EditUser(
                             .size(100.dp)
                     ) {
                         AsyncImage(
-                            model = user?.userImageUrl,
+                            model = updatedImageUrl,
                             contentDescription = "Avatar",
                             modifier = Modifier
                                 .fillMaxSize()
@@ -169,7 +189,7 @@ fun EditUser(
                     }
                     IconButton(
                         onClick = {
-                            // TODO: Change avatar image event
+                            launcher.launch("image/*")
                         },
                         modifier = Modifier.padding(top = 60.dp)
                     ) {

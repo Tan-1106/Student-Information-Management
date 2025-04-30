@@ -1,6 +1,11 @@
 package com.example.studentinformationmanagement.ui.shared
 
 
+import android.content.Context
+import android.net.Uri
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -33,6 +38,7 @@ import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -74,6 +80,8 @@ import com.example.studentinformationmanagement.ui.theme.primary_dark
 import com.example.studentinformationmanagement.ui.theme.secondary_content
 import com.example.studentinformationmanagement.ui.theme.secondary_dark
 import com.example.studentinformationmanagement.ui.theme.third_content
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
 import me.saket.swipe.SwipeAction
 import me.saket.swipe.SwipeableActionsBox
 import java.time.Clock
@@ -596,6 +604,51 @@ fun InformationSelect(
         }
     }
 }
+
+//@Composable
+//fun ImagePickerScreen(
+//    context: Context,
+//    userPhoneNumber: String,
+//    storageRef: StorageReference,
+//    onImageUploaded: (String) -> Unit
+//) {
+//    var imageUri by remember {mutableStateOf<Uri?>(null)}
+//    var isUploading by remember { mutableStateOf(false) }
+//
+//    val launcher = rememberLauncherForActivityResult(
+//        contract = ActivityResultContracts.GetContent()
+//    ) { uri: Uri? ->
+//        uri?.let {
+//            imageUri = it
+//
+//            val fileName = "images/${userPhoneNumber}.jpg"
+//            val imageRef = storageRef.child(fileName)
+//
+//            isUploading = true
+//            imageRef.putFile(it)
+//                .addOnSuccessListener {
+//                    imageRef.downloadUrl.addOnSuccessListener { downloadUri ->
+//                        onImageUploaded(downloadUri.toString())
+//                        isUploading = false
+//                    }
+//                }
+//                .addOnFailureListener {
+//                    Toast.makeText(context, "Upload failed", Toast.LENGTH_SHORT).show()
+//                    isUploading = false
+//                }
+//        }
+//    }
+//
+//    Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
+//        Button(onClick = { launcher.launch("image/*") }) {
+//            Text("Select photo from your album")
+//        }
+//
+//        imageUri?.let {
+//            Text("Uploading...")
+//        }
+//    }
+//}
 
 // Preview
 @Preview(

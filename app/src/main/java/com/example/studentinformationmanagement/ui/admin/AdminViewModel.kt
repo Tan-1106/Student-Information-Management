@@ -1,6 +1,7 @@
 package com.example.studentinformationmanagement.ui.admin
 
 import android.content.Context
+import android.net.Uri
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.runtime.getValue
@@ -14,10 +15,12 @@ import com.example.studentinformationmanagement.data.admin.User
 import com.example.studentinformationmanagement.data.shared.CurrentUser
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
+import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import java.util.UUID
 
 
 class AdminViewModel : ViewModel() {
@@ -432,4 +435,34 @@ class AdminViewModel : ViewModel() {
             Toast.makeText(context, "No changes detected", Toast.LENGTH_SHORT).show()
         }
     }
+
+    // Change user's image event
+    fun updateUserImage(imageUri: Uri, context: Context, onSuccess: (String) -> Unit) {
+        val fileName = "images/${UUID.randomUUID()}.jpg"
+
+        val storageRef = FirebaseStorage.getInstance().reference
+        val imageRef = storageRef.child(fileName)
+
+        // Upload the image to Firebase Storage
+        imageRef.putFile(imageUri)
+            .addOnSuccessListener {
+                imageRef.downloadUrl.addOnSuccessListener { downloadUri ->
+                    val db = Firebase.firestore
+                    db.collection("users")
+                        .document(userToEdit?.userPhoneNumber ?: "")
+                        .update("userImageUrl", downloadUri.toString())
+                        .addOnSuccessListener {
+                            Toast.makeText(context, "Profile image updated ", Toast.LENGTH_SHORT).show()
+                            onSuccess(downloadUri.toString())
+                        }
+                        .addOnFailureListener { e ->
+                            Toast.makeText(context, "Error updating profile image: ${e.message}", Toast.LENGTH_SHORT).show()
+                        }
+                }
+            }
+            .addOnFailureListener { e ->
+                Toast.makeText(context, "Image upload failed: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+    }
+
 }
