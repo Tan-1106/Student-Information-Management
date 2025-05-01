@@ -1,4 +1,4 @@
-package com.example.studentinformationmanagement.ui.admin
+package com.example.studentinformationmanagement.ui.manager
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -10,9 +10,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.Icon
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -31,20 +34,17 @@ import androidx.navigation.compose.rememberNavController
 import com.example.studentinformationmanagement.AppScreen
 import com.example.studentinformationmanagement.R
 import com.example.studentinformationmanagement.data.shared.NavItem
-import com.example.studentinformationmanagement.ui.manager.ManagerViewModel
-import com.example.studentinformationmanagement.ui.manager.StudentManagement
 import com.example.studentinformationmanagement.ui.shared.LoginViewModel
+import com.example.studentinformationmanagement.ui.shared.UserDetailProfile
 import com.example.studentinformationmanagement.ui.theme.kanit_bold_font
 import com.example.studentinformationmanagement.ui.theme.primary_container
 import com.example.studentinformationmanagement.ui.theme.primary_content
+import com.example.studentinformationmanagement.ui.theme.secondary_content
 import com.example.studentinformationmanagement.ui.theme.third_content
-import kotlin.math.log
 
-// Composable: Admin Home screen
 @Composable
-fun AdminScreen(
+fun ManagerScreen(
     loginViewModel: LoginViewModel,
-    adminViewModel: AdminViewModel,
     managerViewModel: ManagerViewModel,
     navController: NavHostController,
     subNavController: NavHostController = rememberNavController()
@@ -52,7 +52,6 @@ fun AdminScreen(
     // Bottom navigation bar's items
     val navItems = listOf(
         NavItem("Student", Icons.Default.Home, AppScreen.StudentManagement.name),
-        NavItem("User", Icons.Default.AccountCircle, AppScreen.UserManagement.name),
         NavItem("Profile", Icons.Default.Person, AppScreen.UserDetailProfile.name)
     )
     val navBackStackEntry by subNavController.currentBackStackEntryAsState()
@@ -78,8 +77,7 @@ fun AdminScreen(
                     Text(
                         text = when (currentRoute) {
                             AppScreen.StudentManagement.name -> "Student Management"
-                            AppScreen.UserManagement.name -> "User Management"
-                            else -> "Admin Dashboard"
+                            else -> "Manager Dashboard"
                         },
                         fontSize = 28.sp,
                         fontFamily = kanit_bold_font,
@@ -99,7 +97,7 @@ fun AdminScreen(
 
         // Bottom Bar
         bottomBar = {
-            BottomNavBarAdmin(
+            BottomNavBarManager(
                 items = navItems,
                 currentRoute = currentRoute,
                 onItemClick = { item ->
@@ -113,7 +111,7 @@ fun AdminScreen(
             )
         }
     ) { innerPadding ->
-        // Admin feature navigation
+        // Manager feature navigation
         NavHost(
             navController = subNavController,
             startDestination = AppScreen.StudentManagement.name,
@@ -126,17 +124,9 @@ fun AdminScreen(
                     loginViewModel = loginViewModel
                 )
             }
-            composable(AppScreen.UserManagement.name) {
-                UserManagement(
-                    navController = navController,
-                    adminViewModel = adminViewModel
-                )
-            }
             composable(AppScreen.UserDetailProfile.name) {
-                adminViewModel.clearUserToView()
-                AdminDetailProfile(
+                UserDetailProfile(
                     loginViewModel = loginViewModel,
-                    adminViewModel = adminViewModel,
                     navController = navController
                 )
             }
@@ -144,3 +134,42 @@ fun AdminScreen(
     }
 }
 
+@Composable
+fun BottomNavBarManager(
+    modifier: Modifier = Modifier,
+    items: List<NavItem>,
+    currentRoute: String?,
+    onItemClick: (NavItem) -> Unit
+) {
+    NavigationBar(
+        modifier = modifier
+    ) {
+        items.forEach { item ->
+            val selected = currentRoute == item.route
+            NavigationBarItem(
+                selected = selected,
+                onClick = { onItemClick(item) },
+                icon = {
+                    Icon(
+                        imageVector = item.icon,
+                        contentDescription = item.label,
+                        tint = if (selected) primary_content else secondary_content
+                    )
+                },
+                label = {
+                    Text(
+                        text = item.label,
+                        color = if (selected) primary_content else secondary_content
+                    )
+                },
+                colors = NavigationBarItemDefaults.colors(
+                    indicatorColor = primary_container,
+                    selectedIconColor = primary_content,
+                    selectedTextColor = primary_content,
+                    unselectedIconColor = secondary_content,
+                    unselectedTextColor = secondary_content
+                )
+            )
+        }
+    }
+}

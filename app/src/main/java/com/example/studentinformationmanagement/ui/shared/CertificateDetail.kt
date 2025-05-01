@@ -39,10 +39,13 @@ import com.example.studentinformationmanagement.ui.theme.primary_content
 @Composable
 fun CertificateDetail(
     managerViewModel: ManagerViewModel,
+    loginViewModel: LoginViewModel,
     navController: NavHostController,
     modifier: Modifier = Modifier
 ) {
     val managerUiState by managerViewModel.uiState.collectAsState()
+    val loginUiState by loginViewModel.loginUiState.collectAsState()
+    val editEnable = loginUiState.currentUser?.userRole == "Manager" || loginUiState.currentUser?.userRole == "Admin"
 
     Scaffold(
         containerColor = Color.White,
@@ -73,20 +76,22 @@ fun CertificateDetail(
                     )
                 },
                 actions = {
-                    IconButton(
-                        onClick = {
-                            // Reuse onEditCertificateSwipe()
-                            managerViewModel.onEditCertificateSwipe(
-                                certificateId = managerUiState.selectedCertificate.certificateId,
-                                navController = navController
+                    if (editEnable) {
+                        IconButton(
+                            onClick = {
+                                // Reuse onEditCertificateSwipe()
+                                managerViewModel.onEditCertificateSwipe(
+                                    certificateId = managerUiState.selectedCertificate.certificateId,
+                                    navController = navController
+                                )
+                            }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Filled.Settings,
+                                contentDescription = "Certificate Edit",
+                                tint = primary_content
                             )
                         }
-                    ) {
-                        Icon(
-                            imageVector = Icons.Filled.Settings,
-                            contentDescription = "Certificate Edit",
-                            tint = primary_content
-                        )
                     }
                 }
             )

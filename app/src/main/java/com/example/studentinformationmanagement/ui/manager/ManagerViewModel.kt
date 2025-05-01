@@ -8,6 +8,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.example.studentinformationmanagement.AppScreen
@@ -18,10 +19,14 @@ import com.google.firebase.Firebase
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.firestore
 import com.google.firebase.storage.FirebaseStorage
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import java.io.BufferedReader
+import java.io.InputStreamReader
 import java.util.UUID
 
 class ManagerViewModel : ViewModel() {
@@ -888,5 +893,60 @@ class ManagerViewModel : ViewModel() {
             .addOnFailureListener { e ->
                 Toast.makeText(context, "Error updating certificate: ${e.message}", Toast.LENGTH_SHORT).show()
             }
+    }
+
+    // Upload Student CSV
+    var studentList: MutableList<Student> = mutableListOf()
+
+    fun uploadStudentsFromCsv(
+        uri: Uri,
+        navController: NavHostController,
+        context: Context
+    ) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                context.contentResolver.openInputStream(uri)?.use { inputStream ->
+                    val reader = BufferedReader(InputStreamReader(inputStream))
+                    val lines = reader.readLines()
+
+                    val dataLines = if (lines.first().contains("studentName", ignoreCase = true)) {
+                        lines.drop(1)
+                    } else {
+                        lines
+                    }
+
+                    studentList.clear()
+
+                    for (line in dataLines) {
+                        val tokens = line.split(",").map { it.trim() }
+
+                        if (tokens.size >= 7) {
+                            val student = Student(
+                                studentName = tokens[0],
+                                studentBirthday = tokens[1],
+                                studentEmail = tokens[2],
+                                studentPhoneNumber = tokens[3],
+                                studentId = tokens[4],
+                                studentClass = tokens[5],
+                                studentFaculty = tokens[6]
+                            )
+                            studentList.add(student)
+                        }
+                    }
+
+                    val firestore = Firebase.firestore
+                    val collection = firestore.collection("students")
+
+                    for (student in studentList) {
+                        collection.document(student.studentId).set(student)
+                    }
+                    navController.navigateUp()
+                    Toast.makeText(context, "Upload successfully", Toast.LENGTH_SHORT).show()
+                }
+            } catch (e: Exception) {
+                Toast.makeText(context, "Upload failed", Toast.LENGTH_SHORT).show()
+                e.printStackTrace()
+            }
+        }
     }
 }

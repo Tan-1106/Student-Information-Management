@@ -55,11 +55,13 @@ import com.example.studentinformationmanagement.ui.theme.third_content
 @Composable
 fun StudentCertificationList(
     managerViewModel: ManagerViewModel,
+    loginViewModel: LoginViewModel,
     navController: NavHostController
 ) {
     val context: Context = LocalContext.current
-
+    val loginUiState by loginViewModel.loginUiState.collectAsState()
     val managerUiState by managerViewModel.uiState.collectAsState()
+    val swipeEnable = loginUiState.currentUser?.userRole == "Manager" || loginUiState.currentUser?.userRole == "Admin"
 
     var showConfirmDeleteDialog by remember { mutableStateOf(false) }
     var selectedCertificateId by remember { mutableStateOf("") }
@@ -110,15 +112,22 @@ fun StudentCertificationList(
 
                 Spacer(modifier = Modifier.height(10.dp))
                 Row(
-                    modifier = Modifier.padding(horizontal = 16.dp)
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(horizontal = 10.dp)
                 ) {
                     Text(
                         text = "List Of Certificates",
+                        modifier = Modifier.padding(vertical = 8.dp, horizontal = 10.dp),
                         fontSize = 24.sp,
                         fontFamily = kanit_bold_font,
                         color = primary_content
                     )
                     Spacer(modifier = Modifier.weight(1f))
+                    if (swipeEnable) {
+                        HelpIcon(
+                            message = "Swipe right to edit and left to delete a certificate"
+                        )
+                    }
                 }
 
                 CertificateList(
@@ -135,7 +144,8 @@ fun StudentCertificationList(
                     onDeleteSwipe = { certificateId ->
                         selectedCertificateId = certificateId
                         showConfirmDeleteDialog = true
-                    }
+                    },
+                    swipeEnable = swipeEnable
                 )
             }
 
@@ -156,19 +166,21 @@ fun StudentCertificationList(
             }
 
             // Add certificate button
-            FloatingActionButton(
-                onClick = { managerViewModel.onAddCertificateFloatingButtonClick(navController) },
-                shape = RoundedCornerShape(50),
-                containerColor = primary_content,
-                contentColor = third_content,
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .padding(16.dp)
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = "Add Certificate"
-                )
+            if (swipeEnable) {
+                FloatingActionButton(
+                    onClick = { managerViewModel.onAddCertificateFloatingButtonClick(navController) },
+                    shape = RoundedCornerShape(50),
+                    containerColor = primary_content,
+                    contentColor = third_content,
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd)
+                        .padding(16.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = "Add Certificate"
+                    )
+                }
             }
         }
     }
@@ -180,7 +192,8 @@ fun CertificateList(
     navController: NavHostController,
     managerViewModel: ManagerViewModel,
     onEditSwipe: (String) -> Unit,
-    onDeleteSwipe: (String) -> Unit
+    onDeleteSwipe: (String) -> Unit,
+    swipeEnable: Boolean = true,
 ) {
     LazyColumn {
         items(certificateList.size) { index ->
@@ -196,7 +209,8 @@ fun CertificateList(
                     )
                 },
                 onEditSwipe = { onEditSwipe(certificate.certificateId) },
-                onDeleteSwipe = { onDeleteSwipe(certificate.certificateId) }
+                onDeleteSwipe = { onDeleteSwipe(certificate.certificateId) },
+                swipeEnable = swipeEnable
             )
         }
     }
@@ -211,6 +225,7 @@ fun CertificateBox(
     onEditSwipe: () -> Unit,
     onDeleteSwipe: () -> Unit,
     modifier: Modifier = Modifier,
+    swipeEnable: Boolean = true
 ) {
     Box(
         modifier = modifier
@@ -220,10 +235,53 @@ fun CertificateBox(
             .border(shape = RoundedCornerShape(16.dp), width = 1.dp, color = primary_content)
 
     ) {
-        SwipeComponent(
-            onEditSwipe = onEditSwipe,
-            onDeleteSwipe = onDeleteSwipe
-        ) {
+        if (swipeEnable) {
+            SwipeComponent(
+                onEditSwipe = onEditSwipe,
+                onDeleteSwipe = onDeleteSwipe
+            ) {
+                Column(
+                    verticalArrangement = Arrangement.SpaceEvenly,
+                    horizontalAlignment = Alignment.Start,
+                    modifier = Modifier
+                        .padding(10.dp)
+                ) {
+                    Text(
+                        text = "Title: $certificateTitle",
+                        fontSize = 20.sp,
+                        color = primary_content,
+                        fontFamily = kanit_bold_font
+                    )
+                    Text(
+                        text = "Issue date: $issueDate",
+                        fontSize = 16.sp,
+                        color = Color.DarkGray,
+                        fontFamily = kanit_regular_font
+                    )
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Text(
+                            text = "ID: $certificateId",
+                            fontSize = 14.sp,
+                            fontFamily = kanit_regular_font,
+                            color = secondary_dark
+                        )
+                        Spacer(modifier = Modifier.weight(1f))
+                        Text(
+                            text = stringResource(R.string.see_more),
+                            fontFamily = kanit_regular_font,
+                            color = primary_content,
+                            modifier = Modifier
+                                .clickable {
+                                    onSeeMoreClicked(certificateId)
+                                }
+                        )
+                    }
+                }
+            }
+        } else {
             Column(
                 verticalArrangement = Arrangement.SpaceEvenly,
                 horizontalAlignment = Alignment.Start,

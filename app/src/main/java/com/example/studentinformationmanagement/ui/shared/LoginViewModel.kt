@@ -1,6 +1,7 @@
 package com.example.studentinformationmanagement.ui.shared
 
 import android.content.Context
+import android.net.Uri
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.runtime.getValue
@@ -18,6 +19,7 @@ import com.google.firebase.Firebase
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.firestore
+import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -26,6 +28,7 @@ import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import java.util.UUID
 
 class LoginViewModel(
     private val loginRepository: LoginRepository = LoginRepository()
@@ -35,14 +38,14 @@ class LoginViewModel(
 
     // TODO: CLEAR THE USERNAME & PASSWORD AFTER DONE TESTING
     // User's phone number input
-    var userPhoneNumberInput by mutableStateOf("1111111111")
+    var userPhoneNumberInput by mutableStateOf("3333333333")
         private set
     fun onPhoneNumberChange(userInput: String) {
         userPhoneNumberInput = userInput
     }
 
     // User's password input
-    var userPasswordInput by mutableStateOf("Admin")
+    var userPasswordInput by mutableStateOf("Employee")
         private set
     fun onPasswordChange(userInput: String) {
         userPasswordInput = userInput
@@ -85,8 +88,8 @@ class LoginViewModel(
 
                 when (currentUser?.userRole) {
                     "Admin" -> navController.navigate(AppScreen.AdminScreen.name) { popUpTo(AppScreen.Login.name) { inclusive = true } }
-                    "Manager" -> navController.navigate(AppScreen.StudentManagement.name) { popUpTo(AppScreen.Login.name) { inclusive = true } }
-                    "Employee" -> navController.navigate(AppScreen.StudentManagement.name) { popUpTo(AppScreen.Login.name) { inclusive = true } }
+                    "Manager" -> navController.navigate(AppScreen.ManagerScreen.name) { popUpTo(AppScreen.Login.name) { inclusive = true } }
+                    "Employee" -> navController.navigate(AppScreen.EmployeeScreen.name) { popUpTo(AppScreen.Login.name) { inclusive = true } }
                 }
             } else {
                 _loginUiState.value = _loginUiState.value.copy(
@@ -211,4 +214,32 @@ class LoginViewModel(
         return dateFormat.format(date)
     }
 
+    // Change user's image event
+    fun updateProfileImage(imageUri: Uri, context: Context, onSuccess: (String) -> Unit) {
+        val fileName = "userImages/${UUID.randomUUID()}.jpg"
+
+        val storageRef = FirebaseStorage.getInstance().reference
+        val imageRef = storageRef.child(fileName)
+
+        // Upload the image to Firebase Storage
+        imageRef.putFile(imageUri)
+            .addOnSuccessListener {
+                imageRef.downloadUrl.addOnSuccessListener { downloadUri ->
+                    val db = Firebase.firestore
+                    db.collection("users")
+                        .document(loginUiState.value.currentUser?.userPhoneNumber ?: "")
+                        .update("userImageUrl", downloadUri.toString())
+                        .addOnSuccessListener {
+                            Toast.makeText(context, "Profile image updated ", Toast.LENGTH_SHORT).show()
+                            onSuccess(downloadUri.toString())
+                        }
+                        .addOnFailureListener { e ->
+                            Toast.makeText(context, "Error updating profile image: ${e.message}", Toast.LENGTH_SHORT).show()
+                        }
+                }
+            }
+            .addOnFailureListener { e ->
+                Toast.makeText(context, "Image upload failed: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+    }
 }

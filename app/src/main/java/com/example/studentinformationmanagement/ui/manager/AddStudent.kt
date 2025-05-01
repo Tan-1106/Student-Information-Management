@@ -1,6 +1,8 @@
 package com.example.studentinformationmanagement.ui.manager
 
 import android.content.Context
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -21,6 +23,7 @@ import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.FilterCenterFocus
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Phone
+import androidx.compose.material.icons.filled.UploadFile
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -30,6 +33,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -41,19 +46,33 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.studentinformationmanagement.ui.shared.InformationDate
 import com.example.studentinformationmanagement.ui.shared.InformationLine
+import com.example.studentinformationmanagement.ui.shared.LoginViewModel
 import com.example.studentinformationmanagement.ui.theme.kanit_bold_font
 import com.example.studentinformationmanagement.ui.theme.primary_content
 import com.example.studentinformationmanagement.ui.theme.primary_dark
 import com.example.studentinformationmanagement.ui.theme.secondary_content
+import android.net.Uri
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddStudent(
+    loginViewModel: LoginViewModel,
     managerViewModel: ManagerViewModel,
     navController: NavHostController
 ) {
     val context: Context = LocalContext.current
+
+    val loginUiState by loginViewModel.loginUiState.collectAsState()
+    val canUploadCSV = loginUiState.currentUser?.userRole == "Manager" || loginUiState.currentUser?.userRole == "Admin"
+
+    val csvLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        uri?.let {
+            managerViewModel.uploadStudentsFromCsv(it, navController, context)
+        }
+    }
 
     Scaffold(
         modifier = Modifier.systemBarsPadding(),
@@ -88,6 +107,21 @@ fun AddStudent(
                             managerViewModel.clearAddStudentInputs()
                         }
                     )
+                },
+                actions = {
+                    if (canUploadCSV) {
+                        IconButton(
+                            onClick = {
+                                csvLauncher.launch("text/csv")
+                            }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Filled.UploadFile,
+                                contentDescription = "Upload CSV",
+                                tint = primary_content
+                            )
+                        }
+                    }
                 }
             )
         },

@@ -56,6 +56,7 @@ import com.example.studentinformationmanagement.ui.shared.HelpIcon
 import com.example.studentinformationmanagement.ui.shared.InformationBox
 import com.example.studentinformationmanagement.ui.shared.InformationLine
 import com.example.studentinformationmanagement.ui.shared.InformationSelect
+import com.example.studentinformationmanagement.ui.shared.LoginViewModel
 import com.example.studentinformationmanagement.ui.theme.kanit_bold_font
 import com.example.studentinformationmanagement.ui.theme.primary_container
 import com.example.studentinformationmanagement.ui.theme.primary_content
@@ -65,13 +66,16 @@ import com.example.studentinformationmanagement.ui.theme.third_content
 // Composable: Student Management
 @Composable
 fun StudentManagement(
+    loginViewModel: LoginViewModel,
     managerViewModel: ManagerViewModel,
     navController: NavHostController,
     modifier: Modifier = Modifier,
 ) {
+    val loginUiState by loginViewModel.loginUiState.collectAsState()
     val managerUiState by managerViewModel.uiState.collectAsState()
     var showConfirmDeleteDialog by remember { mutableStateOf(false) }
     var selectedStudentId by remember { mutableStateOf("") }
+    val swipeEnable = loginUiState.currentUser?.userRole == "Manager" || loginUiState.currentUser?.userRole == "Admin"
 
     Box(
         modifier = modifier
@@ -165,9 +169,11 @@ fun StudentManagement(
                     color = primary_content
                 )
                 Spacer(modifier = Modifier.weight(1f))
-                HelpIcon(
-                    message = "Swipe right to edit and left to delete a student"
-                )
+                if (swipeEnable) {
+                    HelpIcon(
+                        message = "Swipe right to edit and left to delete a student"
+                    )
+                }
             }
 
             // User list
@@ -184,7 +190,8 @@ fun StudentManagement(
                 onDeleteSwipe = { studentId ->
                     selectedStudentId = studentId
                     showConfirmDeleteDialog = true
-                }
+                },
+                swipeEnable = swipeEnable
             )
         }
 
@@ -205,19 +212,21 @@ fun StudentManagement(
         }
 
         // Add user button
-        FloatingActionButton(
-            onClick = { managerViewModel.onAddStudentFloatingButtonClick(navController) },
-            shape = RoundedCornerShape(50),
-            containerColor = primary_content,
-            contentColor = third_content,
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(16.dp)
-        ) {
-            Icon(
-                imageVector = Icons.Default.Add,
-                contentDescription = "Add Student"
-            )
+        if (swipeEnable) {
+            FloatingActionButton(
+                onClick = { managerViewModel.onAddStudentFloatingButtonClick(navController) },
+                shape = RoundedCornerShape(50),
+                containerColor = primary_content,
+                contentColor = third_content,
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(16.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = "Add Student"
+                )
+            }
         }
     }
 }
@@ -228,7 +237,8 @@ fun StudentList(
     navController: NavHostController,
     managerViewModel: ManagerViewModel,
     onEditSwipe: (String) -> Unit,
-    onDeleteSwipe: (String) -> Unit
+    onDeleteSwipe: (String) -> Unit,
+    swipeEnable: Boolean = true,
 ) {
     LazyColumn {
         items(studentList.size) { index ->
@@ -245,7 +255,8 @@ fun StudentList(
                     )
                 },
                 onEditSwipe = { onEditSwipe(studentList[index].studentId) },
-                onDeleteSwipe = { onDeleteSwipe(studentList[index].studentId) }
+                onDeleteSwipe = { onDeleteSwipe(studentList[index].studentId) },
+                swipeEnable = swipeEnable
             )
         }
     }

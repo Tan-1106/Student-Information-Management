@@ -89,7 +89,7 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
 
-// Composable: User's detail profile
+// Composable: User's detail profile for admin
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetailProfile(
@@ -253,6 +253,7 @@ fun InformationBox(
     onEditSwipe: () -> Unit,
     onDeleteSwipe: () -> Unit,
     modifier: Modifier = Modifier,
+    swipeEnable: Boolean = true
 ) {
     Box(
         modifier = modifier
@@ -262,10 +263,87 @@ fun InformationBox(
             .border(shape = RoundedCornerShape(16.dp), width = 1.dp, color = primary_content)
 
     ) {
-        SwipeComponent(
-            onEditSwipe = onEditSwipe,
-            onDeleteSwipe = onDeleteSwipe
-        ) {
+        if (swipeEnable) {
+            SwipeComponent(
+                onEditSwipe = onEditSwipe,
+                onDeleteSwipe = onDeleteSwipe
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .padding(10.dp)
+                ) {
+                    // Avatar Image
+                    AsyncImage(
+                        model = imageUrl,
+                        contentDescription = "Avatar",
+                        modifier = Modifier
+                            .size(64.dp)
+                            .clip(CircleShape),
+                        contentScale = ContentScale.Crop,
+                        placeholder = painterResource(id = R.drawable.avt_placeholder),
+                        error = painterResource(id = R.drawable.avt_error)
+                    )
+                    Spacer(modifier = Modifier.width(16.dp))
+                    Column(
+                        verticalArrangement = Arrangement.SpaceEvenly,
+                        horizontalAlignment = Alignment.Start,
+                        modifier = Modifier
+                            .weight(1f)
+                    ) {
+                        Text(
+                            text = name,
+                            fontSize = 20.sp,
+                            color = primary_content,
+                            fontFamily = kanit_bold_font
+                        )
+                        Text(
+                            text = mainInformation,
+                            fontSize = 16.sp,
+                            color = Color.DarkGray,
+                            fontFamily = kanit_regular_font
+                        )
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            if (subInformation == "Active") {
+                                Text(
+                                    text = subInformation,
+                                    fontSize = 14.sp,
+                                    fontFamily = kanit_regular_font,
+                                    color = primary_content
+                                )
+                            } else if (subInformation == "Inactive") {
+                                Text(
+                                    text = subInformation,
+                                    fontSize = 14.sp,
+                                    fontFamily = kanit_regular_font,
+                                    color = secondary_dark
+                                )
+                            } else {
+                                Text(
+                                    text = subInformation,
+                                    fontSize = 14.sp,
+                                    fontFamily = kanit_regular_font,
+                                    color = secondary_content
+                                )
+                            }
+                            Spacer(modifier = Modifier.weight(1f))
+                            Text(
+                                text = stringResource(R.string.see_more),
+                                fontFamily = kanit_regular_font,
+                                color = primary_content,
+                                modifier = Modifier
+                                    .clickable {
+                                        onSeeMoreClicked(identificationInformation)
+                                    }
+                            )
+                        }
+                    }
+                }
+            }
+        } else {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier

@@ -40,6 +40,7 @@ import com.example.studentinformationmanagement.ui.theme.kanit_bold_font
 import com.example.studentinformationmanagement.ui.theme.kanit_regular_font
 import com.example.studentinformationmanagement.ui.theme.primary_content
 import com.example.studentinformationmanagement.ui.theme.secondary_content
+import com.example.studentinformationmanagement.ui.theme.third_content
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -88,16 +89,27 @@ fun LoginHistory(
             )
         }
     ) { innerPadding ->
-        if (loginUiState.loginHistoryList.isEmpty()) {
+        if (loginUiState.isLoading) {
             Column(
                 modifier = Modifier
                     .padding(innerPadding)
                     .fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text("No historical data available.")
+                Text("Loading...", fontSize = 20.sp, fontFamily = kanit_regular_font)
             }
-        } else {
+        }
+        else if (loginUiState.loginHistoryList.isEmpty()) {
+            Column(
+                modifier = Modifier
+                    .padding(innerPadding)
+                    .fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text("No historical data available.", fontSize = 20.sp, fontFamily = kanit_regular_font)
+            }
+        }
+        else {
             LazyColumn(
                 modifier = Modifier
                     .padding(innerPadding)
@@ -105,7 +117,8 @@ fun LoginHistory(
                 items(loginUiState.loginHistoryList.size) { index ->
                     LoginHistoryItem(
                         loginViewModel = loginViewModel,
-                        loginUiState.loginHistoryList[index]
+                        loginUiState.loginHistoryList[index],
+                        index = index
                     )
                 }
             }
@@ -113,20 +126,29 @@ fun LoginHistory(
     }
 }
 
+
 @Composable
 fun LoginHistoryItem(
     loginViewModel: LoginViewModel,
-    history: LoginHistory
+    history: LoginHistory,
+    index: Int
 ) {
     val loginTime = loginViewModel.formatTimestamp(history.loginTime)
+
+    val cardColor = if (index % 2 == 0) {
+        secondary_content
+    } else {
+        third_content
+    }
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 12.dp, vertical = 6.dp),
-        elevation = CardDefaults.cardElevation(4.dp),
+        elevation = CardDefaults.cardElevation(8.dp),
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(
-            containerColor = secondary_content
+            containerColor = cardColor
         )
     ) {
         Row(
