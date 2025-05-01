@@ -75,8 +75,11 @@ fun CertificateDetail(
                 actions = {
                     IconButton(
                         onClick = {
-                            // TODO: EDIT CERTIFICATE
-
+                            // Reuse onEditCertificateSwipe()
+                            managerViewModel.onEditCertificateSwipe(
+                                certificateId = managerUiState.selectedCertificate.certificateId,
+                                navController = navController
+                            )
                         }
                     ) {
                         Icon(

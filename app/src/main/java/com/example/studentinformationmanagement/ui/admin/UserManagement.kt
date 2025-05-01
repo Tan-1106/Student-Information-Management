@@ -47,8 +47,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.studentinformationmanagement.AppScreen
 import com.example.studentinformationmanagement.data.admin.User
 import com.example.studentinformationmanagement.ui.shared.ConfirmationBox
+import com.example.studentinformationmanagement.ui.shared.HelpIcon
 import com.example.studentinformationmanagement.ui.shared.InformationBox
 import com.example.studentinformationmanagement.ui.shared.InformationSelect
 import com.example.studentinformationmanagement.ui.theme.kanit_bold_font
@@ -134,13 +136,36 @@ fun UserManagement(
                 )
             }
 
-            Text(
-                text = "List Users",
-                modifier = Modifier.padding(vertical = 8.dp, horizontal = 10.dp),
-                fontSize = 24.sp,
-                fontFamily = kanit_bold_font,
-                color = primary_content
-            )
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.padding(horizontal = 10.dp)
+            ) {
+                Text(
+                    text = "List Users",
+                    modifier = Modifier.padding(vertical = 8.dp, horizontal = 10.dp),
+                    fontSize = 24.sp,
+                    fontFamily = kanit_bold_font,
+                    color = primary_content
+                )
+                Button(
+                    onClick = {
+                        navController.navigate(AppScreen.LoginHistory.name)
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = primary_content,
+                        contentColor = Color.White
+                    )
+                ) {
+                    Text(
+                        text = "View login history",
+                        fontFamily = kanit_bold_font
+                    )
+                }
+                Spacer(modifier = Modifier.weight(1f))
+                HelpIcon(
+                    message = "Swipe right to edit and left to delete a user"
+                )
+            }
 
             // User list
             UserList(
@@ -338,3 +363,5 @@ fun FilterDialog(
         )
     }
 }
+
+

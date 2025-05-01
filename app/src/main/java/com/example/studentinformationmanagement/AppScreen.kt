@@ -10,8 +10,10 @@ import com.example.studentinformationmanagement.ui.admin.AddUser
 import com.example.studentinformationmanagement.ui.admin.AdminScreen
 import com.example.studentinformationmanagement.ui.admin.AdminViewModel
 import com.example.studentinformationmanagement.ui.admin.EditUser
+import com.example.studentinformationmanagement.ui.admin.LoginHistory
 import com.example.studentinformationmanagement.ui.manager.AddCertificate
 import com.example.studentinformationmanagement.ui.manager.AddStudent
+import com.example.studentinformationmanagement.ui.manager.EditCertificate
 import com.example.studentinformationmanagement.ui.manager.EditStudent
 import com.example.studentinformationmanagement.ui.manager.ManagerViewModel
 import com.example.studentinformationmanagement.ui.manager.StudentManagement
@@ -80,7 +82,10 @@ fun AppScreen(
             )
         }
         composable(route = AppScreen.LoginHistory.name) {
-
+            LoginHistory(
+                loginViewModel = loginViewModel,
+                navController = navController
+            )
         }
 
 
@@ -116,7 +121,10 @@ fun AppScreen(
             )
         }
         composable(route = AppScreen.EditCertificate.name) {
-
+            EditCertificate(
+                managerViewModel = managerViewModel,
+                navController = navController
+            )
         }
         composable(route = AppScreen.CertificateDetail.name) {
             CertificateDetail(

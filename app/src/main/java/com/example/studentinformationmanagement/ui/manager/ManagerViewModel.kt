@@ -671,9 +671,9 @@ class ManagerViewModel : ViewModel() {
         if (newId.isEmpty()) {
             cIdError = "ID is required"
             isValid = false
-        } else if (currentId != "" && currentId == newId) {
+        } else if (currentId.isNotEmpty() && currentId.equals(newId, ignoreCase = true)) {
             cIdError = ""
-        } else if (cIdList.contains(newId)) {
+        } else if (cIdList.any { it.equals(newId, ignoreCase = true) }) {
             cIdError = "Certificate ID already exists"
             isValid = false
         } else {
@@ -711,6 +711,21 @@ class ManagerViewModel : ViewModel() {
         _uiState.update { currentState ->
             currentState.copy(
                 selectedStudent = fullStudentList.find { it.studentId == selectedStudentId } ?: currentState.selectedStudent
+            )
+        }
+    }
+
+    fun updateSelectedCertificateInformation() {
+        val selectedCertificateId = uiState.value.selectedCertificate.certificateId
+        fetchStudentsFromFirestore()
+
+        val updatedCertificate = fullStudentList
+            .flatMap { it.studentCertificates }
+            .find { it.certificateId.equals(selectedCertificateId, ignoreCase = true) }
+
+        _uiState.update { currentState ->
+            currentState.copy(
+                selectedCertificate = updatedCertificate ?: currentState.selectedCertificate
             )
         }
     }
@@ -827,5 +842,51 @@ class ManagerViewModel : ViewModel() {
         certificateToEdit = matchedCertificate
 
         navController.navigate(AppScreen.EditCertificate.name)
+    }
+
+    fun onEditCertificateSaveClick(
+        newTitle: String,
+        newCourseName: String,
+        newId: String,
+        newOrganization: String,
+        newIssueDate: String,
+        newExpirationDate: String,
+        context: Context,
+        navController: NavHostController
+    ) {
+        val certificate = certificateToEdit ?: return
+        val db = Firebase.firestore
+
+        val student = fullStudentList.find { student ->
+            student.studentCertificates.any { it.certificateId == certificate.certificateId }
+        } ?: return
+
+        val updatedCertificate = certificate.copy(
+            certificateId = newId,
+            certificateTitle = newTitle,
+            courseName = newCourseName,
+            issuingOrganization = newOrganization,
+            issueDate = newIssueDate,
+            expirationDate = newExpirationDate
+        )
+
+        val updatedCertificates = student.studentCertificates.map {
+            if (it.certificateId.equals(certificate.certificateId, ignoreCase = true)) updatedCertificate else it
+        }
+
+        db.collection("students")
+            .document(student.studentId)
+            .update("studentCertificates", updatedCertificates)
+            .addOnSuccessListener {
+                Toast.makeText(context, "Certificate updated successfully", Toast.LENGTH_SHORT).show()
+                fetchStudentsFromFirestore()
+                updateSelectedCertificateInformation()
+                updateSelectedStudentInformation()
+                navController.navigateUp()
+
+            }
+            .addOnFailureListener { e ->
+                Toast.makeText(context, "Error updating certificate: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
     }
 }

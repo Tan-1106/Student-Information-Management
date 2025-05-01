@@ -1,153 +1,201 @@
 package com.example.studentinformationmanagement.ui.manager
 
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.*
+import android.content.Context
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.automirrored.filled.EventNote
-import androidx.compose.material.icons.filled.Badge
 import androidx.compose.material.icons.filled.Book
-import androidx.compose.material.icons.filled.Description
-import androidx.compose.material.icons.filled.OtherHouses
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material3.*
+import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.LocationCity
+import androidx.compose.material.icons.filled.Numbers
+import androidx.compose.material.icons.filled.Timer
+import androidx.compose.material.icons.filled.Title
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.studentinformationmanagement.R
+import androidx.navigation.NavHostController
+import com.example.studentinformationmanagement.ui.shared.InformationDate
 import com.example.studentinformationmanagement.ui.shared.InformationLine
 import com.example.studentinformationmanagement.ui.theme.kanit_bold_font
 import com.example.studentinformationmanagement.ui.theme.primary_content
 import com.example.studentinformationmanagement.ui.theme.primary_dark
 import com.example.studentinformationmanagement.ui.theme.secondary_content
-import com.example.studentinformationmanagement.ui.theme.secondary_dark
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Preview(showSystemUi = true)
 @Composable
-fun EditCertificate() {
-    Scaffold(modifier = Modifier.systemBarsPadding(), containerColor = Color.White, topBar = {
-        TopAppBar(
-            title = {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.fillMaxWidth()
+fun EditCertificate(
+    managerViewModel: ManagerViewModel,
+    navController: NavHostController
+) {
+    val context: Context = LocalContext.current
+
+    val certificate = managerViewModel.certificateToEdit
+    var titleValue by remember { mutableStateOf(certificate?.certificateTitle ?: "") }
+    var courseNameValue by remember { mutableStateOf(certificate?.courseName ?: "") }
+    var idValue by remember { mutableStateOf(certificate?.certificateId ?: "") }
+    var organizationValue by remember { mutableStateOf(certificate?.issuingOrganization ?: "") }
+    var issueDateValue by remember { mutableStateOf(certificate?.issueDate ?: "") }
+    var expirationDateValue by remember { mutableStateOf(certificate?.expirationDate ?: "") }
+
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(
+                            "Edit Certificate",
+                            fontSize = 35.sp,
+                            fontFamily = kanit_bold_font,
+                            color = primary_content
+                        )
+                    }
+                },
+                navigationIcon = {
+                    IconButton(
+                        onClick = {
+                            managerViewModel.clearCErrorMessage()
+                            navController.navigateUp()
+                        }
+                    ) {
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = null,
+                            tint = primary_content,
+                            modifier = Modifier.size(40.dp)
+                        )
+                    }
+                }
+            )
+        },
+        bottomBar = {
+            Row(
+                horizontalArrangement = Arrangement.Center,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Button(
+                    onClick = {
+                        if (managerViewModel.validateCertificateInputs(
+                            newTitle = titleValue,
+                            newCourseName = courseNameValue,
+                            newId = idValue,
+                            currentId = certificate?.certificateId ?: "",
+                            newOrganization = organizationValue,
+                            newIssueDate = issueDateValue,
+                            newExpirationDate = expirationDateValue
+                        )) {
+                            managerViewModel.onEditCertificateSaveClick(
+                                newTitle = titleValue,
+                                newCourseName = courseNameValue,
+                                newId = idValue,
+                                newOrganization = organizationValue,
+                                newIssueDate = issueDateValue,
+                                newExpirationDate = expirationDateValue,
+                                context = context,
+                                navController = navController
+                            )
+                        }
+                    },
+                    colors = ButtonDefaults.outlinedButtonColors(
+                        containerColor = secondary_content,
+                    ),
+                    shape = RoundedCornerShape(4.dp),
+                    modifier = Modifier
+                        .fillMaxWidth(0.9f)
+                        .padding(bottom = 10.dp)
                 ) {
                     Text(
-                        "Edit Certificate",
-                        fontSize = 35.sp,
-                        fontFamily = kanit_bold_font,
-                        color = primary_content
+                        "Save",
+                        style = TextStyle(color = primary_dark, fontFamily = kanit_bold_font)
                     )
                 }
-            },
-            navigationIcon = {
-                IconButton(onClick = {}) {
-                    Icon(
-                        Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = null,
-                        tint = primary_content,
-                        modifier = Modifier.size(40.dp)
-                    )
-                }
-            },
-        )
-    }, bottomBar = {
-        Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
-            Button(
-                onClick = {},
-                colors = ButtonDefaults.outlinedButtonColors(
-                    containerColor = secondary_content,
-                ),
-            ) {
-                Text(
-                    "Update Certificate",
-                    style = TextStyle(color = primary_dark, fontFamily = kanit_bold_font)
-                )
             }
         }
-    }) { padding ->
+    ) { padding ->
         Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .padding(padding)
                 .fillMaxWidth()
-                .padding(5.dp)
+                .padding(all = 5.dp)
                 .verticalScroll(rememberScrollState()),
-            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Hình ảnh
-            Image(
-                painter = painterResource(R.drawable.login_image),
-                contentDescription = null,
-                modifier = Modifier
-                    .clip(CircleShape)
-                    .border(2.dp, secondary_dark, CircleShape)
-                    .size(200.dp)
+            InformationLine(
+                icon = Icons.Filled.Title,
+                value = titleValue,
+                onValueChange = { titleValue = it },
+                label = "Title",
+                enable = true,
+                errorMessage = managerViewModel.titleError
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Các trường thông tin (giá trị mặc định)
-            InformationLine(
-                icon = Icons.Filled.Badge,
-                value = "Java Programming",
-                label = "Certificate Name",
-                enable = true,
-                placeholder = "Enter certificate name"
-            )
-            InformationLine(
-                icon = Icons.Filled.Person,
-                value = "Nguyen Van A",
-                label = "Student Name",
-                enable = true,
-                placeholder = "Enter student name"
-            )
-            InformationLine(
-                icon = Icons.Filled.Badge,
-                value = "SV123456",
-                label = "Student ID",
-                enable = true,
-                placeholder = "Enter student ID"
-            )
-            InformationLine(
-                icon = Icons.AutoMirrored.Filled.EventNote,
-                value = "2024 Spring",
-                label = "Session",
-                enable = true,
-                placeholder = "Enter session"
-            )
-            InformationLine(
-                icon = Icons.Filled.OtherHouses,
-                value = "FPT Software",
-                label = "Organization",
-                enable = true,
-                placeholder = "Enter organization"
-            )
-            InformationLine(
-                icon = Icons.Filled.Description,
-                value = "Excellent student in Java",
-                label = "Description",
-                enable = true,
-                placeholder = "Enter description"
-            )
             InformationLine(
                 icon = Icons.Filled.Book,
-                value = "FPT University",
-                label = "School",
+                value = courseNameValue,
+                onValueChange = { courseNameValue = it },
+                label = "Course name",
                 enable = true,
-                placeholder = "Enter school"
+                errorMessage = managerViewModel.courseNameError
+            )
+
+            // Fixed - Cannot edit certificate ID
+            InformationLine(
+                icon = Icons.Filled.Numbers,
+                value = "$idValue (Cannot be edited)",
+                onValueChange = { idValue = it },
+                label = "ID",
+                enable = false,
+                errorMessage = managerViewModel.cIdError
+            )
+            InformationLine(
+                icon = Icons.Filled.LocationCity,
+                value = organizationValue,
+                onValueChange = { organizationValue = it },
+                label = "Issuing organization",
+                enable = true,
+                errorMessage = managerViewModel.organizationError
+            )
+            InformationDate(
+                icon = Icons.Default.DateRange,
+                label = "Issue date",
+                placeholder = issueDateValue,
+                onDatePick = { issueDateValue = it },
+                errorMessage = managerViewModel.issueDateError
+            )
+            InformationDate(
+                icon = Icons.Default.Timer,
+                label = "Expiration date",
+                placeholder = expirationDateValue,
+                onDatePick = { expirationDateValue = it },
+                errorMessage = managerViewModel.expirationDateError,
+                canSelectFuture = true
             )
         }
     }

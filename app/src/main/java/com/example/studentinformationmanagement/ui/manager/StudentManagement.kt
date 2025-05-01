@@ -52,6 +52,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.studentinformationmanagement.data.manager.Student
 import com.example.studentinformationmanagement.ui.shared.ConfirmationBox
+import com.example.studentinformationmanagement.ui.shared.HelpIcon
 import com.example.studentinformationmanagement.ui.shared.InformationBox
 import com.example.studentinformationmanagement.ui.shared.InformationLine
 import com.example.studentinformationmanagement.ui.shared.InformationSelect
@@ -152,13 +153,22 @@ fun StudentManagement(
                 )
             }
 
-            Text(
-                text = "List Student",
-                modifier = Modifier.padding(vertical = 8.dp, horizontal = 10.dp),
-                fontSize = 24.sp,
-                fontFamily = kanit_bold_font,
-                color = primary_content
-            )
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.padding(horizontal = 10.dp)
+            ) {
+                Text(
+                    text = "List Student",
+                    modifier = Modifier.padding(vertical = 8.dp, horizontal = 10.dp),
+                    fontSize = 24.sp,
+                    fontFamily = kanit_bold_font,
+                    color = primary_content
+                )
+                Spacer(modifier = Modifier.weight(1f))
+                HelpIcon(
+                    message = "Swipe right to edit and left to delete a student"
+                )
+            }
 
             // User list
             StudentList(

@@ -114,12 +114,12 @@ fun AddCertificate(
             }
     }) { padding ->
         Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .padding(padding)
                 .fillMaxWidth()
                 .padding(all = 5.dp)
-                .verticalScroll(rememberScrollState()),
-            horizontalAlignment = Alignment.CenterHorizontally
+                .verticalScroll(rememberScrollState())
         ) {
             InformationLine(
                 icon = Icons.Filled.Title,

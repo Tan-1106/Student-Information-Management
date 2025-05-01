@@ -172,12 +172,12 @@ fun EditStudent(
         }
     ) { innerPadding ->
         Box(
+            contentAlignment = Alignment.TopCenter,
             modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxWidth()
                 .padding(horizontal = 10.dp)
-                .verticalScroll(rememberScrollState()),
-            contentAlignment = Alignment.TopCenter
+                .verticalScroll(rememberScrollState())
         ) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally
@@ -279,8 +279,6 @@ fun EditStudent(
                     onValueChange = { facultyValue = it },
                     errorMessage = managerViewModel.facultyError
                 )
-
-
             }
         }
     }
