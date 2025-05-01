@@ -55,65 +55,69 @@ fun AddStudent(
 ) {
     val context: Context = LocalContext.current
 
-    Scaffold(modifier = Modifier.systemBarsPadding(), containerColor = Color.White, topBar = {
-        TopAppBar(
-            title = {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.fillMaxWidth()
+    Scaffold(
+        modifier = Modifier.systemBarsPadding(),
+        containerColor = Color.White,
+        topBar = {
+            TopAppBar(
+                title = {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(
+                            "Add Student",
+                            fontSize = 35.sp,
+                            fontFamily = kanit_bold_font,
+                            color = primary_content
+                        )
+                    }
+                },
+                navigationIcon = {
+                    IconButton(
+                        content = {
+                            Icon(
+                                Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = null,
+                                tint = primary_content,
+                                modifier = Modifier.size(40.dp)
+                            )
+                        },
+                        onClick = {
+                            navController.navigateUp()
+                            managerViewModel.clearAddStudentInputs()
+                        }
+                    )
+                }
+            )
+        },
+        bottomBar = {
+            Row(
+                horizontalArrangement = Arrangement.Center,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Button(
+                    onClick = {
+                        managerViewModel.onAddStudentButtonClick(
+                            navController = navController,
+                            context = context
+                        )
+                    },
+                    colors = ButtonDefaults.outlinedButtonColors(
+                        containerColor = secondary_content,
+                    ),
+                    shape = RoundedCornerShape(4.dp),
+                    modifier = Modifier
+                        .fillMaxWidth(0.9f)
+                        .padding(bottom = 10.dp)
                 ) {
                     Text(
                         "Add Student",
-                        fontSize = 35.sp,
-                        fontFamily = kanit_bold_font,
-                        color = primary_content
+                        style = TextStyle(color = primary_dark, fontFamily = kanit_bold_font)
                     )
                 }
-            },
-            navigationIcon = {
-                IconButton(content = {
-                    Icon(
-                        Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = null,
-                        tint = primary_content,
-                        modifier = Modifier.size(40.dp)
-                    )
-                },
-                    onClick = {
-                        navController.navigateUp()
-                    }
-                )
-            },
-
-            )
-    }, bottomBar = {
-        Row(
-            horizontalArrangement = Arrangement.Center,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Button(
-                onClick = {
-                    managerViewModel.onAddStudentButtonClick(
-                        navController = navController,
-                        context = context
-                    )
-                },
-                colors = ButtonDefaults.outlinedButtonColors(
-                    containerColor = secondary_content,
-                ),
-                shape = RoundedCornerShape(4.dp),
-                modifier = Modifier
-                    .fillMaxWidth(0.9f)
-                    .padding(bottom = 10.dp)
-            ) {
-                Text(
-                    "Add Student",
-                    style = TextStyle(color = primary_dark, fontFamily = kanit_bold_font)
-                )
             }
         }
-    }
-
     ) { padding ->
         Column(
             modifier = Modifier

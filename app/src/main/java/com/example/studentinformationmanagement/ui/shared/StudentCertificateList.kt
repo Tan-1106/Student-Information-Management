@@ -17,9 +17,11 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Numbers
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
@@ -57,8 +59,7 @@ fun StudentCertificationList(
 ) {
     val context: Context = LocalContext.current
 
-    val managerUiState = managerViewModel.uiState.collectAsState()
-    val student = managerUiState.value.selectedStudent
+    val managerUiState by managerViewModel.uiState.collectAsState()
 
     var showConfirmDeleteDialog by remember { mutableStateOf(false) }
     var selectedCertificateId by remember { mutableStateOf("") }
@@ -104,8 +105,8 @@ fun StudentCertificationList(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-                InformationLine(Icons.Filled.Person, "Name", student.studentName)
-                InformationLine(Icons.Filled.Numbers, "Id", student.studentId)
+                InformationLine(Icons.Filled.Person, "Name", managerUiState.selectedStudent.studentName)
+                InformationLine(Icons.Filled.Numbers, "Id", managerUiState.selectedStudent.studentId)
 
                 Spacer(modifier = Modifier.height(10.dp))
                 Row(
@@ -121,10 +122,14 @@ fun StudentCertificationList(
                 }
 
                 CertificateList(
-                    certificateList = managerUiState.value.selectedStudent.studentCertificates,
+                    certificateList = managerUiState.selectedStudent.studentCertificates,
                     navController = navController,
                     managerViewModel = managerViewModel,
-                    onEditSwipe = {
+                    onEditSwipe = { certificateId ->
+                        managerViewModel.onEditCertificateSwipe(
+                            certificateId = certificateId,
+                            navController = navController
+                        )
 
                     },
                     onDeleteSwipe = { certificateId ->
@@ -143,10 +148,26 @@ fun StudentCertificationList(
                         selectedCertificateId = ""
                     },
                     onConfirmClick = {
-                        managerViewModel.onDeleteCertificate(student.studentId, selectedCertificateId, context)
+                        managerViewModel.onDeleteCertificate(managerUiState.selectedStudent.studentId, selectedCertificateId, context)
                         showConfirmDeleteDialog = false
                         selectedCertificateId = ""
                     }
+                )
+            }
+
+            // Add certificate button
+            FloatingActionButton(
+                onClick = { managerViewModel.onAddCertificateFloatingButtonClick(navController) },
+                shape = RoundedCornerShape(50),
+                containerColor = primary_content,
+                contentColor = third_content,
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(16.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = "Add Certificate"
                 )
             }
         }

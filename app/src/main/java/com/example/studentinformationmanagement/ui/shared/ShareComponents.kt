@@ -420,14 +420,26 @@ fun InformationDate(
     placeholder: String,
     onDatePick: (String) -> Unit,
     modifier: Modifier = Modifier,
-    errorMessage: String= ""
+    errorMessage: String= "",
+    canSelectFuture: Boolean = false
 ) {
     val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
-    val datePickerState = rememberDatePickerState(selectableDates = object : SelectableDates {
-        override fun isSelectableDate(utcTimeMillis: Long): Boolean {
-            return utcTimeMillis < Clock.systemUTC().millis()
+    val selectableDates = if (canSelectFuture) {
+        object : SelectableDates {
+            override fun isSelectableDate(utcTimeMillis: Long): Boolean = true
         }
-    })
+    } else {
+        object : SelectableDates {
+            override fun isSelectableDate(utcTimeMillis: Long): Boolean {
+                return utcTimeMillis < Clock.systemUTC().millis()
+            }
+        }
+    }
+
+    val datePickerState = rememberDatePickerState(
+        selectableDates = selectableDates
+    )
+
     var openSheet by remember { mutableStateOf(false) }
     var birthday by remember { mutableStateOf("") }
     Row(

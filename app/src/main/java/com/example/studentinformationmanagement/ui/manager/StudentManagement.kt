@@ -196,7 +196,7 @@ fun StudentManagement(
 
         // Add user button
         FloatingActionButton(
-            onClick = { managerViewModel.onAddStudentButtonClicked(navController) },
+            onClick = { managerViewModel.onAddStudentFloatingButtonClick(navController) },
             shape = RoundedCornerShape(50),
             containerColor = primary_content,
             contentColor = third_content,

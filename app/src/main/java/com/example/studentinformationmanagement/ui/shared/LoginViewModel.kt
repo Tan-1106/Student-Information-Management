@@ -25,15 +25,16 @@ class LoginViewModel(
     private val _loginUiState = MutableStateFlow(LoginUiState())
     val loginUiState: StateFlow<LoginUiState> = _loginUiState.asStateFlow()
 
+    // TODO: CLEAR THE USERNAME & PASSWORD AFTER DONE TESTING
     // User's phone number input
-    var userPhoneNumberInput by mutableStateOf("")
+    var userPhoneNumberInput by mutableStateOf("1111111111")
         private set
     fun onPhoneNumberChange(userInput: String) {
         userPhoneNumberInput = userInput
     }
 
     // User's password input
-    var userPasswordInput by mutableStateOf("")
+    var userPasswordInput by mutableStateOf("Admin")
         private set
     fun onPasswordChange(userInput: String) {
         userPasswordInput = userInput

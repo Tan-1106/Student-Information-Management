@@ -10,13 +10,14 @@ import com.example.studentinformationmanagement.ui.admin.AddUser
 import com.example.studentinformationmanagement.ui.admin.AdminScreen
 import com.example.studentinformationmanagement.ui.admin.AdminViewModel
 import com.example.studentinformationmanagement.ui.admin.EditUser
+import com.example.studentinformationmanagement.ui.manager.AddCertificate
 import com.example.studentinformationmanagement.ui.manager.AddStudent
 import com.example.studentinformationmanagement.ui.manager.EditStudent
 import com.example.studentinformationmanagement.ui.manager.ManagerViewModel
 import com.example.studentinformationmanagement.ui.manager.StudentManagement
 import com.example.studentinformationmanagement.ui.shared.LoginScreen
 import com.example.studentinformationmanagement.ui.shared.LoginViewModel
-import com.example.studentinformationmanagement.ui.shared.StudentCertificateDetail
+import com.example.studentinformationmanagement.ui.shared.CertificateDetail
 import com.example.studentinformationmanagement.ui.shared.StudentCertificationList
 import com.example.studentinformationmanagement.ui.shared.StudentDetailProfile
 import com.example.studentinformationmanagement.ui.shared.UserDetailProfile
@@ -109,13 +110,16 @@ fun AppScreen(
             )
         }
         composable(route = AppScreen.AddCertificate.name) {
-
+            AddCertificate(
+                managerViewModel = managerViewModel,
+                navController = navController
+            )
         }
         composable(route = AppScreen.EditCertificate.name) {
 
         }
         composable(route = AppScreen.CertificateDetail.name) {
-            StudentCertificateDetail(
+            CertificateDetail(
                 managerViewModel = managerViewModel,
                 navController = navController
             )

@@ -195,6 +195,19 @@ class AdminViewModel : ViewModel() {
     var newUserRole by mutableStateOf("")
         private set
 
+    var nameError by mutableStateOf("")
+        private set
+    var emailError by mutableStateOf("")
+        private set
+    var phoneError by mutableStateOf("")
+        private set
+    var birthdayError by mutableStateOf("")
+        private set
+    var statusError by mutableStateOf("")
+        private set
+    var roleError by mutableStateOf("")
+        private set
+
     fun onNewUserNameChange(userInput: String) {
         newUserName = userInput
     }
@@ -222,19 +235,6 @@ class AdminViewModel : ViewModel() {
         newUserStatus = ""
         newUserRole = ""
     }
-
-    var nameError by mutableStateOf("")
-        private set
-    var emailError by mutableStateOf("")
-        private set
-    var phoneError by mutableStateOf("")
-        private set
-    var birthdayError by mutableStateOf("")
-        private set
-    var statusError by mutableStateOf("")
-        private set
-    var roleError by mutableStateOf("")
-        private set
     fun clearErrorMessage() {
         nameError = ""
         emailError = ""

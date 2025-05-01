@@ -13,8 +13,8 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Book
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.LocationCity
-import androidx.compose.material.icons.filled.Newspaper
 import androidx.compose.material.icons.filled.Numbers
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material.icons.filled.Title
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -25,26 +25,25 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.example.studentinformationmanagement.AppScreen
 import com.example.studentinformationmanagement.ui.manager.ManagerViewModel
 import com.example.studentinformationmanagement.ui.theme.kanit_bold_font
 import com.example.studentinformationmanagement.ui.theme.primary_content
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun StudentCertificateDetail(
+fun CertificateDetail(
     managerViewModel: ManagerViewModel,
     navController: NavHostController,
     modifier: Modifier = Modifier
 ) {
-    val managerUiState = managerViewModel.uiState.collectAsState()
+    val managerUiState by managerViewModel.uiState.collectAsState()
 
-    val currentCertificate = managerUiState.value.selectedCertificate
     Scaffold(
         containerColor = Color.White,
         modifier = modifier
@@ -68,7 +67,7 @@ fun StudentCertificateDetail(
                 },
                 title = {
                     Text(
-                        text = "STUDENT'S PROFILE",
+                        text = "CERTIFICATE",
                         fontFamily = kanit_bold_font,
                         color = primary_content
                     )
@@ -76,12 +75,13 @@ fun StudentCertificateDetail(
                 actions = {
                     IconButton(
                         onClick = {
-                            navController.navigate(route = AppScreen.CertificateList.name)
+                            // TODO: EDIT CERTIFICATE
+
                         }
                     ) {
                         Icon(
-                            imageVector = Icons.Filled.Newspaper,
-                            contentDescription = "Certificate management",
+                            imageVector = Icons.Filled.Settings,
+                            contentDescription = "Certificate Edit",
                             tint = primary_content
                         )
                     }
@@ -97,16 +97,15 @@ fun StudentCertificateDetail(
                 .verticalScroll(rememberScrollState()),
             contentAlignment = Alignment.TopCenter
         ) {
-            // Data Loaded
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-               InformationLine(Icons.Filled.Title, "Title", currentCertificate.certificateTitle)
-               InformationLine(Icons.Filled.Book, "Course name", currentCertificate.courseName)
-               InformationLine(Icons.Filled.DateRange, "Issue date", currentCertificate.issueDate)
-               InformationLine(Icons.Filled.LocationCity, "Issuing organization", currentCertificate.issuingOrganization)
-               InformationLine(Icons.Filled.Numbers, "Certificate ID", currentCertificate.certificateId)
-               InformationLine(Icons.Filled.Timer, "Expiration date", currentCertificate.expirationDate)
+                InformationLine(Icons.Filled.Title, "Title", managerUiState.selectedCertificate.certificateTitle)
+                InformationLine(Icons.Filled.Book, "Course name", managerUiState.selectedCertificate.courseName)
+                InformationLine(Icons.Filled.Numbers, "Certificate ID", managerUiState.selectedCertificate.certificateId)
+                InformationLine(Icons.Filled.LocationCity, "Issuing organization", managerUiState.selectedCertificate.issuingOrganization)
+                InformationLine(Icons.Filled.DateRange, "Issue date", managerUiState.selectedCertificate.issueDate)
+                InformationLine(Icons.Filled.Timer, "Expiration date", managerUiState.selectedCertificate.expirationDate)
             }
         }
     }

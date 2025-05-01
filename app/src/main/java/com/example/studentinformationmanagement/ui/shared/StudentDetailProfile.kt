@@ -30,6 +30,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -52,8 +53,7 @@ fun StudentDetailProfile(
     managerViewModel: ManagerViewModel,
     modifier: Modifier = Modifier
 ) {
-    val managerUiState = managerViewModel.uiState.collectAsState()
-    val student = managerUiState.value.selectedStudent
+    val managerUiState by managerViewModel.uiState.collectAsState()
 
     Scaffold(
         containerColor = Color.White,
@@ -117,7 +117,7 @@ fun StudentDetailProfile(
                         .size(100.dp)
                 ) {
                     AsyncImage(
-                        model = student.studentImageUrl,
+                        model = managerUiState.selectedStudent.studentImageUrl,
                         contentDescription = "Avatar",
                         modifier = Modifier
                             .fillMaxSize()
@@ -127,14 +127,14 @@ fun StudentDetailProfile(
                         error = painterResource(id = R.drawable.avt_error)
                     )
                 }
-                InformationLine(Icons.Filled.Person, "Name", student.studentName)
-                InformationLine(Icons.Filled.Cake, "Birthday", student.studentBirthday)
-                InformationLine(Icons.Filled.Email, "Email", student.studentEmail)
-                InformationLine(Icons.Filled.Phone, "Phone", student.studentPhoneNumber)
-                InformationLine(Icons.Filled.Numbers, "Id", student.studentId)
-                InformationLine(Icons.Filled.Class, "Class", student.studentClass)
-                InformationLine(Icons.Filled.Apartment, "Faculty", student.studentFaculty)
-                InformationLine(Icons.Filled.Newspaper, "Number of certificates", student.studentCertificates.size.toString())
+                InformationLine(Icons.Filled.Person, "Name", managerUiState.selectedStudent.studentName)
+                InformationLine(Icons.Filled.Cake, "Birthday", managerUiState.selectedStudent.studentBirthday)
+                InformationLine(Icons.Filled.Email, "Email", managerUiState.selectedStudent.studentEmail)
+                InformationLine(Icons.Filled.Phone, "Phone", managerUiState.selectedStudent.studentPhoneNumber)
+                InformationLine(Icons.Filled.Numbers, "Id", managerUiState.selectedStudent.studentId)
+                InformationLine(Icons.Filled.Class, "Class", managerUiState.selectedStudent.studentClass)
+                InformationLine(Icons.Filled.Apartment, "Faculty", managerUiState.selectedStudent.studentFaculty)
+                InformationLine(Icons.Filled.Newspaper, "Number of certificates", managerUiState.selectedStudent.studentCertificates.size.toString())
                 Spacer(modifier = Modifier.height(20.dp))
             }
         }

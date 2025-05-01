@@ -83,6 +83,7 @@ fun AddUser(
                     },
                         onClick = {
                             navController.navigateUp()
+                            adminViewModel.clearAddUserInputs()
                         }
                     )
                 },
