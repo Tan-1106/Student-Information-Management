@@ -1,6 +1,9 @@
 package com.example.studentinformationmanagement.ui.manager
 
 import android.content.Context
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -19,6 +22,7 @@ import androidx.compose.material.icons.filled.LocationCity
 import androidx.compose.material.icons.filled.Numbers
 import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material.icons.filled.Title
+import androidx.compose.material.icons.filled.UploadFile
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -28,6 +32,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -36,8 +42,10 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.studentinformationmanagement.ui.shared.HelpIcon
 import com.example.studentinformationmanagement.ui.shared.InformationDate
 import com.example.studentinformationmanagement.ui.shared.InformationLine
+import com.example.studentinformationmanagement.ui.shared.LoginViewModel
 import com.example.studentinformationmanagement.ui.theme.kanit_bold_font
 import com.example.studentinformationmanagement.ui.theme.primary_content
 import com.example.studentinformationmanagement.ui.theme.primary_dark
@@ -46,10 +54,22 @@ import com.example.studentinformationmanagement.ui.theme.secondary_content
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddCertificate(
+    loginViewModel: LoginViewModel,
     managerViewModel: ManagerViewModel,
     navController: NavHostController
 ) {
     val context: Context = LocalContext.current
+
+    val loginUiState by loginViewModel.loginUiState.collectAsState()
+    val canUploadCSV = loginUiState.currentUser?.userRole == "Manager" || loginUiState.currentUser?.userRole == "Admin"
+
+    val csvLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        uri?.let {
+            managerViewModel.uploadCertificatesFromCsv(it, navController, context)
+        }
+    }
 
     Scaffold(
         modifier = Modifier.systemBarsPadding(),
@@ -82,6 +102,22 @@ fun AddCertificate(
                             tint = primary_content,
                             modifier = Modifier.size(40.dp)
                         )
+                    }
+                },
+                actions = {
+                    if (canUploadCSV) {
+                        IconButton(
+                            onClick = {
+                                csvLauncher.launch("text/csv")
+                            }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Filled.UploadFile,
+                                contentDescription = "Upload CSV",
+                                tint = primary_content
+                            )
+                        }
+                        HelpIcon("To upload, CSV need: Title, name, ID, issuing organization, issue date, expiration date")
                     }
                 }
             )

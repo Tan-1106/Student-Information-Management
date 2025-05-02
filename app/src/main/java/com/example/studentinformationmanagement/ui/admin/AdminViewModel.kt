@@ -20,6 +20,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import at.favre.lib.crypto.bcrypt.BCrypt
+import java.text.Collator
+import java.util.Locale
 import java.util.UUID
 
 
@@ -126,9 +129,15 @@ class AdminViewModel : ViewModel() {
             filtered = filtered.filter { it.userStatus == statusSelected }
         }
 
+        fun lastWord(name: String): String {
+            return name.trim().split("\\s+".toRegex()).lastOrNull() ?: ""
+        }
+
+        val collator = Collator.getInstance(Locale("vi", "VN"))
+
         filtered = when (sortSelected) {
-            "A → Z" -> filtered.sortedBy { it.userName }
-            "Z → A" -> filtered.sortedByDescending { it.userName }
+            "A → Z" -> filtered.sortedWith(compareBy(collator) { lastWord(it.userName) })
+            "Z → A" -> filtered.sortedWith(compareByDescending(collator) { lastWord(it.userName) })
             else -> filtered
         }
 
@@ -277,13 +286,29 @@ class AdminViewModel : ViewModel() {
                                         userStatus = status
                                     )
 
+                                    val rawPassword = name.replace(" ", "") + phone
+                                    val hashedPassword = BCrypt.withDefaults().hashToString(12, rawPassword.toCharArray())
+
                                     db.collection("users")
                                         .document(phone)
                                         .set(newUser)
                                         .addOnSuccessListener {
-                                            clearErrorMessage()
-                                            clearAddUserInputs()
-                                            navController.navigateUp()
+                                            val credentials = hashMapOf(
+                                                "phoneNumber" to phone,
+                                                "password" to hashedPassword
+                                            )
+
+                                            db.collection("userCredentials")
+                                                .document(phone)
+                                                .set(credentials)
+                                                .addOnSuccessListener {
+                                                    clearErrorMessage()
+                                                    clearAddUserInputs()
+                                                    navController.navigateUp()
+                                                }
+                                                .addOnFailureListener {
+                                                    Toast.makeText(context, "Cannot add credentials", Toast.LENGTH_SHORT).show()
+                                                }
                                         }
                                         .addOnFailureListener {
                                             Toast.makeText(context, "Cannot add user", Toast.LENGTH_SHORT).show()
@@ -378,6 +403,7 @@ class AdminViewModel : ViewModel() {
     }
 
     // Delete a user
+    // Delete a user and their credentials
     fun onDeleteUser(userPhoneNumber: String) {
         val db = Firebase.firestore
 
@@ -386,12 +412,23 @@ class AdminViewModel : ViewModel() {
             .delete()
             .addOnSuccessListener {
                 Log.d("DeleteUser", "Successfully deleted user with phone: $userPhoneNumber")
-                fetchUsersFromFirestore()
+
+                db.collection("userCredentials")
+                    .document(userPhoneNumber)
+                    .delete()
+                    .addOnSuccessListener {
+                        Log.d("DeleteUser", "Successfully deleted credentials for phone: $userPhoneNumber")
+                        fetchUsersFromFirestore()
+                    }
+                    .addOnFailureListener { e ->
+                        Log.e("DeleteUser", "Error deleting credentials: ${e.message}")
+                    }
             }
             .addOnFailureListener { e ->
                 Log.e("DeleteUser", "Error deleting user: ${e.message}")
             }
     }
+
 
     // Edit a user
     var userToEdit by mutableStateOf<User?>(null)

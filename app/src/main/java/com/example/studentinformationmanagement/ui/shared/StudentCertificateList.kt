@@ -1,6 +1,8 @@
 package com.example.studentinformationmanagement.ui.shared
 
 import android.content.Context
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -10,16 +12,20 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Numbers
-import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.DownloadForOffline
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -37,20 +43,25 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import coil.compose.AsyncImage
 import com.example.studentinformationmanagement.R
 import com.example.studentinformationmanagement.data.manager.Certificate
 import com.example.studentinformationmanagement.ui.manager.ManagerViewModel
 import com.example.studentinformationmanagement.ui.theme.kanit_bold_font
 import com.example.studentinformationmanagement.ui.theme.kanit_regular_font
 import com.example.studentinformationmanagement.ui.theme.primary_content
+import com.example.studentinformationmanagement.ui.theme.secondary_content
 import com.example.studentinformationmanagement.ui.theme.secondary_dark
 import com.example.studentinformationmanagement.ui.theme.third_content
 
+@RequiresApi(Build.VERSION_CODES.Q)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StudentCertificationList(
@@ -63,6 +74,7 @@ fun StudentCertificationList(
     val managerUiState by managerViewModel.uiState.collectAsState()
     val swipeEnable = loginUiState.currentUser?.userRole == "Manager" || loginUiState.currentUser?.userRole == "Admin"
 
+    var showConfirmExportDialog by remember { mutableStateOf(false) }
     var showConfirmDeleteDialog by remember { mutableStateOf(false) }
     var selectedCertificateId by remember { mutableStateOf("") }
 
@@ -107,8 +119,49 @@ fun StudentCertificationList(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-                InformationLine(Icons.Filled.Person, "Name", managerUiState.selectedStudent.studentName)
-                InformationLine(Icons.Filled.Numbers, "Id", managerUiState.selectedStudent.studentId)
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 12.dp, vertical = 6.dp),
+                    elevation = CardDefaults.cardElevation(8.dp),
+                    shape = RoundedCornerShape(12.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = secondary_content
+                    )
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.padding(12.dp)
+                    ) {
+                        AsyncImage(
+                            model = managerUiState.selectedStudent.studentImageUrl,
+                            contentDescription = "Avatar",
+                            modifier = Modifier
+                                .size(80.dp)
+                                .clip(CircleShape),
+                            contentScale = ContentScale.Crop,
+                            placeholder = painterResource(id = R.drawable.avt_placeholder),
+                            error = painterResource(id = R.drawable.avt_error)
+                        )
+                        Spacer(modifier = Modifier.width(20.dp))
+                        Column {
+                            Text(
+                                text = managerUiState.selectedStudent.studentName,
+                                fontFamily = kanit_bold_font
+                            )
+                            Text(
+                                text = "ID: ${managerUiState.selectedStudent.studentId}",
+                                fontFamily = kanit_regular_font,
+                                fontSize = 12.sp
+                            )
+                            Text(
+                                text = "Class: ${managerUiState.selectedStudent.studentClass}",
+                                fontFamily = kanit_regular_font,
+                                fontSize = 12.sp
+                            )
+                        }
+                    }
+                }
 
                 Spacer(modifier = Modifier.height(10.dp))
                 Row(
@@ -123,6 +176,17 @@ fun StudentCertificationList(
                         color = primary_content
                     )
                     Spacer(modifier = Modifier.weight(1f))
+                    IconButton(
+                        onClick = {
+                            showConfirmExportDialog = true
+                        }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.DownloadForOffline,
+                            contentDescription = "Download certificate list",
+                            tint = primary_content
+                        )
+                    }
                     if (swipeEnable) {
                         HelpIcon(
                             message = "Swipe right to edit and left to delete a certificate"
@@ -161,6 +225,20 @@ fun StudentCertificationList(
                         managerViewModel.onDeleteCertificate(managerUiState.selectedStudent.studentId, selectedCertificateId, context)
                         showConfirmDeleteDialog = false
                         selectedCertificateId = ""
+                    }
+                )
+            }
+
+            if (showConfirmExportDialog) {
+                ConfirmationBox(
+                    title = "Confirm export",
+                    message = "Do you want to export and download the certificate list as CSV?",
+                    onDismissRequest = {
+                        showConfirmExportDialog = false
+                    },
+                    onConfirmClick = {
+                        managerViewModel.exportCertificatesToCsv(context = context)
+                        showConfirmExportDialog = false
                     }
                 )
             }

@@ -1,5 +1,8 @@
 package com.example.studentinformationmanagement.ui.manager
 
+import android.content.Context
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,6 +20,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Apartment
+import androidx.compose.material.icons.filled.DownloadForOffline
 import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material.icons.filled.MeetingRoom
 import androidx.compose.material.icons.filled.Numbers
@@ -43,6 +47,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -64,6 +69,7 @@ import com.example.studentinformationmanagement.ui.theme.secondary_content
 import com.example.studentinformationmanagement.ui.theme.third_content
 
 // Composable: Student Management
+@RequiresApi(Build.VERSION_CODES.Q)
 @Composable
 fun StudentManagement(
     loginViewModel: LoginViewModel,
@@ -71,6 +77,8 @@ fun StudentManagement(
     navController: NavHostController,
     modifier: Modifier = Modifier,
 ) {
+    val context: Context = LocalContext.current
+    var showConfirmExportDialog by remember { mutableStateOf(false) }
     val loginUiState by loginViewModel.loginUiState.collectAsState()
     val managerUiState by managerViewModel.uiState.collectAsState()
     var showConfirmDeleteDialog by remember { mutableStateOf(false) }
@@ -169,6 +177,17 @@ fun StudentManagement(
                     color = primary_content
                 )
                 Spacer(modifier = Modifier.weight(1f))
+                IconButton(
+                    onClick = {
+                        showConfirmExportDialog = true
+                    }
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.DownloadForOffline,
+                        contentDescription = "Download student list",
+                        tint = primary_content
+                    )
+                }
                 if (swipeEnable) {
                     HelpIcon(
                         message = "Swipe right to edit and left to delete a student"
@@ -211,6 +230,21 @@ fun StudentManagement(
             )
         }
 
+        if (showConfirmExportDialog) {
+            ConfirmationBox(
+                title = "Confirm export",
+                message = "Do you want to export and download the student list as CSV?",
+                onDismissRequest = {
+                    showConfirmExportDialog = false
+                },
+                onConfirmClick = {
+                    managerViewModel.exportStudentsToCsv(context = context)
+                    showConfirmExportDialog = false
+                }
+            )
+        }
+
+
         // Add user button
         if (swipeEnable) {
             FloatingActionButton(
@@ -245,8 +279,8 @@ fun StudentList(
             InformationBox(
                 imageUrl = studentList[index].studentImageUrl,
                 name = studentList[index].studentName,
-                mainInformation = studentList[index].studentId,
-                subInformation = studentList[index].studentClass,
+                mainInformation = "ID: ${studentList[index].studentId}",
+                subInformation = "Class: ${studentList[index].studentClass}",
                 identificationInformation = studentList[index].studentPhoneNumber,
                 onSeeMoreClicked = {
                     managerViewModel.onStudentSeeMoreClicked(

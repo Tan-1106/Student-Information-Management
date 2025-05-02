@@ -1,9 +1,13 @@
 package com.example.studentinformationmanagement.ui.manager
 
+import android.content.ContentValues
 import android.content.Context
 import android.net.Uri
+import android.os.Build
+import android.provider.MediaStore
 import android.util.Log
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -25,8 +29,11 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.BufferedReader
 import java.io.InputStreamReader
+import java.text.Collator
+import java.util.Locale
 import java.util.UUID
 
 class ManagerViewModel : ViewModel() {
@@ -164,9 +171,13 @@ class ManagerViewModel : ViewModel() {
             filtered = filtered.filter { it.studentClass == classSelected }
         }
 
+        fun lastWord(name: String): String {
+            return name.trim().split("\\s+".toRegex()).lastOrNull() ?: ""
+        }
+
         filtered = when (sortSelected) {
-            "A → Z" -> filtered.sortedBy { it.studentName }
-            "Z → A" -> filtered.sortedByDescending { it.studentName }
+            "A → Z" -> filtered.sortedWith(compareBy(Collator.getInstance(Locale("vi", "VN"))) { lastWord(it.studentName) })
+            "Z → A" -> filtered.sortedWith(compareByDescending(Collator.getInstance(Locale("vi", "VN"))) { lastWord(it.studentName) })
             else -> filtered
         }
 
@@ -176,6 +187,7 @@ class ManagerViewModel : ViewModel() {
 
         isShowDialog = false
     }
+
 
     fun onClearFilterClick() {
         sortSelected = ""
@@ -905,8 +917,16 @@ class ManagerViewModel : ViewModel() {
     ) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                context.contentResolver.openInputStream(uri)?.use { inputStream ->
-                    val reader = BufferedReader(InputStreamReader(inputStream))
+                val inputStream = context.contentResolver.openInputStream(uri)
+                if (inputStream == null) {
+                    withContext(Dispatchers.Main) {
+                        Toast.makeText(context, "Cannot open file", Toast.LENGTH_SHORT).show()
+                    }
+                    return@launch
+                }
+
+                inputStream.use { stream ->
+                    val reader = BufferedReader(InputStreamReader(stream))
                     val lines = reader.readLines()
 
                     val dataLines = if (lines.first().contains("studentName", ignoreCase = true)) {
@@ -936,17 +956,183 @@ class ManagerViewModel : ViewModel() {
 
                     val firestore = Firebase.firestore
                     val collection = firestore.collection("students")
-
                     for (student in studentList) {
                         collection.document(student.studentId).set(student)
                     }
-                    navController.navigateUp()
-                    Toast.makeText(context, "Upload successfully", Toast.LENGTH_SHORT).show()
+
+                    withContext(Dispatchers.Main) {
+                        navController.navigateUp()
+                        Toast.makeText(context, "Upload successfully", Toast.LENGTH_SHORT).show()
+                    }
                 }
             } catch (e: Exception) {
-                Toast.makeText(context, "Upload failed", Toast.LENGTH_SHORT).show()
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(context, "Upload failed: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
                 e.printStackTrace()
             }
+        }
+    }
+
+    // Upload Certificates CSV
+    fun uploadCertificatesFromCsv(
+        uri: Uri,
+        navController: NavHostController,
+        context: Context
+    ) {
+        val studentId = _uiState.value.selectedStudent.studentId
+
+        if (studentId.isBlank()) {
+            Toast.makeText(context, "No student selected", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val inputStream = context.contentResolver.openInputStream(uri)
+                if (inputStream == null) {
+                    withContext(Dispatchers.Main) {
+                        Toast.makeText(context, "Cannot open file", Toast.LENGTH_SHORT).show()
+                    }
+                    return@launch
+                }
+
+                inputStream.use { stream ->
+                    val reader = BufferedReader(InputStreamReader(stream))
+                    val lines = reader.readLines()
+
+                    val dataLines = if (lines.first().contains("certificateTitle", ignoreCase = true)) {
+                        lines.drop(1)
+                    } else {
+                        lines
+                    }
+
+                    val certificateList = mutableListOf<Certificate>()
+
+                    for (line in dataLines) {
+                        val tokens = line.split(",").map { it.trim() }
+
+                        if (tokens.size >= 6) {
+                            val certificate = Certificate(
+                                certificateTitle = tokens[0],
+                                courseName = tokens[1],
+                                certificateId = tokens[2],
+                                issuingOrganization = tokens[3],
+                                issueDate = tokens[4],
+                                expirationDate = tokens[5]
+                            )
+                            certificateList.add(certificate)
+                        }
+                    }
+
+                    val firestore = Firebase.firestore
+                    val studentDocRef = firestore.collection("students").document(studentId)
+
+                    studentDocRef.update("studentCertificates", certificateList)
+                        .addOnSuccessListener {
+                            viewModelScope.launch(Dispatchers.Main) {
+                                updateSelectedStudentInformation()
+                                updateSelectedCertificateInformation()
+                                navController.navigateUp()
+                                Toast.makeText(context, "Upload successfully", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                        .addOnFailureListener { e ->
+                            viewModelScope.launch(Dispatchers.Main) {
+                                Toast.makeText(context, "Upload failed: ${e.message}", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(context, "Upload failed: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
+                e.printStackTrace()
+            }
+        }
+    }
+
+    // Export student list
+    @RequiresApi(Build.VERSION_CODES.Q)
+    fun exportStudentsToCsv(context: Context) {
+        val studentList = _uiState.value.studentList
+        val fileName = "students_${System.currentTimeMillis()}.csv"
+        val csvHeader = "studentName,studentBirthday,studentEmail,studentPhoneNumber,studentId,studentClass,studentFaculty\n"
+
+        val csvBody = buildString {
+            studentList.forEach { student ->
+                appendLine("${student.studentName},${student.studentBirthday},${student.studentEmail},${student.studentPhoneNumber},${student.studentId},${student.studentClass},${student.studentFaculty}")
+            }
+        }
+
+        val resolver = context.contentResolver
+        val contentValues = ContentValues().apply {
+            put(MediaStore.Downloads.DISPLAY_NAME, fileName)
+            put(MediaStore.Downloads.MIME_TYPE, "text/csv")
+            put(MediaStore.Downloads.IS_PENDING, 1)
+        }
+
+        val collection = MediaStore.Downloads.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)
+        val itemUri = resolver.insert(collection, contentValues)
+
+        itemUri?.let { uri ->
+            resolver.openOutputStream(uri)?.use { outputStream ->
+                outputStream.write((csvHeader + csvBody).toByteArray())
+                outputStream.flush()
+            }
+
+            contentValues.clear()
+            contentValues.put(MediaStore.Downloads.IS_PENDING, 0)
+            resolver.update(uri, contentValues, null, null)
+
+            Toast.makeText(context, "Exported to Downloads/$fileName", Toast.LENGTH_LONG).show()
+        } ?: run {
+            Toast.makeText(context, "Export failed", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    // Export student list
+    @RequiresApi(Build.VERSION_CODES.Q)
+    fun exportCertificatesToCsv(context: Context) {
+        val student = _uiState.value.selectedStudent
+        val certificateList = student.studentCertificates
+        val fileName = "certificates_${student.studentId}_${System.currentTimeMillis()}.csv"
+        val csvHeader = "certificateTitle,courseName,certificateId,issuingOrganization,issueDate,expirationDate\n"
+
+        if (certificateList.isEmpty()) {
+            Toast.makeText(context, "No certificates to export", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val csvBody = buildString {
+            certificateList.forEach { cert ->
+                appendLine("${cert.certificateTitle},${cert.courseName},${cert.certificateId},${cert.issuingOrganization},${cert.issueDate},${cert.expirationDate}")
+            }
+        }
+
+        val resolver = context.contentResolver
+        val contentValues = ContentValues().apply {
+            put(MediaStore.Downloads.DISPLAY_NAME, fileName)
+            put(MediaStore.Downloads.MIME_TYPE, "text/csv")
+            put(MediaStore.Downloads.IS_PENDING, 1)
+        }
+
+        val collection = MediaStore.Downloads.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)
+        val itemUri = resolver.insert(collection, contentValues)
+
+        itemUri?.let { uri ->
+            resolver.openOutputStream(uri)?.use { outputStream ->
+                outputStream.write((csvHeader + csvBody).toByteArray())
+                outputStream.flush()
+            }
+
+            contentValues.clear()
+            contentValues.put(MediaStore.Downloads.IS_PENDING, 0)
+            resolver.update(uri, contentValues, null, null)
+
+            Toast.makeText(context, "Exported to Downloads/$fileName", Toast.LENGTH_LONG).show()
+        } ?: run {
+            Toast.makeText(context, "Export failed", Toast.LENGTH_SHORT).show()
         }
     }
 }

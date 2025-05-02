@@ -135,6 +135,7 @@ fun AppScreen(
         }
         composable(route = AppScreen.AddCertificate.name) {
             AddCertificate(
+                loginViewModel = loginViewModel,
                 managerViewModel = managerViewModel,
                 navController = navController
             )

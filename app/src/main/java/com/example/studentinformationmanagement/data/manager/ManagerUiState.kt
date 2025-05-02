@@ -15,9 +15,9 @@ data class Student(
 data class Certificate(
     val certificateTitle: String = "",
     val courseName: String = "",
-    val issueDate: String = "",
-    val issuingOrganization: String = "",
     val certificateId: String = "",
+    val issuingOrganization: String = "",
+    val issueDate: String = "",
     val expirationDate: String = ""
 )
 

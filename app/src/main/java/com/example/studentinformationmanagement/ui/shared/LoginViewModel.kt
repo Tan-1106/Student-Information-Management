@@ -38,14 +38,14 @@ class LoginViewModel(
 
     // TODO: CLEAR THE USERNAME & PASSWORD AFTER DONE TESTING
     // User's phone number input
-    var userPhoneNumberInput by mutableStateOf("3333333333")
+    var userPhoneNumberInput by mutableStateOf("")
         private set
     fun onPhoneNumberChange(userInput: String) {
         userPhoneNumberInput = userInput
     }
 
     // User's password input
-    var userPasswordInput by mutableStateOf("Employee")
+    var userPasswordInput by mutableStateOf("")
         private set
     fun onPasswordChange(userInput: String) {
         userPasswordInput = userInput
@@ -83,13 +83,23 @@ class LoginViewModel(
                 }
 
                 currentUser?.let {
-                    saveLoginHistoryToFirestore(it)
-                }
+                    if (it.userStatus == "Inactive") {
+                        _loginUiState.update { currentState ->
+                            currentState.copy(
+                                errorMessage = "Your account is inactive. Please contact admin."
+                            )
+                        }
+                        Toast.makeText(context, "Your account is inactive. Please contact admin.", Toast.LENGTH_SHORT).show()
+                        return@let
+                    }
 
-                when (currentUser?.userRole) {
-                    "Admin" -> navController.navigate(AppScreen.AdminScreen.name) { popUpTo(AppScreen.Login.name) { inclusive = true } }
-                    "Manager" -> navController.navigate(AppScreen.ManagerScreen.name) { popUpTo(AppScreen.Login.name) { inclusive = true } }
-                    "Employee" -> navController.navigate(AppScreen.EmployeeScreen.name) { popUpTo(AppScreen.Login.name) { inclusive = true } }
+                    saveLoginHistoryToFirestore(it)
+
+                    when (it.userRole) {
+                        "Admin" -> navController.navigate(AppScreen.AdminScreen.name) { popUpTo(AppScreen.Login.name) { inclusive = true } }
+                        "Manager" -> navController.navigate(AppScreen.ManagerScreen.name) { popUpTo(AppScreen.Login.name) { inclusive = true } }
+                        "Employee" -> navController.navigate(AppScreen.EmployeeScreen.name) { popUpTo(AppScreen.Login.name) { inclusive = true } }
+                    }
                 }
             } else {
                 _loginUiState.value = _loginUiState.value.copy(
@@ -100,6 +110,7 @@ class LoginViewModel(
             }
         }
     }
+
 
     // Update login information
     fun updateCurrentUserInformation(

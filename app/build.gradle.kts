@@ -76,6 +76,8 @@ dependencies {
     implementation("com.google.android.gms:play-services-auth:20.0.0")
 
     implementation("org.mindrot:jbcrypt:0.4")
+    implementation("at.favre.lib:bcrypt:0.9.0")
+
 
     implementation("me.saket.swipe:swipe:1.3.0")
 

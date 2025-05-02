@@ -52,6 +52,7 @@ import com.example.studentinformationmanagement.ui.theme.primary_content
 import com.example.studentinformationmanagement.ui.theme.primary_dark
 import com.example.studentinformationmanagement.ui.theme.secondary_content
 import android.net.Uri
+import com.example.studentinformationmanagement.ui.shared.HelpIcon
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -121,6 +122,7 @@ fun AddStudent(
                                 tint = primary_content
                             )
                         }
+                        HelpIcon("To upload, CSV need: Name, birthday, email, phone number, ID, class, faculty")
                     }
                 }
             )
