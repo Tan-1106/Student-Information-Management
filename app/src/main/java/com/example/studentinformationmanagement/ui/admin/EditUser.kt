@@ -262,16 +262,16 @@ fun EditUser(
                 InformationSelect(
                     icon = Icons.Filled.Person,
                     label = "Role",
-                    options = listOf("Active", "Inactive"),
-                    onOptionPick = { roleValue = it },
-                    errorMessage = adminViewModel.statusError
+                    options = listOf("Manager", "Employee"),
+                    onOptionPick = {roleValue = it  },
+                    errorMessage = adminViewModel.roleError
                 )
                 InformationSelect(
                     icon = Icons.Filled.BrokenImage,
                     label = "Status",
-                    options = listOf("Manager", "Employee"),
-                    onOptionPick = { statusValue = it },
-                    errorMessage = adminViewModel.roleError
+                    options = listOf("Active", "Inactive"),
+                    onOptionPick = {  statusValue = it},
+                    errorMessage = adminViewModel.statusError
                 )
             }
         }
