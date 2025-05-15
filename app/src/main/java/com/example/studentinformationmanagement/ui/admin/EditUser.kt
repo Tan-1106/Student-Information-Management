@@ -81,7 +81,7 @@ fun EditUser(
     var phoneValue by remember { mutableStateOf(user?.userPhoneNumber ?: "") }
     var roleValue by remember { mutableStateOf(user?.userRole ?: "") }
     var statusValue by remember { mutableStateOf(user?.userStatus ?: "") }
-
+    val isAdmin = user?.userRole == "Admin"
     // Update user's image
     var imageUri by remember { mutableStateOf<Uri?>(null) }
     val launcher = rememberLauncherForActivityResult(
@@ -91,7 +91,10 @@ fun EditUser(
             imageUri = it
             Toast.makeText(context, "Uploading image...", Toast.LENGTH_LONG).show()
 
-            adminViewModel.updateUserImage(imageUri = imageUri!!, context = context) { newImageUrl ->
+            adminViewModel.updateUserImage(
+                imageUri = imageUri!!,
+                context = context
+            ) { newImageUrl ->
                 updatedImageUrl = newImageUrl
 
                 if (adminSelfEdit) {
@@ -137,15 +140,16 @@ fun EditUser(
                 Button(
                     onClick = {
                         if (adminViewModel.validateUserInputs(
-                            newName = nameValue,
-                            currentEmail = user?.userEmail ?: "",
-                            newEmail = emailValue,
-                            currentPhone = user?.userPhoneNumber ?: "",
-                            newPhone = phoneValue,
-                            newBirthday = birthdayValue,
-                            newStatus = statusValue,
-                            newRole = roleValue,
-                        )) {
+                                newName = nameValue,
+                                currentEmail = user?.userEmail ?: "",
+                                newEmail = emailValue,
+                                currentPhone = user?.userPhoneNumber ?: "",
+                                newPhone = phoneValue,
+                                newBirthday = birthdayValue,
+                                newStatus = statusValue,
+                                newRole = roleValue,
+                            )
+                        ) {
                             adminViewModel.onEditUserSaveClick(
                                 newName = nameValue,
                                 newEmail = emailValue,
@@ -157,7 +161,14 @@ fun EditUser(
                                 navController = navController
                             )
                             if (adminSelfEdit) {
-                                loginViewModel.updateCurrentUserInformation(nameValue, emailValue, phoneValue, birthdayValue, statusValue, roleValue)
+                                loginViewModel.updateCurrentUserInformation(
+                                    nameValue,
+                                    emailValue,
+                                    phoneValue,
+                                    birthdayValue,
+                                    statusValue,
+                                    roleValue
+                                )
                             }
                         }
                     },
@@ -259,18 +270,25 @@ fun EditUser(
                         keyboardType = KeyboardType.Phone
                     )
                 )
-                InformationSelect(
-                    icon = Icons.Filled.Person,
-                    label = "Role",
-                    options = listOf("Manager", "Employee"),
-                    onOptionPick = {roleValue = it  },
-                    errorMessage = adminViewModel.roleError
-                )
+                if (isAdmin) {
+                    InformationLine(Icons.Filled.Person, "Role", "$roleValue (Cannot be edited)")
+                } else {
+                    InformationSelect(
+                        icon = Icons.Filled.Person,
+                        label = "Role",
+                        options = listOf("Manager", "Employee"),
+                        onOptionPick = { roleValue = it },
+                        errorMessage = adminViewModel.roleError
+                    )
+
+                }
+
+
                 InformationSelect(
                     icon = Icons.Filled.BrokenImage,
                     label = "Status",
                     options = listOf("Active", "Inactive"),
-                    onOptionPick = {  statusValue = it},
+                    onOptionPick = { statusValue = it },
                     errorMessage = adminViewModel.statusError
                 )
             }
