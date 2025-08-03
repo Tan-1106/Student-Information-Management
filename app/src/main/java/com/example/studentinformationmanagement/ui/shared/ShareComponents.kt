@@ -43,6 +43,9 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.Text
@@ -64,23 +67,22 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Popup
 import coil.compose.AsyncImage
 import com.example.studentinformationmanagement.R
-import com.example.studentinformationmanagement.data.shared.CurrentUser
-import com.example.studentinformationmanagement.ui.theme.kanit_bold_font
-import com.example.studentinformationmanagement.ui.theme.kanit_regular_font
-import com.example.studentinformationmanagement.ui.theme.primary_content
-import com.example.studentinformationmanagement.ui.theme.primary_dark
-import com.example.studentinformationmanagement.ui.theme.secondary_content
-import com.example.studentinformationmanagement.ui.theme.secondary_dark
-import com.example.studentinformationmanagement.ui.theme.third_content
+import com.example.studentinformationmanagement.data.shared.NavItem
+import com.example.studentinformationmanagement.data.uiState.CurrentUser
+import com.example.studentinformationmanagement.ui.theme.CustomBlack
+import com.example.studentinformationmanagement.ui.theme.CustomGray
+import com.example.studentinformationmanagement.ui.theme.CustomTypography
+import com.example.studentinformationmanagement.ui.theme.PrimaryContainer
+import com.example.studentinformationmanagement.ui.theme.PrimaryContent
+import com.example.studentinformationmanagement.ui.theme.SecondaryContent
+import com.example.studentinformationmanagement.ui.theme.ThirdContent
 import me.saket.swipe.SwipeAction
 import me.saket.swipe.SwipeableActionsBox
 import java.time.Clock
@@ -88,60 +90,7 @@ import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
-
-// Composable: User's detail profile for admin
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun DetailProfile(
-    modifier: Modifier = Modifier,
-    topBar: @Composable (() -> Unit) = {},
-    user: CurrentUser
-) {
-    Scaffold(
-        containerColor = Color.White,
-        modifier = modifier
-            .systemBarsPadding(),
-        topBar = topBar,
-    ) { paddingValues ->
-        Box(
-            modifier = modifier
-                .padding(paddingValues)
-                .fillMaxWidth()
-                .padding(horizontal = 10.dp)
-                .verticalScroll(rememberScrollState()),
-            contentAlignment = Alignment.TopCenter
-        ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Box(
-                    modifier = Modifier
-                        .padding(vertical = 20.dp)
-                        .size(100.dp)
-                ) {
-                    AsyncImage(
-                        model = user.userImageUrl,
-                        contentDescription = "Avatar",
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .clip(CircleShape),
-                        contentScale = ContentScale.Crop,
-                        placeholder = painterResource(id = R.drawable.avt_placeholder),
-                        error = painterResource(id = R.drawable.avt_error)
-                    )
-                }
-                InformationLine(Icons.Filled.Person, "Name", user.userName)
-                InformationLine(Icons.Filled.Cake, "Birthday", user.userBirthday)
-                InformationLine(Icons.Filled.Email, "Email", user.userEmail)
-                InformationLine(Icons.Filled.Phone, "Phone", user.userPhoneNumber)
-                InformationLine(Icons.Filled.Person, "Role", user.userRole)
-                InformationLine(Icons.Filled.BrokenImage, "Status", user.userStatus)
-            }
-        }
-    }
-}
-
-// Composable: Information line in user's detail information
+// Components For Information Show
 @Composable
 fun InformationLine(
     icon: ImageVector,
@@ -153,97 +102,374 @@ fun InformationLine(
     errorMessage: String = "",
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default
 ) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 10.dp)
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+        modifier = Modifier.fillMaxWidth()
     ) {
-        Icon(
-            icon,
-            contentDescription = null,
-            modifier = Modifier.weight(0.2f),
-            tint = primary_content
-        )
-        Column(modifier = Modifier.weight(0.8f)) {
-            Text(
-                label, fontSize = 18.sp,
-                fontWeight = FontWeight.Bold,
-                color = primary_content,
-                fontFamily = kanit_bold_font
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = null,
+                tint = PrimaryContent,
+                modifier = Modifier.weight(0.2f)
             )
-            BasicTextField(
-                decorationBox = { innerTextField ->
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                    ) {
-                        if (value.isEmpty()) {
-                            Text(
-                                text = placeholder,
-                                style = TextStyle(
-                                    color = primary_dark,
-                                    fontSize = 14.sp,
-                                    fontFamily = kanit_regular_font
+            Column(
+                modifier = Modifier.weight(1f)
+            ) {
+                Text(
+                    text = label,
+                    style = CustomTypography.titleLarge,
+                    color = PrimaryContent,
+                )
+                BasicTextField(
+                    decorationBox = { innerTextField ->
+                        Box(
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            if (value.isEmpty()) {
+                                Text(
+                                    text = placeholder,
+                                    style = CustomTypography.labelLarge,
+                                    color = CustomGray
                                 )
-                            )
+                            }
+                            innerTextField()
                         }
-                        innerTextField()
-                    }
-                },
-                value = value,
-                onValueChange = onValueChange,
-                enabled = enable,
-                textStyle = TextStyle(
-                    color = primary_dark,
-                    fontSize = 14.sp,
-                    fontFamily = kanit_regular_font
-                ),
-                singleLine = true,
+                    },
+                    value = value,
+                    onValueChange = onValueChange,
+                    enabled = enable,
+                    textStyle = CustomTypography.bodyMedium.copy(color = CustomBlack),
+                    singleLine = true,
+                    keyboardOptions = keyboardOptions,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Divider(color = if (errorMessage.isEmpty()) Color.Gray else Color.Red)
+            }
+        }
+        if (errorMessage != "") {
+            Row(
+                horizontalArrangement = Arrangement.End,
+                verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 5.dp),
-                keyboardOptions = keyboardOptions
-            )
-            if (errorMessage != "") {
-                Divider(color = Color.Red)
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(vertical = 5.dp)
-                ) {
-                    Icon(
-                        Icons.Outlined.Info,
-                        contentDescription = null,
-                        tint = Color.Red,
-                        modifier = Modifier.size(15.dp)
-                    )
-                    Spacer(modifier = Modifier.width(5.dp))
-                    Text(
-                        errorMessage,
-                        style = TextStyle(color = Color.Red),
-                    )
-                }
-            } else {
-                Divider()
+                    .fillMaxWidth(0.8f)
+                    .padding(vertical = 5.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Outlined.Info,
+                    contentDescription = null,
+                    tint = Color.Red,
+                    modifier = Modifier.size(15.dp)
+                )
+                Spacer(modifier = Modifier.width(5.dp))
+                Text(
+                    text = errorMessage,
+                    style = CustomTypography.bodyMedium,
+                    color = Color.Red,
+                )
             }
         }
     }
 }
 
-// Composable: Divide between information line
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Divider(color: Color = Color.Gray) {
-//    Spacer(modifier = Modifier.height(5.dp))
-    HorizontalDivider(
-        color = color,
-        thickness = 1.dp,
-        modifier = Modifier.fillMaxWidth(0.9f)
+fun InformationDate(
+    icon: ImageVector,
+    label: String,
+    placeholder: String,
+    onDatePick: (String) -> Unit,
+    modifier: Modifier = Modifier,
+    errorMessage: String = "",
+    canSelectFuture: Boolean = false
+) {
+    val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+    val selectableDates = if (canSelectFuture) {
+        object : SelectableDates {
+            override fun isSelectableDate(utcTimeMillis: Long): Boolean = true
+        }
+    } else {
+        object : SelectableDates {
+            override fun isSelectableDate(utcTimeMillis: Long): Boolean {
+                return utcTimeMillis < Clock.systemUTC().millis()
+            }
+        }
+    }
+    val datePickerState = rememberDatePickerState(
+        selectableDates = selectableDates
     )
+    var openSheet by remember { mutableStateOf(false) }
+    var birthday by remember { mutableStateOf("") }
+
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+        modifier = modifier.fillMaxWidth()
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = null,
+                tint = PrimaryContent,
+                modifier = Modifier.weight(0.2f),
+            )
+            Column(
+                modifier = Modifier.weight(1f)
+            ) {
+                Text(
+                    text = label,
+                    style = CustomTypography.titleLarge,
+                    color = PrimaryContent,
+                )
+                Text(
+                    text = birthday.ifEmpty { placeholder },
+                    style = if (birthday.isEmpty()) CustomTypography.labelLarge else CustomTypography.bodyMedium,
+                    color = if (birthday.isEmpty()) CustomGray else CustomBlack,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable(onClick = { openSheet = true }),
+                )
+                if (openSheet) {
+                    ModalBottomSheet(
+                        onDismissRequest = { openSheet = false },
+                        sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+                    ) {
+                        Column(modifier = Modifier.systemBarsPadding()) {
+                            DatePicker(state = datePickerState)
+                            Spacer(Modifier.height(10.dp))
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 24.dp),
+                                horizontalArrangement = Arrangement.End
+                            ) {
+                                TextButton(onClick = {
+                                    openSheet = false
+                                }) {
+                                    Text(
+                                        text = stringResource(R.string.Button_Cancel),
+                                        style = CustomTypography.bodyMedium
+                                    )
+                                }
+                                TextButton(onClick = {
+                                    birthday = datePickerState.selectedDateMillis?.let {
+                                        Instant.ofEpochMilli(it).atZone(ZoneId.systemDefault())
+                                            .toLocalDate()
+                                    }?.format(formatter) ?: ""
+                                    openSheet = false
+                                    onDatePick(birthday)
+                                }) {
+                                    Text(
+                                        text = stringResource(R.string.Button_Select),
+                                        style = CustomTypography.bodyMedium,
+                                        fontWeight = FontWeight.Medium
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+                Divider(color = if (errorMessage.isEmpty()) Color.Gray else Color.Red)
+            }
+        }
+        if (errorMessage != "") {
+            Row(
+                horizontalArrangement = Arrangement.End,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .fillMaxWidth(0.8f)
+                    .padding(vertical = 5.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Outlined.Info,
+                    contentDescription = null,
+                    tint = Color.Red,
+                    modifier = Modifier.size(15.dp)
+                )
+                Spacer(modifier = Modifier.width(5.dp))
+                Text(
+                    text = errorMessage,
+                    style = CustomTypography.bodyMedium,
+                    color = Color.Red,
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun InformationSelect(
+    icon: ImageVector,
+    label: String,
+    options: List<String>,
+    onOptionPick: (String) -> Unit,
+    errorMessage: String = ""
+) {
+    var expanded by remember { mutableStateOf(false) }
+    var selectedOption by remember { mutableStateOf("Choose 1 option") }
+    var optionColor by remember { mutableStateOf(Color.Gray) }
+    var optionStyle by remember { mutableStateOf(CustomTypography.labelLarge) }
+
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = null,
+                tint = PrimaryContent,
+                modifier = Modifier.weight(0.2f),
+            )
+            Column(
+                modifier = Modifier.weight(1f)
+            ) {
+                Text(
+                    text = label,
+                    style = CustomTypography.titleLarge,
+                    color = PrimaryContent,
+                )
+                Row(
+                    horizontalArrangement = Arrangement.Start,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(end = 35.dp)
+                        .clickable {
+                            expanded = true
+                        }
+                ) {
+                    Text(
+                        text = selectedOption,
+                        style = optionStyle,
+                        color = optionColor
+                    )
+                    Spacer(modifier = Modifier.weight(1f))
+                    Icon(
+                        imageVector = Icons.Default.ArrowDropDown,
+                        contentDescription = null
+                    )
+                }
+                DropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false }
+                ) {
+                    options.forEach { option ->
+                        DropdownMenuItem(
+                            text = {
+                                Text(
+                                    text = option,
+                                    style = CustomTypography.bodyMedium,
+                                    color = CustomBlack
+                                )
+                            },
+                            onClick = {
+                                selectedOption = option
+                                expanded = false
+                                onOptionPick(selectedOption)
+                                optionColor = CustomBlack
+                                optionStyle = CustomTypography.bodyMedium
+                            }
+                        )
+                    }
+                }
+                Divider(color = if (errorMessage.isEmpty()) Color.Gray else Color.Red)
+            }
+        }
+        if (errorMessage != "") {
+            Row(
+                horizontalArrangement = Arrangement.End,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .fillMaxWidth(0.8f)
+                    .padding(vertical = 5.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Outlined.Info,
+                    contentDescription = null,
+                    tint = Color.Red,
+                    modifier = Modifier.size(15.dp)
+                )
+                Spacer(modifier = Modifier.width(5.dp))
+                Text(
+                    text = errorMessage,
+                    style = CustomTypography.bodyMedium,
+                    color = Color.Red,
+                )
+            }
+        }
+    }
+}
+
+// Composable: User's detail profile for admin
+@Composable
+fun DetailProfile(
+    modifier: Modifier = Modifier,
+    topBar: @Composable (() -> Unit) = {},
+    user: CurrentUser
+) {
+    Scaffold(
+        containerColor = Color.White,
+        topBar = topBar,
+        modifier = modifier.systemBarsPadding()
+    ) { paddingValues ->
+        Box(
+            contentAlignment = Alignment.TopCenter,
+            modifier = modifier
+                .padding(paddingValues)
+                .fillMaxWidth()
+                .padding(horizontal = 10.dp)
+                .verticalScroll(rememberScrollState())
+        ) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Box(
+                    modifier = Modifier
+                        .padding(vertical = 20.dp)
+                        .size(100.dp)
+                ) {
+                    AsyncImage(
+                        model = user.imageUrl,
+                        contentDescription = "Avatar",
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .clip(CircleShape),
+                        contentScale = ContentScale.Crop,
+                        placeholder = painterResource(id = R.drawable.avt_placeholder),
+                        error = painterResource(id = R.drawable.avt_error)
+                    )
+                }
+                Spacer(modifier = Modifier.height(20.dp))
+                InformationLine(Icons.Filled.Person, "Name", user.name)
+                Spacer(modifier = Modifier.height(20.dp))
+                InformationLine(Icons.Filled.Cake, "Birthday", user.birthday)
+                Spacer(modifier = Modifier.height(20.dp))
+                InformationLine(Icons.Filled.Email, "Email", user.email)
+                Spacer(modifier = Modifier.height(20.dp))
+                InformationLine(Icons.Filled.Phone, "Phone", user.phone)
+                Spacer(modifier = Modifier.height(20.dp))
+                InformationLine(Icons.Filled.Person, "Role", user.role)
+                Spacer(modifier = Modifier.height(20.dp))
+                InformationLine(Icons.Filled.BrokenImage, "Status", user.status)
+            }
+        }
+    }
 }
 
 // Composable: User information box for user list
 @Composable
-fun InformationBox(
+fun InformationCard(
     imageUrl: String,
     name: String,
     mainInformation: String,
@@ -258,9 +484,9 @@ fun InformationBox(
     Box(
         modifier = modifier
             .padding(16.dp)
-            .background(color = third_content, shape = RoundedCornerShape(16.dp))
+            .background(color = ThirdContent, shape = RoundedCornerShape(16.dp))
             .clip(shape = RoundedCornerShape(16.dp))
-            .border(shape = RoundedCornerShape(16.dp), width = 1.dp, color = primary_content)
+            .border(shape = RoundedCornerShape(16.dp), width = 1.dp, color = PrimaryContent)
 
     ) {
         if (swipeEnable) {
@@ -293,47 +519,42 @@ fun InformationBox(
                     ) {
                         Text(
                             text = name,
-                            fontSize = 20.sp,
-                            color = primary_content,
-                            fontFamily = kanit_bold_font
+                            style = CustomTypography.titleLarge,
+                            color = PrimaryContent
                         )
                         Text(
                             text = mainInformation,
-                            fontSize = 16.sp,
-                            color = Color.DarkGray,
-                            fontFamily = kanit_regular_font
+                            style = CustomTypography.bodyMedium,
+                            color = Color.DarkGray
                         )
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.Center
                         ) {
-                            if (subInformation == "Active") {
-                                Text(
+                            when (subInformation) {
+                                "Active" -> Text(
                                     text = subInformation,
-                                    fontSize = 14.sp,
-                                    fontFamily = kanit_regular_font,
-                                    color = primary_content
+                                    style = CustomTypography.bodyMedium,
+                                    color = PrimaryContent
                                 )
-                            } else if (subInformation == "Inactive") {
-                                Text(
+
+                                "InActive" -> Text(
                                     text = subInformation,
-                                    fontSize = 14.sp,
-                                    fontFamily = kanit_regular_font,
-                                    color = secondary_dark
+                                    style = CustomTypography.bodyMedium,
+                                    color = CustomGray
                                 )
-                            } else {
-                                Text(
+
+                                else -> Text(
                                     text = subInformation,
-                                    fontSize = 14.sp,
-                                    fontFamily = kanit_regular_font,
-                                    color = secondary_content
+                                    style = CustomTypography.bodyMedium,
+                                    color = Color.DarkGray
                                 )
                             }
                             Spacer(modifier = Modifier.weight(1f))
                             Text(
-                                text = stringResource(R.string.see_more),
-                                fontFamily = kanit_regular_font,
-                                color = primary_content,
+                                text = stringResource(R.string.Button_SeeMore),
+                                style = CustomTypography.titleMedium,
+                                color = PrimaryContent,
                                 modifier = Modifier
                                     .clickable {
                                         onSeeMoreClicked(identificationInformation)
@@ -369,47 +590,42 @@ fun InformationBox(
                 ) {
                     Text(
                         text = name,
-                        fontSize = 20.sp,
-                        color = primary_content,
-                        fontFamily = kanit_bold_font
+                        style = CustomTypography.titleLarge,
+                        color = PrimaryContent
                     )
                     Text(
                         text = mainInformation,
-                        fontSize = 16.sp,
-                        color = Color.DarkGray,
-                        fontFamily = kanit_regular_font
+                        style = CustomTypography.bodyMedium,
+                        color = Color.DarkGray
                     )
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.Center
                     ) {
-                        if (subInformation == "Active") {
-                            Text(
+                        when (subInformation) {
+                            "Active" -> Text(
                                 text = subInformation,
-                                fontSize = 14.sp,
-                                fontFamily = kanit_regular_font,
-                                color = primary_content
+                                style = CustomTypography.bodyMedium,
+                                color = PrimaryContent
                             )
-                        } else if (subInformation == "Inactive") {
-                            Text(
+
+                            "InActive" -> Text(
                                 text = subInformation,
-                                fontSize = 14.sp,
-                                fontFamily = kanit_regular_font,
-                                color = secondary_dark
+                                style = CustomTypography.bodyMedium,
+                                color = CustomGray
                             )
-                        } else {
-                            Text(
+
+                            else -> Text(
                                 text = subInformation,
-                                fontSize = 14.sp,
-                                fontFamily = kanit_regular_font,
-                                color = secondary_content
+                                style = CustomTypography.bodyMedium,
+                                color = Color.DarkGray
                             )
                         }
                         Spacer(modifier = Modifier.weight(1f))
                         Text(
-                            text = stringResource(R.string.see_more),
-                            fontFamily = kanit_regular_font,
-                            color = primary_content,
+                            text = stringResource(R.string.Button_SeeMore),
+                            style = CustomTypography.titleMedium,
+                            color = PrimaryContent,
                             modifier = Modifier
                                 .clickable {
                                     onSeeMoreClicked(identificationInformation)
@@ -422,33 +638,50 @@ fun InformationBox(
     }
 }
 
+// Composable: Divide between information line
+@Composable
+fun Divider(color: Color = Color.Gray) {
+    HorizontalDivider(
+        color = color,
+        thickness = 1.dp,
+        modifier = Modifier.fillMaxWidth(0.9f)
+    )
+}
+
+
 @Composable
 fun SwipeComponent(
     onEditSwipe: () -> Unit,
     onDeleteSwipe: () -> Unit,
     content: @Composable () -> Unit
 ) {
-    var startAction =
+    val startAction =
         SwipeAction(
             icon = {
                 Box(
                     contentAlignment = Alignment.TopCenter,
                     modifier = Modifier.padding(end = 10.dp)
                 ) {
-                    Icon(Icons.Outlined.Edit, contentDescription = null)
+                    Icon(
+                        imageVector = Icons.Outlined.Edit,
+                        contentDescription = null
+                    )
                 }
             },
             onSwipe = onEditSwipe,
             background = Color.Gray,
         )
-    var endAction =
+    val endAction =
         SwipeAction(
             icon = {
                 Box(
                     contentAlignment = Alignment.TopCenter,
                     modifier = Modifier.padding(start = 10.dp)
                 ) {
-                    Icon(Icons.Outlined.Delete, contentDescription = null)
+                    Icon(
+                        imageVector = Icons.Outlined.Delete,
+                        contentDescription = null
+                    )
                 }
             },
             onSwipe = onDeleteSwipe,
@@ -474,225 +707,41 @@ fun ConfirmationBox(
     AlertDialog(
         onDismissRequest = onDismissRequest,
         title = {
-            Text(text = title)
+            Text(
+                text = title,
+                style = CustomTypography.titleLarge
+            )
         },
         text = {
-            Text(message)
+            Text(
+                text = message,
+                style = CustomTypography.bodyLarge
+            )
         },
         confirmButton = {
             TextButton(
                 onClick = onConfirmClick
             ) {
-                Text("Confirm", color = Color.Red)
+                Text(
+                    text = "Confirm",
+                    style = CustomTypography.titleMedium,
+                    color = Color.Red
+                )
             }
         },
         dismissButton = {
             TextButton(
                 onClick = onDismissRequest
             ) {
-                Text("Cancel")
-            }
-        }
-    )
-}
-
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun InformationDate(
-    icon: ImageVector,
-    label: String,
-    placeholder: String,
-    onDatePick: (String) -> Unit,
-    modifier: Modifier = Modifier,
-    errorMessage: String= "",
-    canSelectFuture: Boolean = false
-) {
-    val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
-    val selectableDates = if (canSelectFuture) {
-        object : SelectableDates {
-            override fun isSelectableDate(utcTimeMillis: Long): Boolean = true
-        }
-    } else {
-        object : SelectableDates {
-            override fun isSelectableDate(utcTimeMillis: Long): Boolean {
-                return utcTimeMillis < Clock.systemUTC().millis()
-            }
-        }
-    }
-
-    val datePickerState = rememberDatePickerState(
-        selectableDates = selectableDates
-    )
-
-    var openSheet by remember { mutableStateOf(false) }
-    var birthday by remember { mutableStateOf("") }
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(vertical = 10.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Icon(
-            icon,
-            contentDescription = null,
-            modifier = Modifier.weight(0.2f),
-            tint = primary_content
-        )
-        Column(modifier = Modifier.weight(0.8f)) {
-            Text(
-                label, fontSize = 18.sp, fontWeight = FontWeight.Bold, color = primary_content,
-                fontFamily = kanit_bold_font
-            )
-            Text(
-                text = if (birthday == "") placeholder else birthday,
-                color = primary_dark,
-                fontSize = 14.sp, fontFamily = kanit_regular_font,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 5.dp)
-                    .clickable(onClick = { openSheet = true }),
-
+                Text(
+                    text = "Cancel",
+                    style = CustomTypography.titleMedium
                 )
-            if (openSheet) {
-                ModalBottomSheet(
-                    onDismissRequest = { openSheet = false },
-                    sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-                ) {
-                    Column(modifier = Modifier.systemBarsPadding()) {
-
-                        DatePicker(state = datePickerState)
-                        Spacer(Modifier.height(10.dp))
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 24.dp),
-                            horizontalArrangement = Arrangement.End
-                        ) {
-                            TextButton(onClick = {
-                                openSheet = false
-                            }) {
-                                Text("Hủy")
-                            }
-                            TextButton(onClick = {
-                                birthday = datePickerState.selectedDateMillis?.let {
-                                    Instant.ofEpochMilli(it).atZone(ZoneId.systemDefault())
-                                        .toLocalDate()
-                                }?.format(formatter) ?: ""
-                                openSheet = false
-                                onDatePick(birthday)
-                            }) {
-                                Text("Chọn")
-                            }
-                        }
-                    }
-                }
-            }
-            if (errorMessage != "") {
-                Divider(color = Color.Red)
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(vertical = 5.dp)
-                ) {
-                    Icon(
-                        Icons.Outlined.Info,
-                        contentDescription = null,
-                        tint = Color.Red,
-                        modifier = Modifier.size(15.dp)
-                    )
-                    Spacer(modifier = Modifier.width(5.dp))
-                    Text(
-                        errorMessage,
-                        style = TextStyle(color = Color.Red),
-                    )
-                }
-            } else {
-                Divider()
             }
         }
-    }
+    )
 }
 
-@Composable
-fun InformationSelect(
-    icon: ImageVector,
-    label: String,
-    options: List<String>,
-    onOptionPick: (String) -> Unit,
-    errorMessage: String = ""
-) {
-    var expanded by remember { mutableStateOf(false) }
-    var selectedOption by remember { mutableStateOf("Choose 1 option") }
-
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 10.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Icon(
-            imageVector = icon,
-            contentDescription = null,
-            modifier = Modifier.weight(0.2f),
-            tint = primary_content
-        )
-        Column(modifier = Modifier.weight(0.8f)) {
-            Text(
-                text = label,
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold,
-                color = primary_content,
-                fontFamily = kanit_bold_font
-            )
-
-            TextButton(onClick = { expanded = true }) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text(selectedOption, fontFamily = kanit_regular_font, color = primary_dark)
-                    Icon(Icons.Default.ArrowDropDown, contentDescription = null)
-                }
-            }
-            DropdownMenu(
-                expanded = expanded,
-                onDismissRequest = { expanded = false }
-            ) {
-                options.forEach { option ->
-                    DropdownMenuItem(
-                        text = { Text(option) },
-                        onClick = {
-                            selectedOption = option
-                            expanded = false
-                            onOptionPick(selectedOption)
-                        }
-                    )
-                }
-            }
-            if (errorMessage != "") {
-                Divider(color = Color.Red)
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(vertical = 5.dp)
-                ) {
-                    Icon(
-                        Icons.Outlined.Info,
-                        contentDescription = null,
-                        tint = Color.Red,
-                        modifier = Modifier.size(15.dp)
-                    )
-                    Spacer(modifier = Modifier.width(5.dp))
-                    Text(
-                        errorMessage,
-                        style = TextStyle(color = Color.Red),
-                    )
-                }
-            } else {
-                Divider()
-            }
-        }
-    }
-}
 
 @Composable
 fun HelpIcon(message: String) {
@@ -701,7 +750,7 @@ fun HelpIcon(message: String) {
     Box {
         Icon(
             imageVector = Icons.AutoMirrored.Filled.HelpOutline,
-            tint = primary_content,
+            tint = PrimaryContent,
             contentDescription = "Help",
             modifier = Modifier
                 .size(24.dp)
@@ -760,4 +809,84 @@ fun DetailProfilePreview() {
             "Enable"
         )
     )
+}
+
+@Composable
+fun BottomNavBarAdmin(
+    items: List<NavItem>,
+    currentRoute: String?,
+    onItemClick: (NavItem) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    NavigationBar(
+        modifier = modifier
+    ) {
+        items.forEach { item ->
+            val selected = (currentRoute == item.route)
+            NavigationBarItem(
+                selected = selected,
+                onClick = { onItemClick(item) },
+                icon = {
+                    Icon(
+                        imageVector = item.icon,
+                        contentDescription = item.label,
+                        tint = if (selected) PrimaryContent else SecondaryContent
+                    )
+                },
+                label = {
+                    Text(
+                        text = item.label,
+                        color = if (selected) PrimaryContent else SecondaryContent
+                    )
+                },
+                colors = NavigationBarItemDefaults.colors(
+                    indicatorColor = PrimaryContainer,
+                    selectedIconColor = PrimaryContent,
+                    selectedTextColor = PrimaryContent,
+                    unselectedIconColor = SecondaryContent,
+                    unselectedTextColor = SecondaryContent
+                )
+            )
+        }
+    }
+}
+
+@Composable
+fun BottomNavBarManager(
+    modifier: Modifier = Modifier,
+    items: List<NavItem>,
+    currentRoute: String?,
+    onItemClick: (NavItem) -> Unit
+) {
+    NavigationBar(
+        modifier = modifier
+    ) {
+        items.forEach { item ->
+            val selected = currentRoute == item.route
+            NavigationBarItem(
+                selected = selected,
+                onClick = { onItemClick(item) },
+                icon = {
+                    Icon(
+                        imageVector = item.icon,
+                        contentDescription = item.label,
+                        tint = if (selected) PrimaryContent else SecondaryContent
+                    )
+                },
+                label = {
+                    Text(
+                        text = item.label,
+                        color = if (selected) PrimaryContent else SecondaryContent
+                    )
+                },
+                colors = NavigationBarItemDefaults.colors(
+                    indicatorColor = PrimaryContainer,
+                    selectedIconColor = PrimaryContent,
+                    selectedTextColor = PrimaryContent,
+                    unselectedIconColor = SecondaryContent,
+                    unselectedTextColor = SecondaryContent
+                )
+            )
+        }
+    }
 }

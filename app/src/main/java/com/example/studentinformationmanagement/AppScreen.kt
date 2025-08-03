@@ -6,28 +6,29 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.studentinformationmanagement.ui.admin.AddUser
-import com.example.studentinformationmanagement.ui.admin.AdminDetailProfile
-import com.example.studentinformationmanagement.ui.admin.AdminScreen
-import com.example.studentinformationmanagement.ui.admin.AdminViewModel
-import com.example.studentinformationmanagement.ui.admin.EditUser
-import com.example.studentinformationmanagement.ui.admin.LoginHistory
-import com.example.studentinformationmanagement.ui.employee.EmployeeScreen
-import com.example.studentinformationmanagement.ui.manager.AddCertificate
-import com.example.studentinformationmanagement.ui.manager.AddStudent
-import com.example.studentinformationmanagement.ui.manager.EditCertificate
-import com.example.studentinformationmanagement.ui.manager.EditStudent
-import com.example.studentinformationmanagement.ui.manager.ManagerScreen
-import com.example.studentinformationmanagement.ui.manager.ManagerViewModel
-import com.example.studentinformationmanagement.ui.manager.StudentManagement
-import com.example.studentinformationmanagement.ui.shared.CertificateDetail
-import com.example.studentinformationmanagement.ui.shared.LoginScreen
-import com.example.studentinformationmanagement.ui.shared.LoginViewModel
-import com.example.studentinformationmanagement.ui.shared.StudentCertificationList
-import com.example.studentinformationmanagement.ui.shared.StudentDetailProfile
+import com.example.studentinformationmanagement.ui.auth.ForgotPassword
+import com.example.studentinformationmanagement.ui.auth.LoginScreen
+import com.example.studentinformationmanagement.ui.home.AdminScreen
+import com.example.studentinformationmanagement.ui.home.EmployeeScreen
+import com.example.studentinformationmanagement.ui.home.ManagerScreen
+import com.example.studentinformationmanagement.ui.student.AddStudent
+import com.example.studentinformationmanagement.ui.student.EditStudent
+import com.example.studentinformationmanagement.ui.student.StudentDetailProfile
+import com.example.studentinformationmanagement.ui.student.StudentManagement
+import com.example.studentinformationmanagement.ui.student.certificate.AddCertificate
+import com.example.studentinformationmanagement.ui.student.certificate.CertificateDetail
+import com.example.studentinformationmanagement.ui.student.certificate.CertificateList
+import com.example.studentinformationmanagement.ui.student.certificate.EditCertificate
+import com.example.studentinformationmanagement.ui.user.AddUser
+import com.example.studentinformationmanagement.ui.user.AdminDetailProfile
+import com.example.studentinformationmanagement.ui.user.EditUser
+import com.example.studentinformationmanagement.ui.user.LoginHistory
+import com.example.studentinformationmanagement.ui.viewModel.AdminViewModel
+import com.example.studentinformationmanagement.ui.viewModel.LoginViewModel
+import com.example.studentinformationmanagement.ui.viewModel.ManagerViewModel
 
-enum class AppScreen() {
-    Login,
+enum class AppScreen {
+    Login, ForgotPassword,
     AdminScreen, UserManagement, AddUser, EditUser, LoginHistory,
     ManagerScreen, StudentManagement, StudentDetailProfile, AddStudent, EditStudent, CertificateList, AddCertificate, EditCertificate, CertificateDetail,
     EmployeeScreen, UserDetailProfile,
@@ -51,9 +52,15 @@ fun AppScreen(
                 navController = navController
             )
         }
+        composable(route = AppScreen.ForgotPassword.name) {
+            ForgotPassword(
+                loginViewModel = loginViewModel,
+                navController = navController
+            )
+        }
 
 
-        // All Main Screens
+        // Home Screens
         composable(route = AppScreen.AdminScreen.name) {
             AdminScreen(
                 loginViewModel = loginViewModel,
@@ -77,7 +84,7 @@ fun AppScreen(
             )
         }
 
-        // Admin Features
+        // User Management
         composable(route = AppScreen.AddUser.name) {
             AddUser(
                 adminViewModel = adminViewModel,
@@ -98,8 +105,7 @@ fun AppScreen(
             )
         }
 
-
-        // Manager Features
+        // Student Management
         composable(route = AppScreen.StudentManagement.name) {
             StudentManagement(
                 navController = navController,
@@ -127,7 +133,7 @@ fun AppScreen(
             )
         }
         composable(route = AppScreen.CertificateList.name) {
-            StudentCertificationList(
+            CertificateList(
                 managerViewModel = managerViewModel,
                 loginViewModel = loginViewModel,
                 navController = navController
@@ -154,8 +160,7 @@ fun AppScreen(
             )
         }
 
-
-        // General Features
+        // User Profile
         composable(route = AppScreen.UserDetailProfile.name) {
             AdminDetailProfile(
                 loginViewModel = loginViewModel,

@@ -1,5 +1,5 @@
 [versions]
-agp = "8.9.1"
+agp = "8.11.1"
 datetime = "0.9."
 firebaseBom = "33.12.0"
 firebaseFirestore = "25.1.3"

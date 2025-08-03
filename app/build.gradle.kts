@@ -60,26 +60,32 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
 
     // Application's Dependencies
+    // Navigation
+    implementation("androidx.activity:activity-compose:1.8.0")
     implementation("androidx.navigation:navigation-compose:2.8.9")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
 
+    // UI
+    implementation("me.saket.swipe:swipe:1.3.0")
+    implementation("androidx.compose.material3:material3:1.2.0")
     implementation("androidx.compose.material:material-icons-extended")
 
+    // Image Loading
     implementation("io.coil-kt:coil-compose:2.2.2")
 
+    // Firebase
     implementation(platform( libs.firebase.bom))
+    apply(plugin = "com.google.gms.google-services")
     implementation("com.google.firebase:firebase-auth-ktx")
     implementation("com.google.firebase:firebase-storage-ktx")
+    implementation("com.google.firebase:firebase-functions-ktx")
     implementation("com.google.firebase:firebase-firestore-ktx")
-
-    apply(plugin = "com.google.gms.google-services")
     implementation("com.google.android.gms:play-services-auth:20.0.0")
 
+    // Security
     implementation("org.mindrot:jbcrypt:0.4")
     implementation("at.favre.lib:bcrypt:0.9.0")
+    implementation("androidx.security:security-crypto:1.1.0-alpha06")
 
-
-    implementation("me.saket.swipe:swipe:1.3.0")
-
-    implementation("androidx.activity:activity-compose:1.8.0")
+    // Viewmodel
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
 }

@@ -2,10 +2,83 @@
     <string name="app_name">EduTrack</string>
 
     <!-- Login Screen -->
-    <string name="app_brand">EduTrack</string>
-    <string name="login_welcome">Welcome! Please Sign In</string>
-    <string name="username_label">Your Phone Number</string>
-    <string name="password_label">Your Password</string>
-    <string name="login_button">SIGN IN</string>
-    <string name="see_more">See more ></string>
+    <string name="AppBrand">EduTrack</string>
+    <string name="Login_Welcome">Welcome! Please Sign In</string>
+    <string name="Login_EmailLabel">Your Email</string>
+    <string name="Login_PasswordLabel">Your Password</string>
+    <string name="Login_RememberPassword">Remember password</string>
+    <string name="Login_ForgotPassword">Forgot password?</string>
+
+    <!-- Profile -->
+    <string name="Profile_YourProfile">Your Profile</string>
+    <string name="Profile_UserProfile">User\'s Profile</string>
+    <string name="Profile_Student">Student\'s Profile</string>
+
+    <!-- Home Screens -->
+    <string name="Home_StudentManagement">Student Management</string>
+    <string name="Home_UserManagement">User Management</string>
+    <string name="Home_Profile">Profile</string>
+
+    <!-- Filter -->
+    <string name="Label_Search">Search…</string>
+    <string name="Filter">Filter</string>
+    <string name="Filter_SortBy">Sort by:</string>
+    <string name="Filter_MinCert">Minimum number of certificates:</string>
+    <string name="Filter_Faculty">Faculty:</string>
+    <string name="Filter_Class">Class:</string>
+    <string name="Filter_Role">Role:</string>
+    <string name="Filter_Status">Status:</string>
+
+    <!-- Button -->
+    <string name="Button_SignIn">SIGN IN</string>
+    <string name="Button_Cancel">Cancel</string>
+    <string name="Button_Select">Select</string>
+    <string name="Button_ClearFilter">Clear filters</string>
+    <string name="Button_Apply">Apply</string>
+    <string name="Button_LoginHistory">View login history</string>
+    <string name="Button_Save">Save</string>
+    <string name="Button_Add">Add</string>
+    <string name="Button_Create">Create</string>
+    <string name="Button_SeeMore">See more ></string>
+    <string name="Button_SendResetEmail">Send reset email</string>
+
+    <!-- Text  -->
+    <string name="ForgotPassword">Forgot Password</string>
+    <string name="ForgotPassword_Text1">Remember your password?</string>
+    <string name="ForgotPassword_SignIn">Sign in</string>
+
+    <string name="User_UserList">User List</string>
+    <string name="Student_StudentList">Student List</string>
+    <string name="Certificate_CertificateList">Certificate List</string>
+
+    <string name="Add_AddUser">Add user</string>
+    <string name="Add_AddStudent">Add Student</string>
+    <string name="Add_AddCertificate">Add Certificate</string>
+
+    <string name="Edit_EditStudent">Edit Student</string>
+    <string name="Edit_EditUser">Edit user</string>
+    <string name="Edit_EditCertificate">Edit Certificate</string>
+
+    <string name="Certificate">Certificate</string>
+    <string name="Certificate_StudentCertificate">Student\'s Certificates</string>
+
+    <string name="Login_History">Login History</string>
+    <string name="Login_History_Empty">No historical data available.</string>
+
+    <!-- Help Icon -->
+    <string name="HelpIcon_Student">Swipe right to edit and left to delete a student</string>
+    <string name="HelpIcon_User">Swipe right to edit and left to delete a user</string>
+    <string name="HelpIcon_UploadStudent">To upload, CSV need: Name, birthday, email, phone number, ID, class, faculty</string>
+    <string name="HelpIcon_Certificate">Swipe right to edit and left to delete a certificate</string>
+    <string name="HelpIcon_UploadCertificate">Swipe right to edit and left to delete a certificate</string>
+
+    <!-- Confirmation Box -->
+    <string name="ConfirmationBox_DeleteStudent">Confirm deletion</string>
+    <string name="ConfirmationBox_DeleteStudentContent">Do you want to delete this student?</string>
+    <string name="ConfirmationBox_ExportStudent">Confirm export</string>
+    <string name="ConfirmationBox_ExportStudentContent">Do you want to export and download the student list as CSV?</string>
+    <string name="ConfirmationBox_DeleteUser">Confirm deletion</string>
+    <string name="ConfirmationBox_DeleteUserContent">Do you want to delete this user?</string>
+    <string name="ConfirmationBox_DeleteCertificate">Confirm deletion</string>
+    <string name="ConfirmationBox_DeleteCertificateContent">Do you want to export and download the certificate list as CSV?</string>
 </resources>
