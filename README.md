@@ -1,9 +1,17 @@
-# 🎓 Student Information Management - EduTrack
+# 🎓 Student Information Management
 
-An Android application for managing student records, built with **Kotlin** and **Jetpack Compose**, using **Firebase** for authentication and real-time data handling.  
-This project was developed as a course assignment in the *Mobile Application Development* class at **Ton Duc Thang University (TDTU)** in 2025.
+An Android application for managing student records, built with **Kotlin** and **Jetpack Compose**, using **Firebase** for authentication and real-time data handling.
 
-> 📌 This project demonstrates my practical experience with Firebase integration, role-based access control, Jetpack Compose UI, and MVVM architecture. It is included in my CV to support internship applications in Android development.
+This project was originally developed as a team assignment in the *Mobile Application Development* course at **Ton Duc Thang University (TDTU)** in 2025.  
+Although it was designed as a group project, I was the primary developer and took full responsibility for the architecture, feature implementation, and interface design. After the course ended, I continued improving and refining the project to enhance its usability, code structure, and visual presentation.
+
+> 📌 This project demonstrates my practical experience with:
+> - Firebase Authentication & Firestore integration  
+> - Role-based access control  
+> - Modern Android UI using Jetpack Compose  
+> - MVVM architecture and clean code practices  
+>
+> ✅ It is included in my CV to support internship applications in Android development.
 
 ---
 
@@ -23,11 +31,6 @@ This project was developed as a course assignment in the *Mobile Application Dev
 | **Employee**| ❌ View only       | ❌ View only             | ❌               | ✅ |
 
 ---
-## 🎨 UI/UX Highlights
-
-- Built with Jetpack Compose for a modern, declarative UI
-- Clean layout, intuitive navigation, and responsive design
-- Focused on ease of use for different user roles (Admin, Manager, Employee)
 
 ## 📋 Student Management
 
@@ -46,6 +49,14 @@ This project was developed as a course assignment in the *Mobile Application Dev
 - Create users with specific roles (Admin, Manager, Employee)
 - Edit or delete existing users
 - Send reset password email for account setup
+
+---
+
+## 🎨 UI/UX Highlights
+
+- Built with Jetpack Compose for a modern, declarative UI
+- Clean layout, intuitive navigation, and responsive design
+- Focused on ease of use for different user roles (Admin, Manager, Employee)
 
 ---
 
