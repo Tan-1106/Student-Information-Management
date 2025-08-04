@@ -345,8 +345,15 @@ class AdminViewModel : ViewModel() {
 
     // Delete a user
     fun onDeleteUser(userEmail: String, context: Context) {
-        val db = Firebase.firestore
+        val user = fullUserList.firstOrNull { it.email == userEmail }
+        if (user != null) {
+            if (user.role == "Admin") {
+                Toast.makeText(context, "Cannot delete an Admin", Toast.LENGTH_SHORT).show()
+                return
+            }
+        }
 
+        val db = Firebase.firestore
         db.collection("users")
             .document(userEmail)
             .delete()

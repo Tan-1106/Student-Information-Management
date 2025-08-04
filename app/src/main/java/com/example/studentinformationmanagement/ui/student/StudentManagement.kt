@@ -169,6 +169,7 @@ fun StudentManagement(
                     },
                     onDismissDialog = { showFilterDialog = false },
                     onClearButtonClick = {
+
                         managerViewModel.onClearFilterClick()
                         showFilterDialog = false
                     }
@@ -335,12 +336,14 @@ fun FilterDialog(
                             color = PrimaryContent,
                             modifier = Modifier.padding(bottom = 5.dp)
                         )
+                        Spacer(modifier = Modifier.height(20.dp))
                         InformationSelect(
                             icon = Icons.Filled.Start,
                             label = stringResource(R.string.Filter_SortBy),
                             options = sortOptions,
                             onOptionPick = { onSortSelected(it) }
                         )
+                        Spacer(modifier = Modifier.height(10.dp))
                         InformationLine(
                             icon = Icons.Filled.Numbers,
                             label = stringResource(R.string.Filter_MinCert),
@@ -354,12 +357,14 @@ fun FilterDialog(
                                 keyboardType = KeyboardType.Number
                             )
                         )
+                        Spacer(modifier = Modifier.height(10.dp))
                         InformationSelect(
                             icon = Icons.Filled.Apartment,
                             label = stringResource(R.string.Filter_Faculty),
                             options = existingFaculty,
                             onOptionPick = { onFacultyPick(it) }
                         )
+                        Spacer(modifier = Modifier.height(10.dp))
                         InformationSelect(
                             icon = Icons.Filled.MeetingRoom,
                             label = stringResource(R.string.Filter_Class),
@@ -384,6 +389,7 @@ fun FilterDialog(
                                 onClick = {
                                     onClearButtonClick()
                                     onDismissDialog()
+                                    minimumCertificate = ""
                                 }
                             ) {
                                 Text(

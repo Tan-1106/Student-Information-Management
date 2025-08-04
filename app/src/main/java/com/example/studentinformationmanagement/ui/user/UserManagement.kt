@@ -1,6 +1,5 @@
 package com.example.studentinformationmanagement.ui.user
 
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -59,9 +58,6 @@ import com.example.studentinformationmanagement.ui.theme.PrimaryContent
 import com.example.studentinformationmanagement.ui.theme.SecondaryContent
 import com.example.studentinformationmanagement.ui.theme.ThirdContent
 import com.example.studentinformationmanagement.ui.viewModel.AdminViewModel
-import com.google.firebase.Firebase
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.functions.functions
 
 // DONE
 @Composable
@@ -309,21 +305,21 @@ fun FilterDialog(
                             color = PrimaryContent,
                             modifier = Modifier.padding(bottom = 5.dp)
                         )
-
+                        Spacer(modifier = Modifier.height(20.dp))
                         InformationSelect(
                             icon = Icons.Filled.Start,
                             label = stringResource(R.string.Filter_SortBy),
                             options = sortOptions,
                             onOptionPick = { onSortSelected(it) }
                         )
-
+                        Spacer(modifier = Modifier.height(10.dp))
                         InformationSelect(
                             icon = Icons.Filled.VerifiedUser,
                             label = stringResource(R.string.Filter_Role),
                             options = roleOptions,
                             onOptionPick = { onRolePick(it) }
                         )
-
+                        Spacer(modifier = Modifier.height(10.dp))
                         InformationSelect(
                             icon = Icons.Filled.CheckCircleOutline,
                             label = stringResource(R.string.Filter_Status),
