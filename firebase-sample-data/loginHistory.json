@@ -1,0 +1,37 @@
+[
+  {
+    "loginTime": 1738310400000,
+    "imageUrl": "https://drive.google.com/uc?id=1XGMQWOMTV5lxHGLpYQMk--3Zqm7-iEtK",
+    "name": "Nguyễn Minh Tuấn",
+    "email": "admin@gmail.com",
+    "role": "Admin"
+  },
+  {
+    "loginTime": 1738224000000,
+    "imageUrl": "https://drive.google.com/uc?id=1XGMQWOMTV5lxHGLpYQMk--3Zqm7-iEtK",
+    "name": "Trần Thị Hương",
+    "email": "manager@gmail.com",
+    "role": "Manager"
+  },
+  {
+    "loginTime": 1738137600000,
+    "imageUrl": "https://drive.google.com/uc?id=1XGMQWOMTV5lxHGLpYQMk--3Zqm7-iEtK",
+    "name": "Phạm Thị Mai",
+    "email": "employee@gmail.com",
+    "role": "Employee"
+  },
+  {
+    "loginTime": 1738051200000,
+    "imageUrl": "https://drive.google.com/uc?id=1XGMQWOMTV5lxHGLpYQMk--3Zqm7-iEtK",
+    "name": "Nguyễn Minh Tuấn",
+    "email": "admin@gmail.com",
+    "role": "Admin"
+  },
+  {
+    "loginTime": 1737964800000,
+    "imageUrl": "https://drive.google.com/uc?id=1XGMQWOMTV5lxHGLpYQMk--3Zqm7-iEtK",
+    "name": "Lê Văn Hải",
+    "email": "manager2@gmail.com",
+    "role": "Manager"
+  }
+]

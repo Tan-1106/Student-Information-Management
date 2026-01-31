@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "1090466555288",
-    "project_id": "student-information-mana-ecf8e",
-    "storage_bucket": "student-information-mana-ecf8e.firebasestorage.app"
+    "project_number": "893343926805",
+    "project_id": "student-information-mana-43add",
+    "storage_bucket": "student-information-mana-43add.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1090466555288:android:c283d2d803c4de69d277ed",
+        "mobilesdk_app_id": "1:893343926805:android:4b0b9eaa1ff3ff79579c1c",
         "android_client_info": {
           "package_name": "com.example.studentinformationmanagement"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyC1fuEb3mHfmMKdLTOvrkE7MR0Zx2vbM5c"
+          "current_key": "AIzaSyCFuiM6Wu8tJm7MXqnyu_1NpDBtpRC9zmg"
         }
       ],
       "services": {

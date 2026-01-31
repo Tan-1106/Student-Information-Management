@@ -1,0 +1,56 @@
+{
+  "admin@gmail.com": {
+    "imageUrl": "https://drive.google.com/uc?id=1XGMQWOMTV5lxHGLpYQMk--3Zqm7-iEtK",
+    "name": "Nguyễn Minh Tuấn",
+    "birthday": "15/03/1985",
+    "email": "admin@gmail.com",
+    "phone": "0901234567",
+    "role": "Admin",
+    "status": "Active"
+  },
+  "manager@gmail.com": {
+    "imageUrl": "https://drive.google.com/uc?id=1XGMQWOMTV5lxHGLpYQMk--3Zqm7-iEtK",
+    "name": "Trần Thị Hương",
+    "birthday": "20/07/1988",
+    "email": "manager@gmail.com",
+    "phone": "0902345678",
+    "role": "Manager",
+    "status": "Active"
+  },
+  "manager2@gmail.com": {
+    "imageUrl": "https://drive.google.com/uc?id=1XGMQWOMTV5lxHGLpYQMk--3Zqm7-iEtK",
+    "name": "Lê Văn Hải",
+    "birthday": "10/11/1990",
+    "email": "manager2@gmail.com",
+    "phone": "0903456789",
+    "role": "Manager",
+    "status": "Active"
+  },
+  "employee@gmail.com": {
+    "imageUrl": "https://drive.google.com/uc?id=1XGMQWOMTV5lxHGLpYQMk--3Zqm7-iEtK",
+    "name": "Phạm Thị Mai",
+    "birthday": "05/09/1992",
+    "email": "employee@gmail.com",
+    "phone": "0904567890",
+    "role": "Employee",
+    "status": "Active"
+  },
+  "employee2@gmail.com": {
+    "imageUrl": "https://drive.google.com/uc?id=1XGMQWOMTV5lxHGLpYQMk--3Zqm7-iEtK",
+    "name": "Hoàng Văn Đức",
+    "birthday": "25/12/1995",
+    "email": "employee2@gmail.com",
+    "phone": "0905678901",
+    "role": "Employee",
+    "status": "Active"
+  },
+  "employee3@gmail.com": {
+    "imageUrl": "https://drive.google.com/uc?id=1XGMQWOMTV5lxHGLpYQMk--3Zqm7-iEtK",
+    "name": "Nguyễn Thị Lan",
+    "birthday": "18/04/1987",
+    "email": "employee3@gmail.com",
+    "phone": "0906789012",
+    "role": "Employee",
+    "status": "Inactive"
+  }
+}

@@ -1,0 +1,162 @@
+{
+  "519H0001": {
+    "imageUrl": "https://drive.google.com/uc?id=1kem0Hwjm7UUYKHNKx4RXAkfZFCXvrxYQ",
+    "name": "Nguyễn Văn An",
+    "birthday": "15/05/2001",
+    "email": "519h0001@student.edu.vn",
+    "phone": "0911111111",
+    "id": "519H0001",
+    "stdClass": "519H0",
+    "faculty": "Công nghệ Thông tin",
+    "certificates": [
+      {
+        "title": "Java Programming Certificate",
+        "courseName": "Advanced Java Development",
+        "id": "CERT-JAVA-001",
+        "issuingOrganization": "Oracle University",
+        "issueDate": "15/06/2023",
+        "expirationDate": "15/06/2026"
+      },
+      {
+        "title": "AWS Cloud Practitioner",
+        "courseName": "Cloud Computing Fundamentals",
+        "id": "CERT-AWS-001",
+        "issuingOrganization": "Amazon Web Services",
+        "issueDate": "20/08/2023",
+        "expirationDate": "20/08/2026"
+      }
+    ]
+  },
+  "519H0002": {
+    "imageUrl": "https://drive.google.com/uc?id=1kem0Hwjm7UUYKHNKx4RXAkfZFCXvrxYQ",
+    "name": "Trần Thị Bình",
+    "birthday": "22/08/2001",
+    "email": "519h0002@student.edu.vn",
+    "phone": "0922222222",
+    "id": "519H0002",
+    "stdClass": "519H0",
+    "faculty": "Công nghệ Thông tin",
+    "certificates": [
+      {
+        "title": "Python Data Science",
+        "courseName": "Data Analysis with Python",
+        "id": "CERT-PY-002",
+        "issuingOrganization": "Coursera",
+        "issueDate": "10/07/2023",
+        "expirationDate": ""
+      }
+    ]
+  },
+  "519H0003": {
+    "imageUrl": "https://drive.google.com/uc?id=1kem0Hwjm7UUYKHNKx4RXAkfZFCXvrxYQ",
+    "name": "Lê Văn Cường",
+    "birthday": "03/12/2001",
+    "email": "519h0003@student.edu.vn",
+    "phone": "0933333333",
+    "id": "519H0003",
+    "stdClass": "519H0",
+    "faculty": "Công nghệ Thông tin",
+    "certificates": []
+  },
+  "520H0001": {
+    "imageUrl": "https://drive.google.com/uc?id=1kem0Hwjm7UUYKHNKx4RXAkfZFCXvrxYQ",
+    "name": "Phạm Thị Dung",
+    "birthday": "18/03/2002",
+    "email": "520h0001@student.edu.vn",
+    "phone": "0944444444",
+    "id": "520H0001",
+    "stdClass": "520H0",
+    "faculty": "Công nghệ Thông tin",
+    "certificates": [
+      {
+        "title": "Mobile App Development",
+        "courseName": "Android Development with Kotlin",
+        "id": "CERT-AND-001",
+        "issuingOrganization": "Google Developers",
+        "issueDate": "05/09/2023",
+        "expirationDate": ""
+      }
+    ]
+  },
+  "520H0002": {
+    "imageUrl": "https://drive.google.com/uc?id=1kem0Hwjm7UUYKHNKx4RXAkfZFCXvrxYQ",
+    "name": "Hoàng Văn Em",
+    "birthday": "30/06/2002",
+    "email": "520h0002@student.edu.vn",
+    "phone": "0955555555",
+    "id": "520H0002",
+    "stdClass": "520H0",
+    "faculty": "Công nghệ Thông tin",
+    "certificates": []
+  },
+  "521K0001": {
+    "imageUrl": "https://drive.google.com/uc?id=1kem0Hwjm7UUYKHNKx4RXAkfZFCXvrxYQ",
+    "name": "Võ Thị Giang",
+    "birthday": "12/01/2003",
+    "email": "521k0001@student.edu.vn",
+    "phone": "0966666666",
+    "id": "521K0001",
+    "stdClass": "521K0",
+    "faculty": "Kinh tế",
+    "certificates": [
+      {
+        "title": "Financial Analysis Certificate",
+        "courseName": "Corporate Finance",
+        "id": "CERT-FIN-001",
+        "issuingOrganization": "CFA Institute",
+        "issueDate": "12/05/2023",
+        "expirationDate": "12/05/2025"
+      }
+    ]
+  },
+  "521K0002": {
+    "imageUrl": "https://drive.google.com/uc?id=1kem0Hwjm7UUYKHNKx4RXAkfZFCXvrxYQ",
+    "name": "Đặng Văn Hùng",
+    "birthday": "25/09/2003",
+    "email": "521k0002@student.edu.vn",
+    "phone": "0977777777",
+    "id": "521K0002",
+    "stdClass": "521K0",
+    "faculty": "Kinh tế",
+    "certificates": []
+  },
+  "522M0001": {
+    "imageUrl": "https://drive.google.com/uc?id=1kem0Hwjm7UUYKHNKx4RXAkfZFCXvrxYQ",
+    "name": "Bùi Thị Lan",
+    "birthday": "08/04/2003",
+    "email": "522m0001@student.edu.vn",
+    "phone": "0988888888",
+    "id": "522M0001",
+    "stdClass": "522M0",
+    "faculty": "Cơ khí",
+    "certificates": [
+      {
+        "title": "AutoCAD Professional",
+        "courseName": "Mechanical Design with AutoCAD",
+        "id": "CERT-CAD-001",
+        "issuingOrganization": "Autodesk",
+        "issueDate": "20/04/2023",
+        "expirationDate": "20/04/2026"
+      },
+      {
+        "title": "SolidWorks Certification",
+        "courseName": "3D Modeling and Design",
+        "id": "CERT-SW-001",
+        "issuingOrganization": "Dassault Systèmes",
+        "issueDate": "15/07/2023",
+        "expirationDate": ""
+      }
+    ]
+  },
+  "522M0002": {
+    "imageUrl": "https://drive.google.com/uc?id=1kem0Hwjm7UUYKHNKx4RXAkfZFCXvrxYQ",
+    "name": "Ngô Văn Minh",
+    "birthday": "14/11/2003",
+    "email": "522m0002@student.edu.vn",
+    "phone": "0999999999",
+    "id": "522M0002",
+    "stdClass": "522M0",
+    "faculty": "Cơ khí",
+    "certificates": []
+  }
+}
