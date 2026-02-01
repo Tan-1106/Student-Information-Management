@@ -3,16 +3,21 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.gms)
+
+    // KSP
+    id("com.google.devtools.ksp")
+    // Dependency Injection - Hilt
+    id("com.google.dagger.hilt.android")
 }
 
 android {
     namespace = "com.example.studentinformationmanagement"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.example.studentinformationmanagement"
         minSdk = 29
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
 
@@ -32,8 +37,10 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
-    kotlinOptions {
-        jvmTarget = "11"
+    kotlin {
+        compilerOptions {
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11)
+        }
     }
     buildFeatures {
         compose = true
@@ -41,7 +48,6 @@ android {
 }
 
 dependencies {
-
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -61,16 +67,15 @@ dependencies {
 
     // Application's Dependencies
     // Navigation
-    implementation("androidx.activity:activity-compose:1.8.0")
-    implementation("androidx.navigation:navigation-compose:2.8.9")
+    implementation(libs.navigation.compose)
 
     // UI
-    implementation("me.saket.swipe:swipe:1.3.0")
-    implementation("androidx.compose.material3:material3:1.2.0")
-    implementation("androidx.compose.material:material-icons-extended")
+    implementation(libs.me.swipe)
+    implementation(libs.androidx.compose.material3.material3)
+    implementation(libs.androidx.compose.material.material.icons.extended)
 
     // Image Loading
-    implementation("io.coil-kt:coil-compose:2.2.2")
+    implementation(libs.coil.kt.coil.compose)
 
     // Firebase
     implementation(platform( libs.firebase.bom))
@@ -88,4 +93,8 @@ dependencies {
 
     // Viewmodel
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
+
+    // Dependency Injection - Hilt
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.android.compiler)
 }
