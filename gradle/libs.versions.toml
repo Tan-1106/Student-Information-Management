@@ -11,21 +11,26 @@ composeBom = "2026.01.01"
 
 # Navigation
 navigationComposeVersion = "2.9.7"
-
 # UI
 swipeVersion = "1.3.0"
 androidxMaterial3 = "1.4.0"
-
 # Image Loading
 coilComposeVersion = "2.7.0"
-
 # Firebase
-gms = "4.4.4"
 firebaseBom = "34.8.0"
-firebaseFirestore = "26.1.0"
-
+playServicesAuth = "21.5.0"
+# Security
+jbcrypt = "0.4"
+bcrypt = "0.10.2"
+securityCrypto = "1.1.0"
+# Viewmodel
+lifecycleViewmodelCompose = "2.10.0"
 # Dependency Injection - Hilt (noinspection NewerVersionAvailable)
 hiltAndroid = "2.58"
+# DataStore
+datastore = "1.1.7"
+datastorePreferences = "1.1.7"
+
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -45,26 +50,34 @@ androidx-material3 = { group = "androidx.compose.material3", name = "material3" 
 
 # Navigation
 navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationComposeVersion" }
-
 # UI
 me-swipe = { module = "me.saket.swipe:swipe", version.ref = "swipeVersion" }
 androidx-compose-material-material-icons-extended = { module = "androidx.compose.material:material-icons-extended" }
 androidx-compose-material3-material3 = { module = "androidx.compose.material3:material3", version.ref = "androidxMaterial3" }
-
 # Image Loading
 coil-kt-coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilComposeVersion" }
-
 # Firebase
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
-firebase-firestore = { module = "com.google.firebase:firebase-firestore", version.ref = "firebaseFirestore" }
-
+firebase-firestore = { module = "com.google.firebase:firebase-firestore" }
+firebase-auth = { module = "com.google.firebase:firebase-auth" }
+firebase-storage = { module = "com.google.firebase:firebase-storage" }
+firebase-functions = { module = "com.google.firebase:firebase-functions" }
+play-services-auth = { module = "com.google.android.gms:play-services-auth", version.ref = "playServicesAuth" }
+# Security
+mindrot-jbcrypt = { module = "org.mindrot:jbcrypt", version.ref = "jbcrypt" }
+favre-bcrypt = { module = "at.favre.lib:bcrypt", version.ref = "bcrypt" }
+androidx-security-crypto = { module = "androidx.security:security-crypto", version.ref = "securityCrypto" }
+# Viewmodel
+androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleViewmodelCompose" }
 # Dependency Injection - Hilt
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
 hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroid" }
+# DataStore
+androidx-datastore = { module = "androidx.datastore:datastore", version.ref = "datastore" }
+androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
+
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
-gms={id="com.google.gms.google-services",version.ref="gms"}
-

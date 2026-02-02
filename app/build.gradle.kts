@@ -2,8 +2,9 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
-    alias(libs.plugins.gms)
 
+    // Firebase
+    id("com.google.gms.google-services")
     // KSP
     id("com.google.devtools.ksp")
     // Dependency Injection - Hilt
@@ -40,6 +41,7 @@ android {
     kotlin {
         compilerOptions {
             jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11)
+            freeCompilerArgs = listOf("-XXLanguage:+PropertyParamAnnotationDefaultTargetMode")
         }
     }
     buildFeatures {
@@ -56,7 +58,6 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
-    implementation(libs.firebase.firestore)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -65,36 +66,32 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
-    // Application's Dependencies
+    // DEPENDENCIES
     // Navigation
     implementation(libs.navigation.compose)
-
     // UI
     implementation(libs.me.swipe)
     implementation(libs.androidx.compose.material3.material3)
     implementation(libs.androidx.compose.material.material.icons.extended)
-
     // Image Loading
     implementation(libs.coil.kt.coil.compose)
-
     // Firebase
-    implementation(platform( libs.firebase.bom))
-    apply(plugin = "com.google.gms.google-services")
-    implementation("com.google.firebase:firebase-auth-ktx")
-    implementation("com.google.firebase:firebase-storage-ktx")
-    implementation("com.google.firebase:firebase-functions-ktx")
-    implementation("com.google.firebase:firebase-firestore-ktx")
-    implementation("com.google.android.gms:play-services-auth:20.0.0")
-
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.auth)
+    implementation(libs.firebase.storage)
+    implementation(libs.firebase.functions)
+    implementation(libs.firebase.firestore)
+    implementation(libs.play.services.auth)
     // Security
-    implementation("org.mindrot:jbcrypt:0.4")
-    implementation("at.favre.lib:bcrypt:0.9.0")
-    implementation("androidx.security:security-crypto:1.1.0-alpha06")
-
+    implementation(libs.mindrot.jbcrypt)
+    implementation(libs.favre.bcrypt)
+    implementation(libs.androidx.security.crypto)
     // Viewmodel
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
-
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
     // Dependency Injection - Hilt
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)
+    // DataStore
+    implementation(libs.androidx.datastore)
+    implementation(libs.androidx.datastore.preferences)
 }
