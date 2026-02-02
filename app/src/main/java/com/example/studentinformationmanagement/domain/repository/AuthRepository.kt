@@ -3,6 +3,9 @@ package com.example.studentinformationmanagement.domain.repository
 import com.example.studentinformationmanagement.domain.model.User
 
 interface AuthRepository {
+    // Check current user
+    suspend fun getCurrentUser(): Result<User?>
+
     // Login
     suspend fun login(
         email: String,

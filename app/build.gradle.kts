@@ -89,8 +89,9 @@ dependencies {
     // Viewmodel
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     // Dependency Injection - Hilt
-    implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)
+    implementation(libs.hilt.android)
+    implementation(libs.hilt.navigation.compose)
     // DataStore
     implementation(libs.androidx.datastore)
     implementation(libs.androidx.datastore.preferences)

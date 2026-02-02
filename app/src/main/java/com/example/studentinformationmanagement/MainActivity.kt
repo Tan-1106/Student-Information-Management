@@ -1,29 +1,13 @@
 package com.example.studentinformationmanagement
 
+import com.example.studentinformationmanagement.presentation.AppScreen
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import com.example.studentinformationmanagement.ui.theme.StudentInformationManagementTheme
+import com.example.studentinformationmanagement.presentation.theme.StudentInformationManagementTheme
+import dagger.hilt.android.AndroidEntryPoint
 
-//
-//import android.os.Bundle
-//import androidx.activity.ComponentActivity
-//import androidx.activity.compose.setContent
-//import androidx.activity.enableEdgeToEdge
-//import com.example.studentinformationmanagement.ui.theme.StudentInformationManagementTheme
-//
-//class MainActivity : ComponentActivity() {
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-//        enableEdgeToEdge()
-//        setContent {
-//            StudentInformationManagementTheme {
-//                AppScreen()
-//            }
-//        }
-//    }
-//}
-//
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

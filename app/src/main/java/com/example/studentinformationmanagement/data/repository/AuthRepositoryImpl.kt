@@ -11,6 +11,16 @@ class AuthRepositoryImpl @Inject constructor(
     private val authLocalDataSource: AuthLocalDataSource,
     private val authRemoteDataSource: AuthRemoteDataSource
 ): AuthRepository {
+    // Check current user
+    override suspend fun getCurrentUser(): Result<User?> {
+        val currentUser = authRemoteDataSource.getCurrentUser()
+        if (currentUser.isFailure) {
+            return Result.failure(currentUser.exceptionOrNull()!!)
+        }
+        val user = currentUser.getOrNull()?.toEntity()
+        return Result.success(user)
+    }
+
     // Login
     override suspend fun login(
         email: String,

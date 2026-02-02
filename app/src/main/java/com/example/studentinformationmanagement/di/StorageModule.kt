@@ -3,6 +3,7 @@ package com.example.studentinformationmanagement.di
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
 import android.content.Context
 import javax.inject.Singleton
 import androidx.datastore.core.DataStore
@@ -12,7 +13,7 @@ import androidx.datastore.preferences.preferencesDataStoreFile
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 
 @Module
-@InstallIn(Singleton::class)
+@InstallIn(SingletonComponent::class)
 object StorageModule {
     @Provides
     @Singleton

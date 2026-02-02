@@ -6,7 +6,7 @@
     <string name="Login_Welcome">Welcome! Please Sign In</string>
     <string name="Login_EmailLabel">Your Email</string>
     <string name="Login_PasswordLabel">Your Password</string>
-    <string name="Login_RememberPassword">Remember password</string>
+    <string name="Login_RememberMe">Remember Me</string>
     <string name="Login_ForgotPassword">Forgot password?</string>
 
     <!-- Profile -->

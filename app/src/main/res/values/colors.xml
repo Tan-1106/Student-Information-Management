@@ -8,7 +8,7 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-    <!-- Các màu sắc được định nghĩa tại đây -->
+    <!-- Custom Colors -->
     <color name="primary_content">#D45F5F</color>
     <color name="secondary_content">#E9A098</color>
     <color name="primary_container">#DDCACE</color>

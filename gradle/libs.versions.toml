@@ -25,8 +25,9 @@ bcrypt = "0.10.2"
 securityCrypto = "1.1.0"
 # Viewmodel
 lifecycleViewmodelCompose = "2.10.0"
-# Dependency Injection - Hilt (noinspection NewerVersionAvailable)
+# Dependency Injection
 hiltAndroid = "2.58"
+hiltNavigationCompose = "1.2.0"
 # DataStore
 datastore = "1.1.7"
 datastorePreferences = "1.1.7"
@@ -69,9 +70,10 @@ favre-bcrypt = { module = "at.favre.lib:bcrypt", version.ref = "bcrypt" }
 androidx-security-crypto = { module = "androidx.security:security-crypto", version.ref = "securityCrypto" }
 # Viewmodel
 androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleViewmodelCompose" }
-# Dependency Injection - Hilt
+# Dependency Injection
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
 hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroid" }
+hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
 # DataStore
 androidx-datastore = { module = "androidx.datastore:datastore", version.ref = "datastore" }
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
